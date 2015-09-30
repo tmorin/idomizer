@@ -49,6 +49,7 @@
     "babel-loader": "^5.3.2",
     "chai": "^3.3.0",
     "esdoc": "^0.3.1",
+    "htmlparser2": "^3.8.3",
     "incremental-dom": "^0.2.0",
     "jsdom": "^6.5.1",
     "jshint": "^2.8.0",
