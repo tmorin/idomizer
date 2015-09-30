@@ -1,0 +1,70 @@
+{
+  "name": "idomizer",
+  "version": "0.0.0",
+  "description": "An HTML template parser compiling an incremental-dom render factory.",
+  "keywords": [
+    "template",
+    "incremental",
+    "dom",
+    "incremental-dom",
+    "virtual",
+    "virtual-dom"
+  ],
+  "homepage": "https://github.com/tmorin/idomizer",
+  "bugs": {
+    "url": "https://github.com/tmorin/idomizer/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tmorin/idomizer.git"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Thibault Morin",
+    "url": "https://tmorin.github.io"
+  },
+  "main": "lib/idomizer.js",
+  "jsnext:main": "src/idomizer.js",
+  "scripts": {
+    "clean": "rimraf dist && rimraf lib && rimraf *.tgz",
+    "lint": "jshint src test",
+    "test": "mocha --compilers js:babel/register --recursive",
+    "test:watch": "npm test -- --watch",
+    "check": "npm run lint && npm run test",
+    "build:lib": "babel src --out-dir lib",
+    "build:umd": "webpack src/idomizer.js dist/idomizer.js --config webpack.config.development.js",
+    "build:umd:min": "webpack src/idomizer.js dist/idomizer.min.js --config webpack.config.production.js",
+    "build": "npm run build:lib && npm run build:umd && npm run build:umd:min",
+    "preversion": "npm run check",
+    "version": "npm run build && git add -A dist",
+    "postversion": "git push && git push --tags && npm run clean && npm run docs:publish",
+    "prepublish": "npm run clean && npm run check && npm run build",
+    "docs:clean": "rimraf esdoc",
+    "docs:build": "npm run docs:clean && esdoc -c esdoc.json",
+    "docs:publish": "npm run docs:build && cd esdoc && git init && git commit --allow-empty -m 'update esdoc' && git checkout -b gh-pages && git add . && git commit -am 'update esdoc' && git push git@github.com:tmorin/idomizer gh-pages --force && cd .. && npm run docs:clean"
+  },
+  "devDependencies": {
+    "babel": "^5.8.23",
+    "babel-core": "^5.8.25",
+    "babel-loader": "^5.3.2",
+    "chai": "^3.3.0",
+    "esdoc": "^0.3.1",
+    "incremental-dom": "^0.2.0",
+    "jsdom": "^6.5.1",
+    "jshint": "^2.8.0",
+    "json-loader": "^0.5.3",
+    "mocha": "^2.3.3",
+    "rimraf": "^2.4.3",
+    "webpack": "^1.12.2",
+    "webpack-dev-server": "^1.12.0"
+  },
+  "npmName": "idomizer",
+  "npmFileMap": [
+    {
+      "basePath": "/dist/",
+      "files": [
+        "*.js"
+      ]
+    }
+  ]
+}
