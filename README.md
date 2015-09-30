@@ -12,10 +12,6 @@ An HTML template parser compiling an incremental-dom render factory.
 npm install idomizer
 ```
 
-```shell
-bower install idomizer
-```
-
 ```html
 <script src="path/to/incremental-dom"></script>
 <script src="path/to/idomizer.js"></script>
