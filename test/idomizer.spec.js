@@ -101,7 +101,7 @@ describe('idomizer', () => {
 
     it('should use custom elements', (done) => {
         let render = compile(`<strong>strong text</strong><x-test></x-test><strong>strong text</strong>`, {
-            elements: {
+            tags: {
                 'x-test': {
                     onopentag(name, attrs, key, statics, varArgs, options) {
                         return `t('${name} element');`;

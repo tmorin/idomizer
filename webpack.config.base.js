@@ -13,9 +13,6 @@ module.exports = {
         library: 'idomizer',
         libraryTarget: 'umd'
     },
-    resolve: {
-        extensions: ['', '.js']
-    },
     devServer: {
         contentBase: './dist',
         noInfo: false,

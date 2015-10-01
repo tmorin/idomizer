@@ -3,13 +3,14 @@
 [![Circle CI](https://circleci.com/gh/tmorin/idomizer/tree/master.svg?style=svg)](https://circleci.com/gh/tmorin/idomizer/tree/master)
 [![Dependency Status](https://david-dm.org/tmorin/idomizer.svg)](https://david-dm.org/tmorin/idomizer)
 [![devDependency Status](https://david-dm.org/tmorin/idomizer/dev-status.svg)](https://david-dm.org/tmorin/idomizer#info=devDependencies)
+<img data-ice="coverageBadge" src="http://tmorin.github.io/idomizer//badge.svg">
 
-An HTML template parser compiling an incremental-dom render factory.
+An HTML template compiler providing an _incremental-dom_ render factory.
 
 ## Installation
 
 ```shell
-npm install idomizer
+$ npm install idomizer
 ```
 
 ```html
@@ -22,7 +23,90 @@ npm install idomizer
 </script>
 ```
 
-## Get the factory of an IncrementalDOM's render method
+### Babel
+
+A babel's plugin is available to compile an idomizer template into an incremental-dom render factory.
+
+See [plugins](http://babeljs.io/docs/advanced/plugins) to get more information about plugins in babel.
+
+```javascript
+{
+    plugins: ['idomizers/src/plugins/babel-idomizer.js']
+}
+```
+
+Presently the plugin only support ES6 templates tagged with _idomizer_.
+Further more the template can not contain expressions like ``${anExpression}``.
+
+For instance,
+```javascript
+let template = idomizer`<h1 class="{{data.h1Class}}">Hello</h1>`;
+```
+will be compiled into:
+```javascript
+var template = function template(i, h) {
+  var o = i.elementOpen,
+      c = i.elementClose,
+      v = i.elementVoid,
+      t = i.text,
+      ph = i.elementPlaceholder;
+  return function (_data_) {
+    var helpers = h || {},
+        data = _data_ || {};
+    o('h1', null, null, 'class', data.h1Class);
+    t('Hello');
+    c('h1');
+  };
+};
+```
+
+### Webpack
+
+A webpack's loader is available to compile an idomizer file into an incremental-dom render factory.
+
+See [module.loaders](http://webpack.github.io/docs/configuration.html#module-loaders) to get more information about loaders in webpack.
+
+```javascript
+module.loaders: [
+    {test: /\.idomizer$/, loader: 'idomizer/lib/plugins/idomizer-loader'}
+];
+```
+
+### Browserify
+
+A browserify's transform module is available to compile an idomizer file into an incremental-dom render factory.
+
+See [transforms](https://github.com/substack/browserify-handbook#transforms) to get more information about the transform system in browserify.
+
+```shell
+browserify -t idomizer/lib/plugins/idomizerify main.js > bundle.js
+```
+
+```javascript
+var browserify = require('browserify');
+var idomizerify = require('idomizer/lib/plugins/idomizerify');
+var bundle = browserify();
+bundle.transform({ extension: 'html' }, idomizerify);
+```
+
+### Systemjs
+
+A SystemJS' plugin is available to compile an idomizer file into an incremental-dom render factory.
+
+See [plugin-loaders](https://github.com/systemjs/systemjs/blob/master/docs/overview.md#plugin-loaders) to get more information about the plugin system in SystemJS.
+
+```javascript
+System.import('./template.idomizer!idomizer/lib/plugins/systemjs-plugin-idomizer.js').then(function (factory) {
+    System.import('incremental-dom').then(function (IncrementalDOM) {
+        var options = {};
+        var data = {};
+        var render = tpl(IncrementalDOM, options);
+        IncrementalDOM.patch(document.body, render, data);
+    });
+});
+```
+
+## API
 
 ``idomizer.compile`` transforms an HTML template into a factory method.
 
@@ -43,8 +127,8 @@ function factory(i, h) {
 }
 ```
 
-The factory method requires the IncrementalDOM library and an optional map of helpers.
-The factory returns the IncrementalDOM's render method.
+The factory method requires the _incremental-dom_ library and an optional map of helpers.
+The factory returns the _incremental-dom_'s render method.
 
 ## Syntax
 
@@ -97,7 +181,7 @@ function (_data_) {
 }
 ```
 
-### Dynamic text
+### Dynamic text nodes
 
 From
 ```javascript
@@ -114,7 +198,7 @@ function (_data_) {
 }
 ```
 
-### Iteration with the element each
+### Iteration with the tag _each_
 
 From
 ```javascript
@@ -168,12 +252,12 @@ function (_data_) {
 }
 ```
 
-### Custom elements
+### Custom tags
 
 From
 ```javascript
 idomizer.compile(`<strong>strong text</strong><x-test></x-test><strong>strong text</strong>`, {
-     elements: {
+     tags: {
         'x-test': {
             onopentag(name, attrs, key, statics, varArgs, options) {
                 return `t('${name} element');`;

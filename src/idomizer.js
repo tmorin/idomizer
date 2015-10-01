@@ -9,46 +9,87 @@ function assign() {
     });
 }
 
+/**
+ * @typedef {Object} BUILT_IN_TAGS
+ * The built in tags provided by idomizer.
+ * @example <caption>tpl-logger</caption>
+ * idomizer.compile(`<tpl-logger level="info" content="data.foo: {{data.foo}}" />`);
+ *
+ * @example <caption>tpl-each and tpl-text</caption>
+ * idomizer.compile(`
+ *   <tpl-each items="data.values" item="value" index="i">
+ *     <li tpl-key="value-{{i}}">
+ *       <tpl-text value="{{value}}"/>
+ *     </li>
+ *   </tpl-each>
+ * `);
+ *
+ * @example <caption>tpl-call</caption>
+ * let anotherRenderFunction = // antoher IncrementalDOM render function
+ * idomizer.compile(`
+ *   <tpl-call name="anotherRender"/>
+ * `)(IncrementalDOM, {
+ *   anotherRender: anotherRenderFunction
+ * });
+ *
+ * @property {function} tpl-logger to append a console message
+ * @property {function} tpl-each to iterate over an array
+ * @property {function} tpl-text to create a text node
+ * @property {function} tpl-call to call an helpers with the current _data_ value
+ */
+export const BUILT_IN_TAGS = {
+    'tpl-logger': {
+        onopentag(name, attrs, key, statics, varArgs, options) {
+            let level = statics.level || varArgs.level || 'log',
+                content = statics.content || varArgs.content || '';
+            return `console.${level}(${content});`;
+        }
+    },
+    'tpl-each': {
+        onopentag(name, attrs, key, statics, varArgs, options) {
+            let itemsName = statics.items || varArgs.items || `items`,
+                itemName = statics.item || varArgs.item || `item`,
+                indexName = statics.index || varArgs.index || `index`;
+            return `(${itemsName} || []).forEach(function (${itemName}, ${indexName}) {`;
+        },
+        onclosetag(name, attrs, statics, varArgs, options) {
+            return `});`;
+        }
+    },
+    'tpl-text': {
+        onopentag(name, attrs, key, statics, varArgs, options) {
+            return `t(${statics.value || varArgs.value});`;
+        }
+    },
+    'tpl-call': {
+        onopentag(name, attrs, key, statics, varArgs, options) {
+            let helperName = statics.name || varArgs.name;
+            return `${options.varHelpersName}.${helperName}(${options.varDataName});`;
+        }
+    }
+};
+
+/**
+ * @typedef {Object} OPTIONS
+ * The overridable options of idomizer.
+ * @property {boolean} pretty Append a end of line character ('\\n' ) after each statements.
+ * @property {!RegExp} evaluation A RegExp to extracts expressions to evaluate.
+ * @property {!string} attributeKey The value of the IncrementalDOM's key.
+ * @property {!string} attributePlaceholder The flag to make the element acting as a placeholder.
+ * @property {!string} varDataName The name of the variable exposing the data.
+ * @property {!string} varHelpersName The name of the variable exposing the helpers.
+ * @property {!Array<string>} selfClosingElements The list of self closing elements. (http://www.w3.org/TR/html5/syntax.html#void-elements)
+ * @property {!BUILT_IN_TAGS} tags The built in and custom tags.
+ */
 export const OPTIONS = {
-    pretty: true,
+    pretty: false,
     evaluation: /\{\{([\s\S]+?)}}/gm,
     attributeKey: 'tpl-key',
     attributePlaceholder: 'tpl-placeholder',
     varDataName: 'data',
     varHelpersName: 'helpers',
-    elements: {
-        'tpl-logger': {
-            onopentag(name, attrs, key, statics, varArgs, options) {
-                let level = statics.level || varArgs.level || 'log',
-                    content = statics.content || varArgs.content || '';
-                return `console.${level}(${content});`;
-            }
-        },
-        'tpl-each': {
-            onopentag(name, attrs, key, statics, varArgs, options) {
-                let itemsName = statics.items || varArgs.items || `items`,
-                    itemName = statics.item || varArgs.item || `item`,
-                    indexName = statics.index || varArgs.index || `index`;
-                return `(${itemsName} || []).forEach(function (${itemName}, ${indexName}) {`;
-            },
-            onclosetag(name, attrs, statics, varArgs, options) {
-                return `});`;
-            }
-        },
-        'tpl-text': {
-            onopentag(name, attrs, key, statics, varArgs, options) {
-                return `t(${statics.value || varArgs.value});`;
-            }
-        },
-        'tpl-call': {
-            onopentag(name, attrs, key, statics, varArgs, options) {
-                let helperName = statics.name || varArgs.name;
-                return `${options.varHelpersName}.${helperName}(${options.varDataName});`;
-            }
-        }
-    },
-    // http://www.w3.org/TR/html5/syntax.html#void-elements
-    selfClosingElements: ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr']
+    selfClosingElements: ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'],
+    tags: BUILT_IN_TAGS
 };
 
 function stringify(value = '') {
@@ -67,12 +108,29 @@ function append(body = '', line = '', options = OPTIONS) {
     return body + (options.pretty ? '\n' : '') + line;
 }
 
-const stringEvaluator = {
+/**
+ * Configuration to transform an expression ino a compliant JavaScript fragment.
+ * @typedef {Object} Evaluator
+ * @public
+ * @property {!string} appender Appender between statements
+ * @property {!function(text: string)} toText to convert a text statements
+ * @property {!function(clause: string)} toJs to convert a js statements
+ */
+
+/**
+ * Evaluator of attributes' value.
+ * @type {Evaluator}
+ */
+const attributeEvaluator = {
     appender: ' + ',
     toText: text => `'${stringify(text)}'`,
     toJs: clause => `(${clause})`
 };
 
+/**
+ * Evaluator of inline's value.
+ * @type {Evaluator}
+ */
 const inlineEvaluator = {
     appender: ' ',
     toText: text => `t('${stringify(text)}');`,
@@ -82,11 +140,11 @@ const inlineEvaluator = {
 /**
  * Evaluate the string to return a JavaScript compliant syntax.
  * @param {!string} value the value
- * @param {*} options the options
- * @param {*} conf the evaluator's configuration
- * @returns {string} the JavaScript compliant syntax
+ * @param {!Evaluator} evaluator the evaluator's configuration
+ * @param {!OPTIONS} options the options
+ * @returns {string} a compliant JavaScript fragment
  */
-export function evaluate(value = '', options = OPTIONS, conf = stringEvaluator) {
+export function evaluate(value, evaluator, options) {
     let js = [];
     let result;
     let lastIndex = 0;
@@ -96,17 +154,16 @@ export function evaluate(value = '', options = OPTIONS, conf = stringEvaluator) 
         let index = result.index;
         let before = value.substring(lastIndex, index);
         if (before) {
-            js.push(conf.toText(before));
+            js.push(evaluator.toText(before));
         }
-        js.push(conf.toJs(group));
+        js.push(evaluator.toJs(group));
         lastIndex = index + full.length;
     }
     let after = value.substring(lastIndex, value.length);
     if (after) {
-        js.push(conf.toText(after));
+        js.push(evaluator.toText(after));
     }
-    //conf
-    return js.join(conf.appender);
+    return js.join(evaluator.appender);
 }
 
 function parseAttributes(attrs = {}, options = OPTIONS) {
@@ -119,7 +176,7 @@ function parseAttributes(attrs = {}, options = OPTIONS) {
         .forEach(function (key) {
             let value = attrs[key];
             if (value.search(options.evaluation) > -1) {
-                varArgs[key] = evaluate(value, options);
+                varArgs[key] = evaluate(value, attributeEvaluator, options);
             } else {
                 statics[key] = value;
             }
@@ -163,12 +220,12 @@ function staticsToJs(statics = {}) {
  * When the template is compiled at runtime, the IncrementalDOM should be given.
  *
  * @param {!string} html the template
- * @param {Object} [options] the options
- * @returns {function(i: !IncrementalDOM, h: *)} the function factory
+ * @param {OPTIONS} [options] the options
+ * @returns {function(i: IncrementalDOM, h: Object)} the function factory
  */
 export function compile(html = '', options = {}) {
     options = assign({}, OPTIONS, options, {
-        elements: assign({}, OPTIONS.elements, options.elements)
+        tags: assign({}, BUILT_IN_TAGS, options.tags)
     });
 
     let fnBody = '';
@@ -177,8 +234,8 @@ export function compile(html = '', options = {}) {
         onopentag(name, attrs) {
             let [statics, varArgs, key, placeholder] = parseAttributes(attrs, options);
             skipClosing = placeholder;
-            if (options.elements[name]) {
-                let element = options.elements[name];
+            if (options.tags[name]) {
+                let element = options.tags[name];
                 if (typeof element.onopentag === 'function') {
                     fnBody = append(fnBody, element.onopentag(name, attrs, key, statics, varArgs, options), options);
                 }
@@ -188,8 +245,8 @@ export function compile(html = '', options = {}) {
             }
         },
         onclosetag(name) {
-            if (options.elements[name]) {
-                let element = options.elements[name];
+            if (options.tags[name]) {
+                let element = options.tags[name];
                 if (typeof element.onclosetag === 'function') {
                     fnBody = append(fnBody, element.onclosetag(name, options), options);
                 }
@@ -200,7 +257,7 @@ export function compile(html = '', options = {}) {
         },
         ontext(text){
             if (text.search(options.evaluation) > -1) {
-                fnBody = append(fnBody, `${evaluate(text, options, inlineEvaluator)}`, options);
+                fnBody = append(fnBody, `${evaluate(text, inlineEvaluator, options)}`, options);
             } else {
                 fnBody = append(fnBody, `t('${stringify(text)}');`, options);
             }

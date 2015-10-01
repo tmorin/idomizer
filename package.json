@@ -1,16 +1,25 @@
 {
   "name": "idomizer",
   "version": "0.2.0",
-  "description": "An HTML template parser compiling an incremental-dom render factory.",
+  "description": "An HTML template compiler providing an incremental-dom render factory.",
   "keywords": [
     "template",
     "incremental",
     "dom",
     "incremental-dom",
     "virtual",
-    "virtual-dom"
+    "virtual-dom",
+    "browserify",
+    "webpack",
+    "systemjs",
+    "jspm",
+    "loader",
+    "module",
+    "plugin",
+    "transform",
+    "browserify-transform"
   ],
-  "homepage": "https://github.com/tmorin/idomizer",
+  "homepage": "https://tmorin.github.io/idomizer",
   "bugs": {
     "url": "https://github.com/tmorin/idomizer/issues"
   },
@@ -43,19 +52,25 @@
     "docs:build": "npm run docs:clean && esdoc -c esdoc.json",
     "docs:publish": "npm run docs:build && cd esdoc && git init && git commit --allow-empty -m 'update esdoc' && git checkout -b gh-pages && git add . && git commit -am 'update esdoc' && git push git@github.com:tmorin/idomizer gh-pages --force && cd .. && npm run docs:clean"
   },
+  "dependencies": {
+    "browserify-transform-tools": "^1.5.0",
+    "htmlparser2": "^3.8.3",
+    "loader-utils": "^0.2.11"
+  },
   "devDependencies": {
     "babel": "^5.8.23",
     "babel-core": "^5.8.25",
     "babel-loader": "^5.3.2",
+    "browserify": "^11.2.0",
     "chai": "^3.3.0",
     "esdoc": "^0.3.1",
-    "htmlparser2": "^3.8.3",
     "incremental-dom": "^0.2.0",
     "jsdom": "^6.5.1",
     "jshint": "^2.8.0",
     "json-loader": "^0.5.3",
     "mocha": "^2.3.3",
     "rimraf": "^2.4.3",
+    "systemjs": "^0.19.3",
     "webpack": "^1.12.2",
     "webpack-dev-server": "^1.12.0"
   },
