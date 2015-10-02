@@ -37,7 +37,7 @@ function assign() {
  * @property {function} tpl-text to create a text node
  * @property {function} tpl-call to call an helpers with the current _data_ value
  */
-export const BUILT_IN_TAGS = {
+const BUILT_IN_TAGS = {
     'tpl-logger': {
         onopentag(name, attrs, key, statics, varArgs, options) {
             let level = statics.level || varArgs.level || 'log',
@@ -81,7 +81,7 @@ export const BUILT_IN_TAGS = {
  * @property {!Array<string>} selfClosingElements The list of self closing elements. (http://www.w3.org/TR/html5/syntax.html#void-elements)
  * @property {!BUILT_IN_TAGS} tags The built in and custom tags.
  */
-export const OPTIONS = {
+const OPTIONS = {
     pretty: false,
     evaluation: /\{\{([\s\S]+?)}}/gm,
     attributeKey: 'tpl-key',
@@ -111,7 +111,7 @@ function append(body = '', line = '', options = OPTIONS) {
 /**
  * Configuration to transform an expression ino a compliant JavaScript fragment.
  * @typedef {Object} Evaluator
- * @public
+ * @private
  * @property {!string} appender Appender between statements
  * @property {!function(text: string)} toText to convert a text statements
  * @property {!function(clause: string)} toJs to convert a js statements
@@ -144,7 +144,7 @@ const inlineEvaluator = {
  * @param {!OPTIONS} options the options
  * @returns {string} a compliant JavaScript fragment
  */
-export function evaluate(value, evaluator, options) {
+function evaluate(value, evaluator, options) {
     let js = [];
     let result;
     let lastIndex = 0;
