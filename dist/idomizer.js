@@ -62,7 +62,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
 
-	exports.evaluate = evaluate;
 	exports.compile = compile;
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -140,7 +139,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	};
 
-	exports.BUILT_IN_TAGS = BUILT_IN_TAGS;
 	/**
 	 * @typedef {Object} OPTIONS
 	 * The overridable options of idomizer.
@@ -164,7 +162,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    tags: BUILT_IN_TAGS
 	};
 
-	exports.OPTIONS = OPTIONS;
 	function stringify() {
 	    var value = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
 
@@ -197,7 +194,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * Configuration to transform an expression ino a compliant JavaScript fragment.
 	 * @typedef {Object} Evaluator
-	 * @public
+	 * @private
 	 * @property {!string} appender Appender between statements
 	 * @property {!function(text: string)} toText to convert a text statements
 	 * @property {!function(clause: string)} toJs to convert a js statements
@@ -238,7 +235,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {!OPTIONS} options the options
 	 * @returns {string} a compliant JavaScript fragment
 	 */
-
 	function evaluate(value, evaluator, options) {
 	    var js = [];
 	    var result = undefined;
