@@ -547,7 +547,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ },
 /* 3 */
@@ -2237,7 +2237,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var Parser = __webpack_require__(14),
-	    DomHandler = __webpack_require__(25);
+	    DomHandler = __webpack_require__(29);
 
 	function defineProp(name, value){
 		delete module.exports[name];
@@ -2251,22 +2251,22 @@ return /******/ (function(modules) { // webpackBootstrap
 		ElementType: __webpack_require__(5),
 		DomHandler: DomHandler,
 		get FeedHandler(){
-			return defineProp("FeedHandler", __webpack_require__(32));
+			return defineProp("FeedHandler", __webpack_require__(40));
 		},
 		get Stream(){
-			return defineProp("Stream", __webpack_require__(34));
+			return defineProp("Stream", __webpack_require__(42));
 		},
 		get WritableStream(){
 			return defineProp("WritableStream", __webpack_require__(16));
 		},
 		get ProxyHandler(){
-			return defineProp("ProxyHandler", __webpack_require__(33));
+			return defineProp("ProxyHandler", __webpack_require__(41));
 		},
 		get DomUtils(){
-			return defineProp("DomUtils", __webpack_require__(35));
+			return defineProp("DomUtils", __webpack_require__(31));
 		},
 		get CollectingHandler(){
-			return defineProp("CollectingHandler", __webpack_require__(31));
+			return defineProp("CollectingHandler", __webpack_require__(39));
 		},
 		// For legacy support
 		DefaultHandler: DomHandler,
@@ -2308,103 +2308,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 7 */
-/***/ function(module, exports) {
-
-	// shim for using process in browser
-
-	var process = module.exports = {};
-	var queue = [];
-	var draining = false;
-	var currentQueue;
-	var queueIndex = -1;
-
-	function cleanUpNextTick() {
-	    draining = false;
-	    if (currentQueue.length) {
-	        queue = currentQueue.concat(queue);
-	    } else {
-	        queueIndex = -1;
-	    }
-	    if (queue.length) {
-	        drainQueue();
-	    }
-	}
-
-	function drainQueue() {
-	    if (draining) {
-	        return;
-	    }
-	    var timeout = setTimeout(cleanUpNextTick);
-	    draining = true;
-
-	    var len = queue.length;
-	    while(len) {
-	        currentQueue = queue;
-	        queue = [];
-	        while (++queueIndex < len) {
-	            if (currentQueue) {
-	                currentQueue[queueIndex].run();
-	            }
-	        }
-	        queueIndex = -1;
-	        len = queue.length;
-	    }
-	    currentQueue = null;
-	    draining = false;
-	    clearTimeout(timeout);
-	}
-
-	process.nextTick = function (fun) {
-	    var args = new Array(arguments.length - 1);
-	    if (arguments.length > 1) {
-	        for (var i = 1; i < arguments.length; i++) {
-	            args[i - 1] = arguments[i];
-	        }
-	    }
-	    queue.push(new Item(fun, args));
-	    if (queue.length === 1 && !draining) {
-	        setTimeout(drainQueue, 0);
-	    }
-	};
-
-	// v8 likes predictible objects
-	function Item(fun, array) {
-	    this.fun = fun;
-	    this.array = array;
-	}
-	Item.prototype.run = function () {
-	    this.fun.apply(null, this.array);
-	};
-	process.title = 'browser';
-	process.browser = true;
-	process.env = {};
-	process.argv = [];
-	process.version = ''; // empty string to avoid regexp issues
-	process.versions = {};
-
-	function noop() {}
-
-	process.on = noop;
-	process.addListener = noop;
-	process.once = noop;
-	process.off = noop;
-	process.removeListener = noop;
-	process.removeAllListeners = noop;
-	process.emit = noop;
-
-	process.binding = function (name) {
-	    throw new Error('process.binding is not supported');
-	};
-
-	process.cwd = function () { return '/' };
-	process.chdir = function (dir) {
-	    throw new Error('process.chdir is not supported');
-	};
-	process.umask = function() { return 0; };
-
-
-/***/ },
-/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -2534,6 +2437,103 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // Allow for unix-like usage: A.pipe(B).pipe(C)
 	  return dest;
 	};
+
+
+/***/ },
+/* 8 */
+/***/ function(module, exports) {
+
+	// shim for using process in browser
+
+	var process = module.exports = {};
+	var queue = [];
+	var draining = false;
+	var currentQueue;
+	var queueIndex = -1;
+
+	function cleanUpNextTick() {
+	    draining = false;
+	    if (currentQueue.length) {
+	        queue = currentQueue.concat(queue);
+	    } else {
+	        queueIndex = -1;
+	    }
+	    if (queue.length) {
+	        drainQueue();
+	    }
+	}
+
+	function drainQueue() {
+	    if (draining) {
+	        return;
+	    }
+	    var timeout = setTimeout(cleanUpNextTick);
+	    draining = true;
+
+	    var len = queue.length;
+	    while(len) {
+	        currentQueue = queue;
+	        queue = [];
+	        while (++queueIndex < len) {
+	            if (currentQueue) {
+	                currentQueue[queueIndex].run();
+	            }
+	        }
+	        queueIndex = -1;
+	        len = queue.length;
+	    }
+	    currentQueue = null;
+	    draining = false;
+	    clearTimeout(timeout);
+	}
+
+	process.nextTick = function (fun) {
+	    var args = new Array(arguments.length - 1);
+	    if (arguments.length > 1) {
+	        for (var i = 1; i < arguments.length; i++) {
+	            args[i - 1] = arguments[i];
+	        }
+	    }
+	    queue.push(new Item(fun, args));
+	    if (queue.length === 1 && !draining) {
+	        setTimeout(drainQueue, 0);
+	    }
+	};
+
+	// v8 likes predictible objects
+	function Item(fun, array) {
+	    this.fun = fun;
+	    this.array = array;
+	}
+	Item.prototype.run = function () {
+	    this.fun.apply(null, this.array);
+	};
+	process.title = 'browser';
+	process.browser = true;
+	process.env = {};
+	process.argv = [];
+	process.version = ''; // empty string to avoid regexp issues
+	process.versions = {};
+
+	function noop() {}
+
+	process.on = noop;
+	process.addListener = noop;
+	process.once = noop;
+	process.off = noop;
+	process.removeListener = noop;
+	process.removeAllListeners = noop;
+	process.emit = noop;
+
+	process.binding = function (name) {
+	    throw new Error('process.binding is not supported');
+	};
+
+	process.cwd = function () { return '/' };
+	process.chdir = function (dir) {
+	    throw new Error('process.chdir is not supported');
+	};
+	process.umask = function() { return 0; };
 
 
 /***/ },
@@ -3127,7 +3127,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return Object.prototype.hasOwnProperty.call(obj, prop);
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(7)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(8)))
 
 /***/ },
 /* 10 */
@@ -3216,11 +3216,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	        break;
 	      // slower
 	      default:
-	        args = Array.prototype.slice.call(arguments, 1);
+	        len = arguments.length;
+	        args = new Array(len - 1);
+	        for (i = 1; i < len; i++)
+	          args[i - 1] = arguments[i];
 	        handler.apply(this, args);
 	    }
 	  } else if (isObject(handler)) {
-	    args = Array.prototype.slice.call(arguments, 1);
+	    len = arguments.length;
+	    args = new Array(len - 1);
+	    for (i = 1; i < len; i++)
+	      args[i - 1] = arguments[i];
+
 	    listeners = handler.slice();
 	    len = listeners.length;
 	    for (i = 0; i < len; i++)
@@ -3258,6 +3265,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  // Check for listener leak
 	  if (isObject(this._events[type]) && !this._events[type].warned) {
+	    var m;
 	    if (!isUndefined(this._maxListeners)) {
 	      m = this._maxListeners;
 	    } else {
@@ -3379,7 +3387,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  if (isFunction(listeners)) {
 	    this.removeListener(type, listeners);
-	  } else if (listeners) {
+	  } else {
 	    // LIFO order
 	    while (listeners.length)
 	      this.removeListener(type, listeners[listeners.length - 1]);
@@ -3400,20 +3408,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return ret;
 	};
 
-	EventEmitter.prototype.listenerCount = function(type) {
-	  if (this._events) {
-	    var evlistener = this._events[type];
-
-	    if (isFunction(evlistener))
-	      return 1;
-	    else if (evlistener)
-	      return evlistener.length;
-	  }
-	  return 0;
-	};
-
 	EventEmitter.listenerCount = function(emitter, type) {
-	  return emitter.listenerCount(type);
+	  var ret;
+	  if (!emitter._events || !emitter._events[type])
+	    ret = 0;
+	  else if (isFunction(emitter._events[type]))
+	    ret = 1;
+	  else
+	    ret = emitter._events[type].length;
+	  return ret;
 	};
 
 	function isFunction(arg) {
@@ -3691,7 +3694,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	util.inherits = __webpack_require__(1);
 	/*</replacement>*/
 
-	var Stream = __webpack_require__(8);
+	var Stream = __webpack_require__(7);
 
 	util.inherits(Writable, Stream);
 
@@ -4130,7 +4133,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  state.ended = true;
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ },
 /* 13 */
@@ -4544,7 +4547,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = Tokenizer;
 
-	var decodeCodePoint = __webpack_require__(42),
+	var decodeCodePoint = __webpack_require__(38),
 	    entityMap = __webpack_require__(49),
 	    legacyMap = __webpack_require__(50),
 	    xmlMap    = __webpack_require__(51),
@@ -5457,7 +5460,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Stream;
 
 	var Parser = __webpack_require__(14),
-	    WritableStream = __webpack_require__(8).Writable || __webpack_require__(58).Writable;
+	    WritableStream = __webpack_require__(7).Writable || __webpack_require__(58).Writable;
 
 	function Stream(cbs, options){
 		var parser = this._parser = new Parser(cbs, options);
@@ -7718,7 +7721,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	/*</replacement>*/
 
-	var Stream = __webpack_require__(8);
+	var Stream = __webpack_require__(7);
 
 	/*<replacement>*/
 	var util = __webpack_require__(4);
@@ -8628,7 +8631,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return -1;
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ },
 /* 21 */
@@ -8995,7 +8998,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Module dependencies
 	*/
 	var ElementType = __webpack_require__(24);
-	var entities = __webpack_require__(27);
+	var entities = __webpack_require__(25);
 
 	/*
 	  Boolean Attributes
@@ -9194,11 +9197,238 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var encode = __webpack_require__(28),
+	    decode = __webpack_require__(26);
+
+	exports.decode = function(data, level){
+		return (!level || level <= 0 ? decode.XML : decode.HTML)(data);
+	};
+
+	exports.decodeStrict = function(data, level){
+		return (!level || level <= 0 ? decode.XML : decode.HTMLStrict)(data);
+	};
+
+	exports.encode = function(data, level){
+		return (!level || level <= 0 ? encode.XML : encode.HTML)(data);
+	};
+
+	exports.encodeXML = encode.XML;
+
+	exports.encodeHTML4 =
+	exports.encodeHTML5 =
+	exports.encodeHTML  = encode.HTML;
+
+	exports.decodeXML =
+	exports.decodeXMLStrict = decode.XML;
+
+	exports.decodeHTML4 =
+	exports.decodeHTML5 =
+	exports.decodeHTML = decode.HTML;
+
+	exports.decodeHTML4Strict =
+	exports.decodeHTML5Strict =
+	exports.decodeHTMLStrict = decode.HTMLStrict;
+
+	exports.escape = encode.escape;
+
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var entityMap = __webpack_require__(17),
+	    legacyMap = __webpack_require__(47),
+	    xmlMap    = __webpack_require__(18),
+	    decodeCodePoint = __webpack_require__(27);
+
+	var decodeXMLStrict  = getStrictDecoder(xmlMap),
+	    decodeHTMLStrict = getStrictDecoder(entityMap);
+
+	function getStrictDecoder(map){
+		var keys = Object.keys(map).join("|"),
+		    replace = getReplacer(map);
+
+		keys += "|#[xX][\\da-fA-F]+|#\\d+";
+
+		var re = new RegExp("&(?:" + keys + ");", "g");
+
+		return function(str){
+			return String(str).replace(re, replace);
+		};
+	}
+
+	var decodeHTML = (function(){
+		var legacy = Object.keys(legacyMap)
+			.sort(sorter);
+
+		var keys = Object.keys(entityMap)
+			.sort(sorter);
+
+		for(var i = 0, j = 0; i < keys.length; i++){
+			if(legacy[j] === keys[i]){
+				keys[i] += ";?";
+				j++;
+			} else {
+				keys[i] += ";";
+			}
+		}
+
+		var re = new RegExp("&(?:" + keys.join("|") + "|#[xX][\\da-fA-F]+;?|#\\d+;?)", "g"),
+		    replace = getReplacer(entityMap);
+
+		function replacer(str){
+			if(str.substr(-1) !== ";") str += ";";
+			return replace(str);
+		}
+
+		//TODO consider creating a merged map
+		return function(str){
+			return String(str).replace(re, replacer);
+		};
+	}());
+
+	function sorter(a, b){
+		return a < b ? 1 : -1;
+	}
+
+	function getReplacer(map){
+		return function replace(str){
+			if(str.charAt(1) === "#"){
+				if(str.charAt(2) === "X" || str.charAt(2) === "x"){
+					return decodeCodePoint(parseInt(str.substr(3), 16));
+				}
+				return decodeCodePoint(parseInt(str.substr(2), 10));
+			}
+			return map[str.slice(1, -1)];
+		};
+	}
+
+	module.exports = {
+		XML: decodeXMLStrict,
+		HTML: decodeHTML,
+		HTMLStrict: decodeHTMLStrict
+	};
+
+/***/ },
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var decodeMap = __webpack_require__(46);
+
+	module.exports = decodeCodePoint;
+
+	// modified version of https://github.com/mathiasbynens/he/blob/master/src/he.js#L94-L119
+	function decodeCodePoint(codePoint){
+
+		if((codePoint >= 0xD800 && codePoint <= 0xDFFF) || codePoint > 0x10FFFF){
+			return "\uFFFD";
+		}
+
+		if(codePoint in decodeMap){
+			codePoint = decodeMap[codePoint];
+		}
+
+		var output = "";
+
+		if(codePoint > 0xFFFF){
+			codePoint -= 0x10000;
+			output += String.fromCharCode(codePoint >>> 10 & 0x3FF | 0xD800);
+			codePoint = 0xDC00 | codePoint & 0x3FF;
+		}
+
+		output += String.fromCharCode(codePoint);
+		return output;
+	}
+
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var inverseXML = getInverseObj(__webpack_require__(18)),
+	    xmlReplacer = getInverseReplacer(inverseXML);
+
+	exports.XML = getInverse(inverseXML, xmlReplacer);
+
+	var inverseHTML = getInverseObj(__webpack_require__(17)),
+	    htmlReplacer = getInverseReplacer(inverseHTML);
+
+	exports.HTML = getInverse(inverseHTML, htmlReplacer);
+
+	function getInverseObj(obj){
+		return Object.keys(obj).sort().reduce(function(inverse, name){
+			inverse[obj[name]] = "&" + name + ";";
+			return inverse;
+		}, {});
+	}
+
+	function getInverseReplacer(inverse){
+		var single = [],
+		    multiple = [];
+
+		Object.keys(inverse).forEach(function(k){
+			if(k.length === 1){
+				single.push("\\" + k);
+			} else {
+				multiple.push(k);
+			}
+		});
+
+		//TODO add ranges
+		multiple.unshift("[" + single.join("") + "]");
+
+		return new RegExp(multiple.join("|"), "g");
+	}
+
+	var re_nonASCII = /[^\0-\x7F]/g,
+	    re_astralSymbols = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
+
+	function singleCharReplacer(c){
+		return "&#x" + c.charCodeAt(0).toString(16).toUpperCase() + ";";
+	}
+
+	function astralReplacer(c){
+		// http://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
+		var high = c.charCodeAt(0);
+		var low  = c.charCodeAt(1);
+		var codePoint = (high - 0xD800) * 0x400 + low - 0xDC00 + 0x10000;
+		return "&#x" + codePoint.toString(16).toUpperCase() + ";";
+	}
+
+	function getInverse(inverse, re){
+		function func(name){
+			return inverse[name];
+		}
+
+		return function(data){
+			return data
+					.replace(re, func)
+					.replace(re_astralSymbols, astralReplacer)
+					.replace(re_nonASCII, singleCharReplacer);
+		};
+	}
+
+	var re_xmlChars = getInverseReplacer(inverseXML);
+
+	function escapeXML(data){
+		return data
+				.replace(re_xmlChars, singleCharReplacer)
+				.replace(re_astralSymbols, astralReplacer)
+				.replace(re_nonASCII, singleCharReplacer);
+	}
+
+	exports.escape = escapeXML;
+
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var ElementType = __webpack_require__(5);
 
 	var re_whitespace = /\s+/g;
 	var NodePrototype = __webpack_require__(13);
-	var ElementPrototype = __webpack_require__(26);
+	var ElementPrototype = __webpack_require__(30);
 
 	function DomHandler(callback, options, elementCB){
 		if(typeof callback === "object"){
@@ -9379,7 +9609,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 26 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// DOM-Level-1-compliant structure
@@ -9405,479 +9635,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 27 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var encode = __webpack_require__(30),
-	    decode = __webpack_require__(28);
-
-	exports.decode = function(data, level){
-		return (!level || level <= 0 ? decode.XML : decode.HTML)(data);
-	};
-
-	exports.decodeStrict = function(data, level){
-		return (!level || level <= 0 ? decode.XML : decode.HTMLStrict)(data);
-	};
-
-	exports.encode = function(data, level){
-		return (!level || level <= 0 ? encode.XML : encode.HTML)(data);
-	};
-
-	exports.encodeXML = encode.XML;
-
-	exports.encodeHTML4 =
-	exports.encodeHTML5 =
-	exports.encodeHTML  = encode.HTML;
-
-	exports.decodeXML =
-	exports.decodeXMLStrict = decode.XML;
-
-	exports.decodeHTML4 =
-	exports.decodeHTML5 =
-	exports.decodeHTML = decode.HTML;
-
-	exports.decodeHTML4Strict =
-	exports.decodeHTML5Strict =
-	exports.decodeHTMLStrict = decode.HTMLStrict;
-
-	exports.escape = encode.escape;
-
-
-/***/ },
-/* 28 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var entityMap = __webpack_require__(17),
-	    legacyMap = __webpack_require__(47),
-	    xmlMap    = __webpack_require__(18),
-	    decodeCodePoint = __webpack_require__(29);
-
-	var decodeXMLStrict  = getStrictDecoder(xmlMap),
-	    decodeHTMLStrict = getStrictDecoder(entityMap);
-
-	function getStrictDecoder(map){
-		var keys = Object.keys(map).join("|"),
-		    replace = getReplacer(map);
-
-		keys += "|#[xX][\\da-fA-F]+|#\\d+";
-
-		var re = new RegExp("&(?:" + keys + ");", "g");
-
-		return function(str){
-			return String(str).replace(re, replace);
-		};
-	}
-
-	var decodeHTML = (function(){
-		var legacy = Object.keys(legacyMap)
-			.sort(sorter);
-
-		var keys = Object.keys(entityMap)
-			.sort(sorter);
-
-		for(var i = 0, j = 0; i < keys.length; i++){
-			if(legacy[j] === keys[i]){
-				keys[i] += ";?";
-				j++;
-			} else {
-				keys[i] += ";";
-			}
-		}
-
-		var re = new RegExp("&(?:" + keys.join("|") + "|#[xX][\\da-fA-F]+;?|#\\d+;?)", "g"),
-		    replace = getReplacer(entityMap);
-
-		function replacer(str){
-			if(str.substr(-1) !== ";") str += ";";
-			return replace(str);
-		}
-
-		//TODO consider creating a merged map
-		return function(str){
-			return String(str).replace(re, replacer);
-		};
-	}());
-
-	function sorter(a, b){
-		return a < b ? 1 : -1;
-	}
-
-	function getReplacer(map){
-		return function replace(str){
-			if(str.charAt(1) === "#"){
-				if(str.charAt(2) === "X" || str.charAt(2) === "x"){
-					return decodeCodePoint(parseInt(str.substr(3), 16));
-				}
-				return decodeCodePoint(parseInt(str.substr(2), 10));
-			}
-			return map[str.slice(1, -1)];
-		};
-	}
-
-	module.exports = {
-		XML: decodeXMLStrict,
-		HTML: decodeHTML,
-		HTMLStrict: decodeHTMLStrict
-	};
-
-/***/ },
-/* 29 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var decodeMap = __webpack_require__(46);
-
-	module.exports = decodeCodePoint;
-
-	// modified version of https://github.com/mathiasbynens/he/blob/master/src/he.js#L94-L119
-	function decodeCodePoint(codePoint){
-
-		if((codePoint >= 0xD800 && codePoint <= 0xDFFF) || codePoint > 0x10FFFF){
-			return "\uFFFD";
-		}
-
-		if(codePoint in decodeMap){
-			codePoint = decodeMap[codePoint];
-		}
-
-		var output = "";
-
-		if(codePoint > 0xFFFF){
-			codePoint -= 0x10000;
-			output += String.fromCharCode(codePoint >>> 10 & 0x3FF | 0xD800);
-			codePoint = 0xDC00 | codePoint & 0x3FF;
-		}
-
-		output += String.fromCharCode(codePoint);
-		return output;
-	}
-
-
-/***/ },
-/* 30 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var inverseXML = getInverseObj(__webpack_require__(18)),
-	    xmlReplacer = getInverseReplacer(inverseXML);
-
-	exports.XML = getInverse(inverseXML, xmlReplacer);
-
-	var inverseHTML = getInverseObj(__webpack_require__(17)),
-	    htmlReplacer = getInverseReplacer(inverseHTML);
-
-	exports.HTML = getInverse(inverseHTML, htmlReplacer);
-
-	function getInverseObj(obj){
-		return Object.keys(obj).sort().reduce(function(inverse, name){
-			inverse[obj[name]] = "&" + name + ";";
-			return inverse;
-		}, {});
-	}
-
-	function getInverseReplacer(inverse){
-		var single = [],
-		    multiple = [];
-
-		Object.keys(inverse).forEach(function(k){
-			if(k.length === 1){
-				single.push("\\" + k);
-			} else {
-				multiple.push(k);
-			}
-		});
-
-		//TODO add ranges
-		multiple.unshift("[" + single.join("") + "]");
-
-		return new RegExp(multiple.join("|"), "g");
-	}
-
-	var re_nonASCII = /[^\0-\x7F]/g,
-	    re_astralSymbols = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
-
-	function singleCharReplacer(c){
-		return "&#x" + c.charCodeAt(0).toString(16).toUpperCase() + ";";
-	}
-
-	function astralReplacer(c){
-		// http://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
-		var high = c.charCodeAt(0);
-		var low  = c.charCodeAt(1);
-		var codePoint = (high - 0xD800) * 0x400 + low - 0xDC00 + 0x10000;
-		return "&#x" + codePoint.toString(16).toUpperCase() + ";";
-	}
-
-	function getInverse(inverse, re){
-		function func(name){
-			return inverse[name];
-		}
-
-		return function(data){
-			return data
-					.replace(re, func)
-					.replace(re_astralSymbols, astralReplacer)
-					.replace(re_nonASCII, singleCharReplacer);
-		};
-	}
-
-	var re_xmlChars = getInverseReplacer(inverseXML);
-
-	function escapeXML(data){
-		return data
-				.replace(re_xmlChars, singleCharReplacer)
-				.replace(re_astralSymbols, astralReplacer)
-				.replace(re_nonASCII, singleCharReplacer);
-	}
-
-	exports.escape = escapeXML;
-
-
-/***/ },
 /* 31 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = CollectingHandler;
-
-	function CollectingHandler(cbs){
-		this._cbs = cbs || {};
-		this.events = [];
-	}
-
-	var EVENTS = __webpack_require__(6).EVENTS;
-	Object.keys(EVENTS).forEach(function(name){
-		if(EVENTS[name] === 0){
-			name = "on" + name;
-			CollectingHandler.prototype[name] = function(){
-				this.events.push([name]);
-				if(this._cbs[name]) this._cbs[name]();
-			};
-		} else if(EVENTS[name] === 1){
-			name = "on" + name;
-			CollectingHandler.prototype[name] = function(a){
-				this.events.push([name, a]);
-				if(this._cbs[name]) this._cbs[name](a);
-			};
-		} else if(EVENTS[name] === 2){
-			name = "on" + name;
-			CollectingHandler.prototype[name] = function(a, b){
-				this.events.push([name, a, b]);
-				if(this._cbs[name]) this._cbs[name](a, b);
-			};
-		} else {
-			throw Error("wrong number of arguments");
-		}
-	});
-
-	CollectingHandler.prototype.onreset = function(){
-		this.events = [];
-		if(this._cbs.onreset) this._cbs.onreset();
-	};
-
-	CollectingHandler.prototype.restart = function(){
-		if(this._cbs.onreset) this._cbs.onreset();
-
-		for(var i = 0, len = this.events.length; i < len; i++){
-			if(this._cbs[this.events[i][0]]){
-
-				var num = this.events[i].length;
-
-				if(num === 1){
-					this._cbs[this.events[i][0]]();
-				} else if(num === 2){
-					this._cbs[this.events[i][0]](this.events[i][1]);
-				} else {
-					this._cbs[this.events[i][0]](this.events[i][1], this.events[i][2]);
-				}
-			}
-		}
-	};
-
-
-/***/ },
-/* 32 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var index = __webpack_require__(6),
-	    DomHandler = index.DomHandler,
-		DomUtils = index.DomUtils;
-
-	//TODO: make this a streamable handler
-	function FeedHandler(callback, options){
-		this.init(callback, options);
-	}
-
-	__webpack_require__(9).inherits(FeedHandler, DomHandler);
-
-	FeedHandler.prototype.init = DomHandler;
-
-	function getElements(what, where){
-		return DomUtils.getElementsByTagName(what, where, true);
-	}
-	function getOneElement(what, where){
-		return DomUtils.getElementsByTagName(what, where, true, 1)[0];
-	}
-	function fetch(what, where, recurse){
-		return DomUtils.getText(
-			DomUtils.getElementsByTagName(what, where, recurse, 1)
-		).trim();
-	}
-
-	function addConditionally(obj, prop, what, where, recurse){
-		var tmp = fetch(what, where, recurse);
-		if(tmp) obj[prop] = tmp;
-	}
-
-	var isValidFeed = function(value){
-		return value === "rss" || value === "feed" || value === "rdf:RDF";
-	};
-
-	FeedHandler.prototype.onend = function(){
-		var feed = {},
-			feedRoot = getOneElement(isValidFeed, this.dom),
-			tmp, childs;
-
-		if(feedRoot){
-			if(feedRoot.name === "feed"){
-				childs = feedRoot.children;
-
-				feed.type = "atom";
-				addConditionally(feed, "id", "id", childs);
-				addConditionally(feed, "title", "title", childs);
-				if((tmp = getOneElement("link", childs)) && (tmp = tmp.attribs) && (tmp = tmp.href)) feed.link = tmp;
-				addConditionally(feed, "description", "subtitle", childs);
-				if((tmp = fetch("updated", childs))) feed.updated = new Date(tmp);
-				addConditionally(feed, "author", "email", childs, true);
-
-				feed.items = getElements("entry", childs).map(function(item){
-					var entry = {}, tmp;
-
-					item = item.children;
-
-					addConditionally(entry, "id", "id", item);
-					addConditionally(entry, "title", "title", item);
-					if((tmp = getOneElement("link", item)) && (tmp = tmp.attribs) && (tmp = tmp.href)) entry.link = tmp;
-					if((tmp = fetch("summary", item) || fetch("content", item))) entry.description = tmp;
-					if((tmp = fetch("updated", item))) entry.pubDate = new Date(tmp);
-					return entry;
-				});
-			} else {
-				childs = getOneElement("channel", feedRoot.children).children;
-
-				feed.type = feedRoot.name.substr(0, 3);
-				feed.id = "";
-				addConditionally(feed, "title", "title", childs);
-				addConditionally(feed, "link", "link", childs);
-				addConditionally(feed, "description", "description", childs);
-				if((tmp = fetch("lastBuildDate", childs))) feed.updated = new Date(tmp);
-				addConditionally(feed, "author", "managingEditor", childs, true);
-
-				feed.items = getElements("item", feedRoot.children).map(function(item){
-					var entry = {}, tmp;
-
-					item = item.children;
-
-					addConditionally(entry, "id", "guid", item);
-					addConditionally(entry, "title", "title", item);
-					addConditionally(entry, "link", "link", item);
-					addConditionally(entry, "description", "description", item);
-					if((tmp = fetch("pubDate", item))) entry.pubDate = new Date(tmp);
-					return entry;
-				});
-			}
-		}
-		this.dom = feed;
-		DomHandler.prototype._handleCallback.call(
-			this, feedRoot ? null : Error("couldn't find root of feed")
-		);
-	};
-
-	module.exports = FeedHandler;
-
-
-/***/ },
-/* 33 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = ProxyHandler;
-
-	function ProxyHandler(cbs){
-		this._cbs = cbs || {};
-	}
-
-	var EVENTS = __webpack_require__(6).EVENTS;
-	Object.keys(EVENTS).forEach(function(name){
-		if(EVENTS[name] === 0){
-			name = "on" + name;
-			ProxyHandler.prototype[name] = function(){
-				if(this._cbs[name]) this._cbs[name]();
-			};
-		} else if(EVENTS[name] === 1){
-			name = "on" + name;
-			ProxyHandler.prototype[name] = function(a){
-				if(this._cbs[name]) this._cbs[name](a);
-			};
-		} else if(EVENTS[name] === 2){
-			name = "on" + name;
-			ProxyHandler.prototype[name] = function(a, b){
-				if(this._cbs[name]) this._cbs[name](a, b);
-			};
-		} else {
-			throw Error("wrong number of arguments");
-		}
-	});
-
-/***/ },
-/* 34 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = Stream;
-
-	var Parser = __webpack_require__(16);
-
-	function Stream(options){
-		Parser.call(this, new Cbs(this), options);
-	}
-
-	__webpack_require__(9).inherits(Stream, Parser);
-
-	Stream.prototype.readable = true;
-
-	function Cbs(scope){
-		this.scope = scope;
-	}
-
-	var EVENTS = __webpack_require__(6).EVENTS;
-
-	Object.keys(EVENTS).forEach(function(name){
-		if(EVENTS[name] === 0){
-			Cbs.prototype["on" + name] = function(){
-				this.scope.emit(name);
-			};
-		} else if(EVENTS[name] === 1){
-			Cbs.prototype["on" + name] = function(a){
-				this.scope.emit(name, a);
-			};
-		} else if(EVENTS[name] === 2){
-			Cbs.prototype["on" + name] = function(a, b){
-				this.scope.emit(name, a, b);
-			};
-		} else {
-			throw Error("wrong number of arguments!");
-		}
-	});
-
-/***/ },
-/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var DomUtils = module.exports;
 
 	[
-		__webpack_require__(40),
-		__webpack_require__(41),
-		__webpack_require__(38),
-		__webpack_require__(39),
+		__webpack_require__(36),
 		__webpack_require__(37),
-		__webpack_require__(36)
+		__webpack_require__(34),
+		__webpack_require__(35),
+		__webpack_require__(33),
+		__webpack_require__(32)
 	].forEach(function(ext){
 		Object.keys(ext).forEach(function(key){
 			DomUtils[key] = ext[key].bind(DomUtils);
@@ -9886,7 +9655,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 36 */
+/* 32 */
 /***/ function(module, exports) {
 
 	// removeSubsets
@@ -10033,7 +9802,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 37 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ElementType = __webpack_require__(5);
@@ -10126,7 +9895,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 38 */
+/* 34 */
 /***/ function(module, exports) {
 
 	exports.removeElement = function(elem){
@@ -10209,7 +9978,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 39 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isTag = __webpack_require__(5).isTag;
@@ -10309,7 +10078,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 40 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ElementType = __webpack_require__(5),
@@ -10337,7 +10106,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 41 */
+/* 37 */
 /***/ function(module, exports) {
 
 	var getChildren = exports.getChildren = function(elem){
@@ -10367,7 +10136,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 42 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var decodeMap = __webpack_require__(48);
@@ -10397,6 +10166,240 @@ return /******/ (function(modules) { // webpackBootstrap
 		return output;
 	}
 
+
+/***/ },
+/* 39 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = CollectingHandler;
+
+	function CollectingHandler(cbs){
+		this._cbs = cbs || {};
+		this.events = [];
+	}
+
+	var EVENTS = __webpack_require__(6).EVENTS;
+	Object.keys(EVENTS).forEach(function(name){
+		if(EVENTS[name] === 0){
+			name = "on" + name;
+			CollectingHandler.prototype[name] = function(){
+				this.events.push([name]);
+				if(this._cbs[name]) this._cbs[name]();
+			};
+		} else if(EVENTS[name] === 1){
+			name = "on" + name;
+			CollectingHandler.prototype[name] = function(a){
+				this.events.push([name, a]);
+				if(this._cbs[name]) this._cbs[name](a);
+			};
+		} else if(EVENTS[name] === 2){
+			name = "on" + name;
+			CollectingHandler.prototype[name] = function(a, b){
+				this.events.push([name, a, b]);
+				if(this._cbs[name]) this._cbs[name](a, b);
+			};
+		} else {
+			throw Error("wrong number of arguments");
+		}
+	});
+
+	CollectingHandler.prototype.onreset = function(){
+		this.events = [];
+		if(this._cbs.onreset) this._cbs.onreset();
+	};
+
+	CollectingHandler.prototype.restart = function(){
+		if(this._cbs.onreset) this._cbs.onreset();
+
+		for(var i = 0, len = this.events.length; i < len; i++){
+			if(this._cbs[this.events[i][0]]){
+
+				var num = this.events[i].length;
+
+				if(num === 1){
+					this._cbs[this.events[i][0]]();
+				} else if(num === 2){
+					this._cbs[this.events[i][0]](this.events[i][1]);
+				} else {
+					this._cbs[this.events[i][0]](this.events[i][1], this.events[i][2]);
+				}
+			}
+		}
+	};
+
+
+/***/ },
+/* 40 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var index = __webpack_require__(6),
+	    DomHandler = index.DomHandler,
+		DomUtils = index.DomUtils;
+
+	//TODO: make this a streamable handler
+	function FeedHandler(callback, options){
+		this.init(callback, options);
+	}
+
+	__webpack_require__(9).inherits(FeedHandler, DomHandler);
+
+	FeedHandler.prototype.init = DomHandler;
+
+	function getElements(what, where){
+		return DomUtils.getElementsByTagName(what, where, true);
+	}
+	function getOneElement(what, where){
+		return DomUtils.getElementsByTagName(what, where, true, 1)[0];
+	}
+	function fetch(what, where, recurse){
+		return DomUtils.getText(
+			DomUtils.getElementsByTagName(what, where, recurse, 1)
+		).trim();
+	}
+
+	function addConditionally(obj, prop, what, where, recurse){
+		var tmp = fetch(what, where, recurse);
+		if(tmp) obj[prop] = tmp;
+	}
+
+	var isValidFeed = function(value){
+		return value === "rss" || value === "feed" || value === "rdf:RDF";
+	};
+
+	FeedHandler.prototype.onend = function(){
+		var feed = {},
+			feedRoot = getOneElement(isValidFeed, this.dom),
+			tmp, childs;
+
+		if(feedRoot){
+			if(feedRoot.name === "feed"){
+				childs = feedRoot.children;
+
+				feed.type = "atom";
+				addConditionally(feed, "id", "id", childs);
+				addConditionally(feed, "title", "title", childs);
+				if((tmp = getOneElement("link", childs)) && (tmp = tmp.attribs) && (tmp = tmp.href)) feed.link = tmp;
+				addConditionally(feed, "description", "subtitle", childs);
+				if((tmp = fetch("updated", childs))) feed.updated = new Date(tmp);
+				addConditionally(feed, "author", "email", childs, true);
+
+				feed.items = getElements("entry", childs).map(function(item){
+					var entry = {}, tmp;
+
+					item = item.children;
+
+					addConditionally(entry, "id", "id", item);
+					addConditionally(entry, "title", "title", item);
+					if((tmp = getOneElement("link", item)) && (tmp = tmp.attribs) && (tmp = tmp.href)) entry.link = tmp;
+					if((tmp = fetch("summary", item) || fetch("content", item))) entry.description = tmp;
+					if((tmp = fetch("updated", item))) entry.pubDate = new Date(tmp);
+					return entry;
+				});
+			} else {
+				childs = getOneElement("channel", feedRoot.children).children;
+
+				feed.type = feedRoot.name.substr(0, 3);
+				feed.id = "";
+				addConditionally(feed, "title", "title", childs);
+				addConditionally(feed, "link", "link", childs);
+				addConditionally(feed, "description", "description", childs);
+				if((tmp = fetch("lastBuildDate", childs))) feed.updated = new Date(tmp);
+				addConditionally(feed, "author", "managingEditor", childs, true);
+
+				feed.items = getElements("item", feedRoot.children).map(function(item){
+					var entry = {}, tmp;
+
+					item = item.children;
+
+					addConditionally(entry, "id", "guid", item);
+					addConditionally(entry, "title", "title", item);
+					addConditionally(entry, "link", "link", item);
+					addConditionally(entry, "description", "description", item);
+					if((tmp = fetch("pubDate", item))) entry.pubDate = new Date(tmp);
+					return entry;
+				});
+			}
+		}
+		this.dom = feed;
+		DomHandler.prototype._handleCallback.call(
+			this, feedRoot ? null : Error("couldn't find root of feed")
+		);
+	};
+
+	module.exports = FeedHandler;
+
+
+/***/ },
+/* 41 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = ProxyHandler;
+
+	function ProxyHandler(cbs){
+		this._cbs = cbs || {};
+	}
+
+	var EVENTS = __webpack_require__(6).EVENTS;
+	Object.keys(EVENTS).forEach(function(name){
+		if(EVENTS[name] === 0){
+			name = "on" + name;
+			ProxyHandler.prototype[name] = function(){
+				if(this._cbs[name]) this._cbs[name]();
+			};
+		} else if(EVENTS[name] === 1){
+			name = "on" + name;
+			ProxyHandler.prototype[name] = function(a){
+				if(this._cbs[name]) this._cbs[name](a);
+			};
+		} else if(EVENTS[name] === 2){
+			name = "on" + name;
+			ProxyHandler.prototype[name] = function(a, b){
+				if(this._cbs[name]) this._cbs[name](a, b);
+			};
+		} else {
+			throw Error("wrong number of arguments");
+		}
+	});
+
+/***/ },
+/* 42 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = Stream;
+
+	var Parser = __webpack_require__(16);
+
+	function Stream(options){
+		Parser.call(this, new Cbs(this), options);
+	}
+
+	__webpack_require__(9).inherits(Stream, Parser);
+
+	Stream.prototype.readable = true;
+
+	function Cbs(scope){
+		this.scope = scope;
+	}
+
+	var EVENTS = __webpack_require__(6).EVENTS;
+
+	Object.keys(EVENTS).forEach(function(name){
+		if(EVENTS[name] === 0){
+			Cbs.prototype["on" + name] = function(){
+				this.scope.emit(name);
+			};
+		} else if(EVENTS[name] === 1){
+			Cbs.prototype["on" + name] = function(a){
+				this.scope.emit(name, a);
+			};
+		} else if(EVENTS[name] === 2){
+			Cbs.prototype["on" + name] = function(a, b){
+				this.scope.emit(name, a, b);
+			};
+		} else {
+			throw Error("wrong number of arguments!");
+		}
+	});
 
 /***/ },
 /* 43 */
@@ -12995,7 +12998,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(20);
-	exports.Stream = __webpack_require__(8);
+	exports.Stream = __webpack_require__(7);
 	exports.Readable = exports;
 	exports.Writable = __webpack_require__(12);
 	exports.Duplex = __webpack_require__(2);
