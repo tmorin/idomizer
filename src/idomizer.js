@@ -24,6 +24,17 @@ function assign() {
  *   </tpl-each>
  * `);
  *
+ * @example <caption>tpl-if, tpl-else-if and tpl-else</caption>
+ * idomizer.compile(`
+ *   <tpl-if condition="data.values.length === 1">
+ *     <p>1 value</p>
+ *   <tpl-else-if condition="data.values.length > 1" />
+ *     <p>some values</p>
+ *   <tpl-else />
+ *     <p>no values to display</p>
+ *   </tpl-if>
+ * `);
+ *
  * @example <caption>tpl-call</caption>
  * let anotherRenderFunction = // antoher IncrementalDOM render function
  * idomizer.compile(`
@@ -52,8 +63,28 @@ const BUILT_IN_TAGS = {
                 indexName = statics.index || varArgs.index || `index`;
             return `(${itemsName} || []).forEach(function (${itemName}, ${indexName}) {`;
         },
-        onclosetag(name, attrs, statics, varArgs, options) {
+        onclosetag(name, options) {
             return `});`;
+        }
+    },
+    'tpl-if': {
+        onopentag(name, attrs, key, statics, varArgs, options) {
+            let expression = statics.expression || varArgs.expression || 'false';
+            return `if (${expression}) {`;
+        },
+        onclosetag(name, options) {
+            return `}`;
+        }
+    },
+    'tpl-else-if': {
+        onopentag(name, attrs, key, statics, varArgs, options) {
+            let expression = statics.expression || varArgs.expression || 'false';
+            return ` } else if (${expression}) { `;
+        }
+    },
+    'tpl-else': {
+        onopentag(name, attrs, key, statics, varArgs, options) {
+            return ` } else { `;
         }
     },
     'tpl-text': {

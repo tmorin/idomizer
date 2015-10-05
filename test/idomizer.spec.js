@@ -99,6 +99,34 @@ describe('idomizer', () => {
         });
     });
 
+    it('should handle conditional statements with tpl-if, tpl-else-if and tpl-else-if elements', (done) => {
+        let render = compile(`
+            <tpl-if expression="data.items.length === 1">
+                <p>1 item</p>
+            <tpl-else-if expression="data.items.length > 1" >
+                <p>items</p>
+            </tpl-else-if>
+            <tpl-else />
+                <p>no items</p>
+            </tpl-if>
+        `)(IncrementalDOM);
+        env('', function (err, win) {
+            let body = win.document.body;
+            global.Element = win.Element;
+
+            IncrementalDOM.patch(body, render, { items: ['item0'] });
+            expect(body.innerHTML.trim()).to.contain('<p>1 item</p>');
+
+            IncrementalDOM.patch(body, render, { items: ['item0', 'item2'] });
+            expect(body.innerHTML.trim()).to.contain('<p>items</p>');
+
+            IncrementalDOM.patch(body, render, { items: [] });
+            expect(body.innerHTML.trim()).to.contain('<p>no items</p>');
+
+            done();
+        });
+    });
+
     it('should use custom elements', (done) => {
         let render = compile(`<strong>strong text</strong><x-test></x-test><strong>strong text</strong>`, {
             tags: {
