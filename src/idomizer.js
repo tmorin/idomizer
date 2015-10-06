@@ -198,7 +198,7 @@ function evaluate(value, evaluator, options) {
 }
 
 function wrapExpressions(value, options) {
-    return value.replace(options.evaluation, '<![CDATA[$&]]>')
+    return value.replace(options.evaluation, '<![CDATA[$&]]>');
 }
 
 function unwrapExpressions(value) {
