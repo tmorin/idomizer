@@ -198,6 +198,35 @@ function (_data_) {
 }
 ```
 
+### Condition with the tags _if_, _else-if_ and _else_
+
+From
+```javascript
+idomizer.compile(`
+    <tpl-if expression="data.yes">
+        YES!
+    <tpl-else-if expression="data.yes !== false" />
+        MAY BE!
+    <tpl-else/>
+        NO!
+    </tpl-if>
+`)(IncrementalDOM);
+```
+To
+```javascript
+function (_data_) {
+    var helpers = h || {},
+        data = _data_ || {};
+    if (data.yes) {
+        t('YES!);
+    } else if (data.yes !== false) {
+        t('MAY BE!);
+    } else {
+        t('NO!);
+    }
+}
+```
+
 ### Iteration with the tag _each_
 
 From
