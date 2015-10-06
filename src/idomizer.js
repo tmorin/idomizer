@@ -197,6 +197,14 @@ function evaluate(value, evaluator, options) {
     return js.join(evaluator.appender);
 }
 
+function wrapExpressions(value, options) {
+    return value.replace(options.evaluation, '<![CDATA[$&]]>')
+}
+
+function unwrapExpressions(value) {
+    return value.replace(/<!\[CDATA\[/gim, '').replace(/]]>/gim, '');
+}
+
 function parseAttributes(attrs = {}, options = OPTIONS) {
     let statics = {},
         varArgs = {},
@@ -205,7 +213,7 @@ function parseAttributes(attrs = {}, options = OPTIONS) {
     Object.keys(attrs)
         .filter(key => [options.attributePlaceholder].indexOf(key) < 0)
         .forEach(function (key) {
-            let value = attrs[key];
+            let value = unwrapExpressions(attrs[key]);
             if (value.search(options.evaluation) > -1) {
                 varArgs[key] = evaluate(value, attributeEvaluator, options);
             } else {
@@ -260,11 +268,10 @@ export function compile(html = '', options = {}) {
     });
 
     let fnBody = '';
-    let skipClosing;
     let parser = new htmlparser2.Parser({
         onopentag(name, attrs) {
             let [statics, varArgs, key, placeholder] = parseAttributes(attrs, options);
-            skipClosing = placeholder;
+            parser.skipClosing = placeholder;
             if (options.tags[name]) {
                 let element = options.tags[name];
                 if (typeof element.onopentag === 'function') {
@@ -281,10 +288,10 @@ export function compile(html = '', options = {}) {
                 if (typeof element.onclosetag === 'function') {
                     fnBody = append(fnBody, element.onclosetag(name, options), options);
                 }
-            } else if (!isSelfClosing(name, options) && !skipClosing) {
+            } else if (!isSelfClosing(name, options) && !parser.skipClosing) {
                 fnBody = append(fnBody, `c('${name}');`, options);
             }
-            skipClosing = false;
+            parser.skipClosing = false;
         },
         ontext(text){
             if (text.search(options.evaluation) > -1) {
@@ -298,10 +305,12 @@ export function compile(html = '', options = {}) {
         decodeEntities: true,
         lowerCaseTags: false,
         lowerCaseAttributeNames: false,
-        recognizeSelfClosing: true
+        recognizeSelfClosing: true,
+        recognizeCDATA: true
     });
 
-    parser.parseComplete(html);
+    // wrap inline expression with a CDATA tag to allow inline javascript
+    parser.parseComplete(wrapExpressions(html, options));
 
     let fnWrapper = `
         var o = i.elementOpen,
@@ -320,3 +329,4 @@ export function compile(html = '', options = {}) {
 
     return factory;
 }
+

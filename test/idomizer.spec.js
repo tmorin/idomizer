@@ -127,6 +127,33 @@ describe('idomizer', () => {
         });
     });
 
+    it('should handle conditional statements with inline statements', (done) => {
+        let render = compile(`
+            {{ if (data.items.length > 0 && data.items.length < 2) { }}
+                <p>1 item</p>
+            {{ } else if (data.items.length > 1) { }}
+                <p>items</p>
+            {{ } else { }}
+                <p>no items</p>
+            {{ } }}
+        `)(IncrementalDOM);
+        env('', function (err, win) {
+            let body = win.document.body;
+            global.Element = win.Element;
+
+            IncrementalDOM.patch(body, render, { items: ['item0'] });
+            expect(body.innerHTML.trim()).to.contain('<p>1 item</p>');
+
+            IncrementalDOM.patch(body, render, { items: ['item0', 'item2'] });
+            expect(body.innerHTML.trim()).to.contain('<p>items</p>');
+
+            IncrementalDOM.patch(body, render, { items: [] });
+            expect(body.innerHTML.trim()).to.contain('<p>no items</p>');
+
+            done();
+        });
+    });
+
     it('should use custom elements', (done) => {
         let render = compile(`<strong>strong text</strong><x-test></x-test><strong>strong text</strong>`, {
             tags: {
