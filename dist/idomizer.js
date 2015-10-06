@@ -288,6 +288,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return js.join(evaluator.appender);
 	}
 
+	function wrapExpressions(value, options) {
+	    return value.replace(options.evaluation, '<![CDATA[$&]]>');
+	}
+
+	function unwrapExpressions(value) {
+	    return value.replace(/<!\[CDATA\[/gim, '').replace(/]]>/gim, '');
+	}
+
 	function parseAttributes() {
 	    var attrs = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 	    var options = arguments.length <= 1 || arguments[1] === undefined ? OPTIONS : arguments[1];
@@ -299,7 +307,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Object.keys(attrs).filter(function (key) {
 	        return [options.attributePlaceholder].indexOf(key) < 0;
 	    }).forEach(function (key) {
-	        var value = attrs[key];
+	        var value = unwrapExpressions(attrs[key]);
 	        if (value.search(options.evaluation) > -1) {
 	            varArgs[key] = evaluate(value, attributeEvaluator, options);
 	        } else {
@@ -366,7 +374,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 
 	    var fnBody = '';
-	    var skipClosing = undefined;
 	    var parser = new _htmlparser22['default'].Parser({
 	        onopentag: function onopentag(name, attrs) {
 	            var _parseAttributes = parseAttributes(attrs, options);
@@ -378,7 +385,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var key = _parseAttributes2[2];
 	            var placeholder = _parseAttributes2[3];
 
-	            skipClosing = placeholder;
+	            parser.skipClosing = placeholder;
 	            if (options.tags[name]) {
 	                var element = options.tags[name];
 	                if (typeof element.onopentag === 'function') {
@@ -395,10 +402,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	                if (typeof element.onclosetag === 'function') {
 	                    fnBody = append(fnBody, element.onclosetag(name, options), options);
 	                }
-	            } else if (!isSelfClosing(name, options) && !skipClosing) {
+	            } else if (!isSelfClosing(name, options) && !parser.skipClosing) {
 	                fnBody = append(fnBody, 'c(\'' + name + '\');', options);
 	            }
-	            skipClosing = false;
+	            parser.skipClosing = false;
 	        },
 	        ontext: function ontext(text) {
 	            if (text.search(options.evaluation) > -1) {
@@ -412,10 +419,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        decodeEntities: true,
 	        lowerCaseTags: false,
 	        lowerCaseAttributeNames: false,
-	        recognizeSelfClosing: true
+	        recognizeSelfClosing: true,
+	        recognizeCDATA: true
 	    });
 
-	    parser.parseComplete(html);
+	    // wrap inline expression with a CDATA tag to allow inline javascript
+	    parser.parseComplete(wrapExpressions(html, options));
 
 	    var fnWrapper = '\n        var o = i.elementOpen,\n            c = i.elementClose,\n            v = i.elementVoid,\n            t = i.text,\n            ph = i.elementPlaceholder;\n        return function (_data_) {\n            var ' + (options.varHelpersName || 'helpers') + ' = h || {},\n                ' + (options.varDataName || 'data') + ' = _data_ || {};\n            ' + fnBody + '\n        };\n    ';
 
