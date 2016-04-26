@@ -9,7 +9,7 @@ describe('idomizerify', () => {
         let dummyJsFile = join(__dirname, 'plugins/dummy.idomizer');
         let content = `<h1 class="{{data.h1Class}}">Hello</h1>`;
         runTransform(idomizerify, dummyJsFile, {content}, (err, result) => {
-            /* istanbul ignore if  */
+            /* istanbul ignore next  */
             if (err) {
                 return done(err);
             }

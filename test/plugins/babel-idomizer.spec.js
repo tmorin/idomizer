@@ -10,7 +10,7 @@ describe('babel-idomizer', () => {
             plugins: [babelIdomizer]
         };
         babel.transformFile('test/plugins/dummy.es6', options, (err, result) => {
-            /* istanbul ignore if  */
+            /* istanbul ignore next  */
             if (err) {
                 return done(err);
             }
