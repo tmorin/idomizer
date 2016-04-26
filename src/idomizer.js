@@ -51,8 +51,10 @@ function assign() {
 const BUILT_IN_TAGS = {
     'tpl-logger': {
         onopentag(name, attrs, key, statics, varArgs, options) {
+            /* istanbul ignore next */
             let level = statics.level || varArgs.level || 'log',
                 content = statics.content || varArgs.content || '';
+            /* istanbul ignore next */
             return `console.${level}(${content});`;
         }
     },
