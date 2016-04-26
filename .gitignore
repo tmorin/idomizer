@@ -1,4 +1,7 @@
-.idea
-esdoc
-lib
-node_modules
+/npm-debug.log
+/.idea
+/esdoc
+/lib
+/.nyc_output
+/coverage
+/node_modules

@@ -1,3 +1,6 @@
-.idea
-esdoc
-test
+/.idea
+/esdoc
+/test
+/npm-debug.log
+/.nyc_output
+/coverage
