@@ -40,7 +40,8 @@
   "scripts": {
     "clean": "rimraf .nyc_output && rimraf coverage && rimraf dist && rimraf lib && rimraf *.tgz",
     "lint": "jshint src test",
-    "test": "nyc mocha --compilers js:babel-register --recursive",
+    "test": "nyc -x test mocha --compilers js:babel-register --recursive",
+    "nyc": "nyc",
     "test:watch": "npm test -- --watch",
     "test:coveralls": "nyc report --reporter=text-lcov | coveralls --verbose",
     "check": "npm run lint && npm run test",
@@ -82,11 +83,6 @@
     "systemjs": "^0.19.0",
     "webpack": "^1.12.0",
     "webpack-dev-server": "^1.12.0"
-  },
-  "nyc": {
-    "exclude": [
-      "test/**/*"
-    ]
   },
   "npmName": "idomizer",
   "npmFileMap": [
