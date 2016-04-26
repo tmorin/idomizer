@@ -11,7 +11,6 @@ describe('babel-idomizer', () => {
         };
         babel.transformFile('test/plugins/dummy.es6', options, (err, result) => {
             if (err) {
-                /* istanbul ignore next  */
                 return done(err);
             }
             expect(result.code).to.contain(`o('h1', null, null, 'class', data.h1Class);`);
