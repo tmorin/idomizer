@@ -1,6 +1,6 @@
 machine:
   node:
-    version: 5.0.0
+    version: 5.11.0
 test:
   override:
     - npm run test:coveralls
