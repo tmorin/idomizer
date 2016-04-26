@@ -40,7 +40,7 @@
   "scripts": {
     "clean": "rimraf .nyc_output && rimraf coverage && rimraf dist && rimraf lib && rimraf *.tgz",
     "lint": "jshint src test",
-    "test": "nyc -x test mocha --compilers js:babel-register --recursive",
+    "test": "nyc -x \"test/**/*\" mocha --compilers js:babel-register --recursive",
     "nyc": "nyc",
     "test:watch": "npm test -- --watch",
     "test:coveralls": "nyc report --reporter=text-lcov | coveralls --verbose",
