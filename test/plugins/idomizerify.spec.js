@@ -9,8 +9,8 @@ describe('idomizerify', () => {
         let dummyJsFile = join(__dirname, 'plugins/dummy.idomizer');
         let content = `<h1 class="{{data.h1Class}}">Hello</h1>`;
         runTransform(idomizerify, dummyJsFile, {content}, (err, result) => {
-            /* istanbul ignore next  */
             if (err) {
+                /* istanbul ignore next  */
                 return done(err);
             }
             expect(result).to.contain(`o('h1', null, null, 'class', (data.h1Class));`);

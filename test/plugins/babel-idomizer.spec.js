@@ -10,8 +10,8 @@ describe('babel-idomizer', () => {
             plugins: [babelIdomizer]
         };
         babel.transformFile('test/plugins/dummy.es6', options, (err, result) => {
-            /* istanbul ignore next  */
             if (err) {
+                /* istanbul ignore next  */
                 return done(err);
             }
             expect(result.code).to.contain(`o('h1', null, null, 'class', data.h1Class);`);
