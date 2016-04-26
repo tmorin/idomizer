@@ -1,6 +1,6 @@
 machine:
   node:
-    version: 4.1.0
+    version: 5.0.0
 test:
   override:
-    - npm run test:ci
+    - npm run test:coveralls

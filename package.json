@@ -42,7 +42,7 @@
     "lint": "jshint src test",
     "test": "nyc mocha --compilers js:babel-register --recursive",
     "test:watch": "npm test -- --watch",
-    "test:ci": "npm run test && nyc report --reporter=text-lcov | coveralls",
+    "test:coveralls": "nyc report --reporter=text-lcov | coveralls --verbose",
     "check": "npm run lint && npm run test",
     "build:lib": "babel src --out-dir lib",
     "build:umd": "webpack src/idomizer.js dist/idomizer.js --config webpack.config.development.js",
