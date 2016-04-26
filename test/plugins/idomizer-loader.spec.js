@@ -3,6 +3,7 @@ import {readFileSync, unlinkSync} from 'fs';
 import webpack from 'webpack';
 import {expect} from 'chai';
 
+/* istanbul ignore next */
 xdescribe('idomizer-loader', () => {
     let context = join(__dirname, '../../'),
         outputFilename = 'idomizer-loader.result',
