@@ -1,4 +1,12 @@
 {
-  "stage": 0,
-  "blacklist": ["react"]
+    "presets": [
+        "es2015"
+    ],
+    "env": {
+        "test": {
+            "plugins": [
+                "__coverage__"
+            ]
+        }
+    }
 }

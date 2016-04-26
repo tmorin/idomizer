@@ -3,6 +3,7 @@
 [![Circle CI](https://circleci.com/gh/tmorin/idomizer/tree/master.svg?style=svg)](https://circleci.com/gh/tmorin/idomizer/tree/master)
 [![Dependency Status](https://david-dm.org/tmorin/idomizer.svg)](https://david-dm.org/tmorin/idomizer)
 [![devDependency Status](https://david-dm.org/tmorin/idomizer/dev-status.svg)](https://david-dm.org/tmorin/idomizer#info=devDependencies)
+[![Coverage Status](https://coveralls.io/repos/github/tmorin/idomizer/badge.svg?branch=master)](https://coveralls.io/github/tmorin/idomizer?branch=master)
 <img data-ice="coverageBadge" src="http://tmorin.github.io/idomizer//badge.svg">
 
 An HTML template compiler providing an _incremental-dom_ render factory.
@@ -87,23 +88,6 @@ var browserify = require('browserify');
 var idomizerify = require('idomizer/lib/plugins/idomizerify');
 var bundle = browserify();
 bundle.transform({ extension: 'html' }, idomizerify);
-```
-
-### Systemjs
-
-A SystemJS' plugin is available to compile an idomizer file into an incremental-dom render factory.
-
-See [plugin-loaders](https://github.com/systemjs/systemjs/blob/master/docs/overview.md#plugin-loaders) to get more information about the plugin system in SystemJS.
-
-```javascript
-System.import('./template.idomizer!idomizer/lib/plugins/systemjs-plugin-idomizer.js').then(function (factory) {
-    System.import('incremental-dom').then(function (IncrementalDOM) {
-        var options = {};
-        var data = {};
-        var render = tpl(IncrementalDOM, options);
-        IncrementalDOM.patch(document.body, render, data);
-    });
-});
 ```
 
 ## API

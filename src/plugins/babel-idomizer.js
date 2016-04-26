@@ -3,15 +3,15 @@ import {toStringFunction} from './utils.js';
 /**
  * @ignore
  */
-export default function ({ Plugin, types: t }) {
-    return new Plugin('idomizer', {
+export default function ({types: t}) {
+    return {
         visitor: {
-            TaggedTemplateExpression: function (node, parent) {
-                if (node.tag.name === 'idomizer' && node.quasi.quasis.length === 1) {
-                    let factory = toStringFunction(node.quasi.quasis[0].value.cooked);
-                    this.replaceWithSourceString(factory);
+            TaggedTemplateExpression(path) {
+                if (path.node.tag.name === 'idomizer' && path.node.quasi.quasis.length === 1) {
+                    let factory = toStringFunction(path.node.quasi.quasis[0].value.cooked);
+                    path.replaceWithSourceString(factory);
                 }
             }
         }
-    });
+    };
 }
