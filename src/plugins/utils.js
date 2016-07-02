@@ -1,8 +1,8 @@
-import {compile} from '../idomizer.js';
+var idomizer = require('../idomizer.js');
 
 /**
  * @ignore
  */
 export function toStringFunction(html, options) {
-    return compile(html, options).toString().replace('function anonymous', 'function');
+    return idomizer.compile(html, options).toString().replace('function anonymous', 'function');
 }

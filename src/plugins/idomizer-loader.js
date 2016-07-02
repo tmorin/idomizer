@@ -1,12 +1,13 @@
 import loaderUtils from 'loader-utils';
-import {toStringFunction} from './utils.js';
+
+var utils = require('./utils.js');
 
 /**
  * @ignore
  */
-export default function (source) {
+module.exports = function (source) {
     this.cacheable();
-    let query = loaderUtils.parseQuery(this.query);
-    return toStringFunction(source, query);
-}
+    var query = loaderUtils.parseQuery(this.query);
+    return 'module.exports = ' + utils.toStringFunction(source, query);
+};
 
