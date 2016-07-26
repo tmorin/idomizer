@@ -2644,8 +2644,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      er = arguments[1];
 	      if (er instanceof Error) {
 	        throw er; // Unhandled 'error' event
+	      } else {
+	        // At least give some kind of context to the user
+	        var err = new Error('Uncaught, unspecified "error" event. (' + er + ')');
+	        err.context = er;
+	        throw err;
 	      }
-	      throw TypeError('Uncaught, unspecified "error" event.');
 	    }
 	  }
 
@@ -6013,7 +6017,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function typedArraySupport () {
 	  try {
 	    var arr = new Uint8Array(1)
-	    arr.foo = function () { return 42 }
+	    arr.__proto__ = {__proto__: Uint8Array.prototype, foo: function () { return 42 }}
 	    return arr.foo() === 42 && // typed array instances can be augmented
 	        typeof arr.subarray === 'function' && // chrome 9-10 lack `subarray`
 	        arr.subarray(1, 1).byteLength === 0 // ie10 has broken `subarray`
@@ -6157,7 +6161,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  assertSize(size)
 	  that = createBuffer(that, size < 0 ? 0 : checked(size) | 0)
 	  if (!Buffer.TYPED_ARRAY_SUPPORT) {
-	    for (var i = 0; i < size; i++) {
+	    for (var i = 0; i < size; ++i) {
 	      that[i] = 0
 	    }
 	  }
@@ -6213,7 +6217,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    throw new RangeError('\'length\' is out of bounds')
 	  }
 
-	  if (length === undefined) {
+	  if (byteOffset === undefined && length === undefined) {
+	    array = new Uint8Array(array)
+	  } else if (length === undefined) {
 	    array = new Uint8Array(array, byteOffset)
 	  } else {
 	    array = new Uint8Array(array, byteOffset, length)
@@ -6335,14 +6341,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var i
 	  if (length === undefined) {
 	    length = 0
-	    for (i = 0; i < list.length; i++) {
+	    for (i = 0; i < list.length; ++i) {
 	      length += list[i].length
 	    }
 	  }
 
 	  var buffer = Buffer.allocUnsafe(length)
 	  var pos = 0
-	  for (i = 0; i < list.length; i++) {
+	  for (i = 0; i < list.length; ++i) {
 	    var buf = list[i]
 	    if (!Buffer.isBuffer(buf)) {
 	      throw new TypeError('"list" argument must be an Array of Buffers')
@@ -6374,7 +6380,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    switch (encoding) {
 	      case 'ascii':
 	      case 'binary':
-	      // Deprecated
 	      case 'raw':
 	      case 'raws':
 	        return len
@@ -6612,15 +6617,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  var foundIndex = -1
-	  for (var i = 0; byteOffset + i < arrLength; i++) {
-	    if (read(arr, byteOffset + i) === read(val, foundIndex === -1 ? 0 : i - foundIndex)) {
+	  for (var i = byteOffset; i < arrLength; ++i) {
+	    if (read(arr, i) === read(val, foundIndex === -1 ? 0 : i - foundIndex)) {
 	      if (foundIndex === -1) foundIndex = i
-	      if (i - foundIndex + 1 === valLength) return (byteOffset + foundIndex) * indexSize
+	      if (i - foundIndex + 1 === valLength) return foundIndex * indexSize
 	    } else {
 	      if (foundIndex !== -1) i -= i - foundIndex
 	      foundIndex = -1
 	    }
 	  }
+
 	  return -1
 	}
 
@@ -6685,7 +6691,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (length > strLen / 2) {
 	    length = strLen / 2
 	  }
-	  for (var i = 0; i < length; i++) {
+	  for (var i = 0; i < length; ++i) {
 	    var parsed = parseInt(string.substr(i * 2, 2), 16)
 	    if (isNaN(parsed)) return i
 	    buf[offset + i] = parsed
@@ -6899,7 +6905,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var ret = ''
 	  end = Math.min(buf.length, end)
 
-	  for (var i = start; i < end; i++) {
+	  for (var i = start; i < end; ++i) {
 	    ret += String.fromCharCode(buf[i] & 0x7F)
 	  }
 	  return ret
@@ -6909,7 +6915,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var ret = ''
 	  end = Math.min(buf.length, end)
 
-	  for (var i = start; i < end; i++) {
+	  for (var i = start; i < end; ++i) {
 	    ret += String.fromCharCode(buf[i])
 	  }
 	  return ret
@@ -6922,7 +6928,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (!end || end < 0 || end > len) end = len
 
 	  var out = ''
-	  for (var i = start; i < end; i++) {
+	  for (var i = start; i < end; ++i) {
 	    out += toHex(buf[i])
 	  }
 	  return out
@@ -6965,7 +6971,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  } else {
 	    var sliceLen = end - start
 	    newBuf = new Buffer(sliceLen, undefined)
-	    for (var i = 0; i < sliceLen; i++) {
+	    for (var i = 0; i < sliceLen; ++i) {
 	      newBuf[i] = this[i + start]
 	    }
 	  }
@@ -7192,7 +7198,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function objectWriteUInt16 (buf, value, offset, littleEndian) {
 	  if (value < 0) value = 0xffff + value + 1
-	  for (var i = 0, j = Math.min(buf.length - offset, 2); i < j; i++) {
+	  for (var i = 0, j = Math.min(buf.length - offset, 2); i < j; ++i) {
 	    buf[offset + i] = (value & (0xff << (8 * (littleEndian ? i : 1 - i)))) >>>
 	      (littleEndian ? i : 1 - i) * 8
 	  }
@@ -7226,7 +7232,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function objectWriteUInt32 (buf, value, offset, littleEndian) {
 	  if (value < 0) value = 0xffffffff + value + 1
-	  for (var i = 0, j = Math.min(buf.length - offset, 4); i < j; i++) {
+	  for (var i = 0, j = Math.min(buf.length - offset, 4); i < j; ++i) {
 	    buf[offset + i] = (value >>> (littleEndian ? i : 3 - i) * 8) & 0xff
 	  }
 	}
@@ -7441,12 +7447,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  if (this === target && start < targetStart && targetStart < end) {
 	    // descending copy from end
-	    for (i = len - 1; i >= 0; i--) {
+	    for (i = len - 1; i >= 0; --i) {
 	      target[i + targetStart] = this[i + start]
 	    }
 	  } else if (len < 1000 || !Buffer.TYPED_ARRAY_SUPPORT) {
 	    // ascending copy from start
-	    for (i = 0; i < len; i++) {
+	    for (i = 0; i < len; ++i) {
 	      target[i + targetStart] = this[i + start]
 	    }
 	  } else {
@@ -7507,7 +7513,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  var i
 	  if (typeof val === 'number') {
-	    for (i = start; i < end; i++) {
+	    for (i = start; i < end; ++i) {
 	      this[i] = val
 	    }
 	  } else {
@@ -7515,7 +7521,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      ? val
 	      : utf8ToBytes(new Buffer(val, encoding).toString())
 	    var len = bytes.length
-	    for (i = 0; i < end - start; i++) {
+	    for (i = 0; i < end - start; ++i) {
 	      this[i + start] = bytes[i % len]
 	    }
 	  }
@@ -7557,7 +7563,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var leadSurrogate = null
 	  var bytes = []
 
-	  for (var i = 0; i < length; i++) {
+	  for (var i = 0; i < length; ++i) {
 	    codePoint = string.charCodeAt(i)
 
 	    // is surrogate component
@@ -7632,7 +7638,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function asciiToBytes (str) {
 	  var byteArray = []
-	  for (var i = 0; i < str.length; i++) {
+	  for (var i = 0; i < str.length; ++i) {
 	    // Node's code seems to be doing this and not & 0x7F..
 	    byteArray.push(str.charCodeAt(i) & 0xFF)
 	  }
@@ -7642,7 +7648,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function utf16leToBytes (str, units) {
 	  var c, hi, lo
 	  var byteArray = []
-	  for (var i = 0; i < str.length; i++) {
+	  for (var i = 0; i < str.length; ++i) {
 	    if ((units -= 2) < 0) break
 
 	    c = str.charCodeAt(i)
@@ -7660,7 +7666,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	function blitBuffer (src, dst, offset, length) {
-	  for (var i = 0; i < length; i++) {
+	  for (var i = 0; i < length; ++i) {
 	    if ((i + offset >= dst.length) || (i >= src.length)) break
 	    dst[i + offset] = src[i]
 	  }
