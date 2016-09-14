@@ -1,6 +1,6 @@
 {
   "name": "idomizer",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "An HTML template compiler providing an incremental-dom render factory.",
   "keywords": [
     "template",
