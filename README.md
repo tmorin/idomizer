@@ -201,11 +201,11 @@ function (_data_) {
     var helpers = h || {},
         data = _data_ || {};
     if (data.yes) {
-        t('YES!);
+        t('YES!');
     } else if (data.yes !== false) {
-        t('MAY BE!);
+        t('MAY BE!');
     } else {
-        t('NO!);
+        t('NO!');
     }
 }
 ```

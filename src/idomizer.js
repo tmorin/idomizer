@@ -106,6 +106,7 @@ const BUILT_IN_TAGS = {
  * @typedef {Object} OPTIONS
  * The overridable options of idomizer.
  * @property {boolean} pretty Append a end of line character ('\\n' ) after each statements.
+ * @property {boolean} ignoreStaticAttributes discovered static attributes will be handled as dynamic attributes.
  * @property {!RegExp} evaluation A RegExp to extracts expressions to evaluate.
  * @property {!string} attributeKey The value of the IncrementalDOM's key.
  * @property {!string} attributePlaceholder The flag to make the element acting as a placeholder.
@@ -116,6 +117,7 @@ const BUILT_IN_TAGS = {
  */
 const OPTIONS = {
     pretty: false,
+    ignoreStaticAttributes: false,
     evaluation: /\{\{([\s\S]+?)}}/gm,
     attributeKey: 'tpl-key',
     attributePlaceholder: 'tpl-placeholder',
@@ -216,7 +218,7 @@ function parseAttributes(attrs = {}, options = OPTIONS) {
         .filter(key => [options.attributePlaceholder].indexOf(key) < 0)
         .forEach(function (key) {
             let value = unwrapExpressions(attrs[key]);
-            if (value.search(options.evaluation) > -1) {
+            if (value.search(options.evaluation) > -1 || options.ignoreStaticAttributes) {
                 varArgs[key] = evaluate(value, attributeEvaluator, options);
             } else {
                 statics[key] = value;
@@ -268,7 +270,6 @@ export function compile(html = '', options = {}) {
     options = assign({}, OPTIONS, options, {
         tags: assign({}, BUILT_IN_TAGS, options.tags)
     });
-
     let fnBody = '';
     let parser = new htmlparser2.Parser({
         onopentag(name, attrs) {

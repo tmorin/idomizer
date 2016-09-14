@@ -10,6 +10,7 @@ describe('idomizer', () => {
         env('', function (err, win) {
             let body = win.document.body;
             global.Element = win.Element;
+            global.Document = win.Document;
 
             IncrementalDOM.patch(body, render);
             expect(body.innerHTML).to.eq('<h1 class="main">Hello</h1>');
@@ -23,6 +24,7 @@ describe('idomizer', () => {
         env('', function (err, win) {
             let body = win.document.body;
             global.Element = win.Element;
+            global.Document = win.Document;
 
             IncrementalDOM.patch(body, render, {h1Class: 'main'});
             expect(body.innerHTML).to.eq('<h1 class="foo main bar">Hello</h1>');
@@ -39,6 +41,9 @@ describe('idomizer', () => {
         env('', function (err, win) {
             let body = win.document.body;
             global.Element = win.Element;
+            global.Document = win.Document;
+
+            expect(render.toString()).to.match(/'input', null, \['type', 'text'\], 'value', \(data.value\)/);
 
             IncrementalDOM.patch(body, render, {value: 'value'});
             expect(body.innerHTML).to.eq('<input type="text" value="value">');
@@ -55,6 +60,7 @@ describe('idomizer', () => {
         env('', function (err, win) {
             let body = win.document.body;
             global.Element = win.Element;
+            global.Document = win.Document;
 
             IncrementalDOM.patch(body, render, {value: 'value'});
             expect(body.innerHTML).to.eq('<strong>value</strong>');
@@ -70,6 +76,7 @@ describe('idomizer', () => {
         env('', function (err, win) {
             let body = win.document.body;
             global.Element = win.Element;
+            global.Document = win.Document;
 
             IncrementalDOM.patch(body, render, {items: ['item0', 'item1']});
             expect(body.innerHTML.trim()).to.eq('<strong>0-item0</strong><strong>1-item1</strong>');
@@ -88,6 +95,7 @@ describe('idomizer', () => {
         env('', function (err, win) {
             let body = win.document.body;
             global.Element = win.Element;
+            global.Document = win.Document;
 
             IncrementalDOM.patch(body, render, {items: ['item0', 'item1']});
             expect(body.innerHTML.trim()).to.eq('<strong>0-item0</strong><strong>1-item1</strong>');
@@ -113,6 +121,7 @@ describe('idomizer', () => {
         env('', function (err, win) {
             let body = win.document.body;
             global.Element = win.Element;
+            global.Document = win.Document;
 
             IncrementalDOM.patch(body, render, {items: ['item0']});
             expect(body.innerHTML.trim()).to.contain('<p>1 item</p>');
@@ -140,6 +149,7 @@ describe('idomizer', () => {
         env('', function (err, win) {
             let body = win.document.body;
             global.Element = win.Element;
+            global.Document = win.Document;
 
             IncrementalDOM.patch(body, render, {items: ['item0']});
             expect(body.innerHTML.trim()).to.contain('<p>1 item</p>');
@@ -167,6 +177,7 @@ describe('idomizer', () => {
         env('', function (err, win) {
             let body = win.document.body;
             global.Element = win.Element;
+            global.Document = win.Document;
 
             IncrementalDOM.patch(body, render, {items: ['item0', 'item1']});
             expect(body.innerHTML.trim()).to.eq('<strong>strong text</strong>x-test element<strong>strong text</strong>');
@@ -181,9 +192,29 @@ describe('idomizer', () => {
         env('', function (err, win) {
             let body = win.document.body;
             global.Element = win.Element;
+            global.Document = win.Document;
 
             IncrementalDOM.patch(body, render, {items: ['item0', 'item1']});
             expect(body.innerHTML.trim()).to.eq('<strong>strong text</strong>helper content<strong>strong text</strong>');
+
+            done();
+        });
+    });
+
+    it('should ignore static attributes', (done) => {
+        let render = compile(`<h1 class="foo {{data.h1Class}} bar" id="anId">Hello</h1>`, {ignoreStaticAttributes: true})(IncrementalDOM);
+        env('', function (err, win) {
+            let body = win.document.body;
+            global.Element = win.Element;
+            global.Document = win.Document;
+
+            expect(render.toString()).to.match(/'class', 'foo ' \+ \(data.h1Class\) \+ ' bar', 'id', 'anId'/);
+
+            IncrementalDOM.patch(body, render, {h1Class: 'main'});
+            expect(body.innerHTML).to.eq('<h1 class="foo main bar" id="anId">Hello</h1>');
+
+            IncrementalDOM.patch(body, render, {h1Class: 'child'});
+            expect(body.innerHTML).to.eq('<h1 class="foo child bar" id="anId">Hello</h1>');
 
             done();
         });
