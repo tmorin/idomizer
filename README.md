@@ -7,9 +7,14 @@
 
 An HTML template compiler providing an _incremental-dom_ render factory.
 
+Versions and compatibilities:
+
+- idomizer 0.5.x and below are compatible with _incremental-dom_ 0.4.x and below.
+- idomizer 0.6.x and above are compatible with _incremental-dom_ 0.5.x and above.
+
 ## Installation
 
-```shell
+```bash
 $ npm install idomizer
 ```
 
@@ -44,18 +49,18 @@ let template = idomizer`<h1 class="{{data.h1Class}}">Hello</h1>`;
 ```
 will be compiled into:
 ```javascript
-var template = function template(i, h) {
-  var o = i.elementOpen,
-      c = i.elementClose,
-      v = i.elementVoid,
-      t = i.text,
-      ph = i.elementPlaceholder;
+var template = function (i, h) {
+  var _elementOpen = i.elementOpen,
+      _elementClose = i.elementClose,
+      _elementVoid = i.elementVoid,
+      _text = i.text,
+      _skip = i.skip;
   return function (_data_) {
     var helpers = h || {},
         data = _data_ || {};
-    o('h1', null, null, 'class', data.h1Class);
-    t('Hello');
-    c('h1');
+    _elementOpen('h1', null, null, 'class', data.h1Class);
+    _text('Hello');
+    _elementClose('h1');
   };
 };
 ```
@@ -66,7 +71,7 @@ A webpack's loader is available to compile an idomizer file into an incremental-
 
 See [module.loaders](http://webpack.github.io/docs/configuration.html#module-loaders) to get more information about loaders in webpack.
 
-```javascript
+```
 module.loaders: [
     {test: /\.idomizer$/, loader: 'idomizer/lib/plugins/idomizer-loader'}
 ];
@@ -95,18 +100,19 @@ bundle.transform({ extension: 'html' }, idomizerify);
 
 ```javascript
 // idomizer.compile('<h1 class="main">Hello</h1>') will return:
-function factory(i, h) {
-    var o = i.elementOpen,
-        c = i.elementClose,
-        v = i.elementVoid,
-        t = i.text,
-        ph = i.elementPlaceholder;
-    return function(_data_) {
-        var helpers = h || {},
-            data = _data_ || {};
-        // generated javascript
-        // ...
-    };
+function template(i, h) {
+  var _elementOpen = i.elementOpen,
+      _elementClose = i.elementClose,
+      _elementVoid = i.elementVoid,
+      _text = i.text,
+      _skip = i.skip;
+  return function (_data_) {
+    var helpers = h || {},
+        data = _data_ || {};
+    _elementOpen('h1', null, ['class', 'main'], null);
+    _text('Hello');
+    _elementClose('h1');
+  };
 }
 ```
 
@@ -123,12 +129,19 @@ idomizer.compile(`<h1 class="main">Hello</h1>`)(IncrementalDOM);
 ```
 To
 ```javascript
-function (_data_) {
+function template(i, h) {
+  var _elementOpen = i.elementOpen,
+      _elementClose = i.elementClose,
+      _elementVoid = i.elementVoid,
+      _text = i.text,
+      _skip = i.skip;
+  return function (_data_) {
     var helpers = h || {},
         data = _data_ || {};
-    o('h1', null, ['class', 'main'], null);
-        t('Hello');
-    c('h1');
+    _elementOpen('h1', null, ['class', 'main'], null);
+    _text('Hello');
+    _elementClose('h1');
+  };
 }
 ```
 
@@ -140,12 +153,19 @@ idomizer.compile(`<h1 class="{{data.h1Class}}">Hello</h1>`)(IncrementalDOM)
 ```
 To
 ```javascript
-function (_data_) {
+function template(i, h) {
+  var _elementOpen = i.elementOpen,
+      _elementClose = i.elementClose,
+      _elementVoid = i.elementVoid,
+      _text = i.text,
+      _skip = i.skip;
+  return function (_data_) {
     var helpers = h || {},
         data = _data_ || {};
-    o('h1', null, null, 'class', (data.h1Class));
-        t('Hello');
-    c('h1');
+    _elementOpen('h1', null, null, 'class', (data.h1Class));
+    _text('Hello');
+    _elementClose('h1');
+  };
 }
 ```
 
@@ -157,10 +177,17 @@ idomizer.compile(`<input type="text" value="{{data.value}}">`)(IncrementalDOM)
 ```
 To
 ```javascript
-function (_data_) {
+function template(i, h) {
+  var _elementOpen = i.elementOpen,
+      _elementClose = i.elementClose,
+      _elementVoid = i.elementVoid,
+      _text = i.text,
+      _skip = i.skip;
+  return function (_data_) {
     var helpers = h || {},
         data = _data_ || {};
-    v('input', null, ['type', 'text'], 'value', (data.value));
+    _elementVoid('input', null, ['type', 'text'], 'value', (data.value));
+  };
 }
 ```
 
@@ -172,12 +199,19 @@ idomizer.compile(`<strong><tpl-text value="data.value"/></strong>`)(IncrementalD
 ```
 To
 ```javascript
-function (_data_) {
+function template(i, h) {
+  var _elementOpen = i.elementOpen,
+      _elementClose = i.elementClose,
+      _elementVoid = i.elementVoid,
+      _text = i.text,
+      _skip = i.skip;
+  return function (_data_) {
     var helpers = h || {},
         data = _data_ || {};
-    o('strong', null, null, null);
-        t(data.value);
-    c('strong');
+    _elementOpen('strong', null, null, null);
+    _text(data.value);
+    _elementClose('strong');
+  };
 }
 ```
 
@@ -197,16 +231,23 @@ idomizer.compile(`
 ```
 To
 ```javascript
-function (_data_) {
+function template(i, h) {
+  var _elementOpen = i.elementOpen,
+      _elementClose = i.elementClose,
+      _elementVoid = i.elementVoid,
+      _text = i.text,
+      _skip = i.skip;
+  return function (_data_) {
     var helpers = h || {},
         data = _data_ || {};
     if (data.yes) {
-        t('YES!');
+        _text('YES!');
     } else if (data.yes !== false) {
-        t('MAY BE!');
+        _text('MAY BE!');
     } else {
-        t('NO!');
+        _text('NO!');
     }
+  };
 }
 ```
 
@@ -224,16 +265,23 @@ idomizer.compile(`
 ```
 To
 ```javascript
-function (_data_) {
+function template(i, h) {
+  var _elementOpen = i.elementOpen,
+      _elementClose = i.elementClose,
+      _elementVoid = i.elementVoid,
+      _text = i.text,
+      _skip = i.skip;
+  return function (_data_) {
     var helpers = h || {},
         data = _data_ || {};
     (data.items || []).forEach(function (item, index) {
-        o('strong', (index), null, null);
-            t(index);
-            t('-');
-            t(item);
-        c('strong');
+        _elementOpen('strong', (index), null, null);
+            _text(index);
+            _text('-');
+            _text(item);
+        _elementClose('strong');
     });
+  };
 }
 ```
 
@@ -251,16 +299,23 @@ idomizer.compile(`
 ```
 To
 ```javascript
-function (_data_) {
+function template(i, h) {
+  var _elementOpen = i.elementOpen,
+      _elementClose = i.elementClose,
+      _elementVoid = i.elementVoid,
+      _text = i.text,
+      _skip = i.skip;
+  return function (_data_) {
     var helpers = h || {},
         data = _data_ || {};
     data.items.forEach(function (item, i) {
-        o('strong', (i), null, null);
-            t(i);
-            t('-');
-            t(item);
-        c('strong');
+        _elementOpen('strong', (i), null, null);
+            _text(i);
+            _text('-');
+            _text(item);
+        _elementClose('strong');
     });
+  };
 }
 ```
 
@@ -280,16 +335,23 @@ idomizer.compile(`<strong>strong text</strong><x-test></x-test><strong>strong te
 ```
 To
 ```javascript
-function (_data_) {
+function template(i, h) {
+  var _elementOpen = i.elementOpen,
+      _elementClose = i.elementClose,
+      _elementVoid = i.elementVoid,
+      _text = i.text,
+      _skip = i.skip;
+  return function (_data_) {
     var helpers = h || {},
         data = _data_ || {};
-    o('strong', null, null, null);
-        t('strong text');
-    c('strong');
-    t('x-test element');
-    o('strong', null, null, null);
-        t('strong text');
-    c('strong');
+    _elementOpen('strong', null, null, null);
+      _text('strong text');
+    _elementClose('strong');
+    _text('x-test element');
+    _elementOpen('strong', null, null, null);
+      _text('strong text');
+    _elementClose('strong');
+  };
 }
 ```
 
@@ -306,15 +368,22 @@ idomizer.compile(`
 ```
 To
 ```javascript
-function (_data_) {
+function template(i, h) {
+  var _elementOpen = i.elementOpen,
+      _elementClose = i.elementClose,
+      _elementVoid = i.elementVoid,
+      _text = i.text,
+      _skip = i.skip;
+  return function (_data_) {
     var helpers = h || {},
         data = _data_ || {};
-    o('strong', null, null, null);
-        t('strong text');
-    c('strong');
+    _elementOpen('strong', null, null, null);
+        _text('strong text');
+    _elementClose('strong');
     helpers.subRender(data);
-    o('strong', null, null, null);
-        t('strong text');
-    c('strong');
+    _elementOpen('strong', null, null, null);
+        _text('strong text');
+    _elementClose('strong');
+  };
 }
 ```

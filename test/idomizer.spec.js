@@ -169,7 +169,7 @@ describe('idomizer', () => {
             tags: {
                 'x-test': {
                     onopentag(name, attrs, key, statics, varArgs, options) {
-                        return `t('${name} element');`;
+                        return `_text('${name} element');`;
                     }
                 }
             }
@@ -196,6 +196,22 @@ describe('idomizer', () => {
 
             IncrementalDOM.patch(body, render, {items: ['item0', 'item1']});
             expect(body.innerHTML.trim()).to.eq('<strong>strong text</strong>helper content<strong>strong text</strong>');
+
+            done();
+        });
+    });
+
+    it('should skip content node', (done) => {
+        let render1 = compile(`<strong>strong text</strong><p>skipped content</p><strong>strong text</strong>`)(IncrementalDOM);
+        let render2 = compile(`<strong>strong text bis</strong><p tpl-skip></p><strong>strong text bis</strong>`)(IncrementalDOM);
+        env('', function (err, win) {
+            let body = win.document.body;
+            global.Element = win.Element;
+            global.Document = win.Document;
+            IncrementalDOM.patch(body, render1);
+            expect(body.innerHTML.trim()).to.eq('<strong>strong text</strong><p>skipped content</p><strong>strong text</strong>', 'render1');
+            IncrementalDOM.patch(body, render2);
+            expect(body.innerHTML.trim()).to.eq('<strong>strong text bis</strong><p>skipped content</p><strong>strong text bis</strong>', 'render2');
 
             done();
         });

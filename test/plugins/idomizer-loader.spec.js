@@ -38,9 +38,9 @@ xdescribe('idomizer-loader', () => {
             }
             try {
                 let result = readFileSync(output, 'utf8');
-                expect(result).to.contain(`o('h1', null, null, 'class', (data.h1Class));`);
-                expect(result).to.contain(`t('Hello');`);
-                expect(result).to.contain(`c('h1');`);
+                expect(result).to.contain(`_elementOpen('h1', null, null, 'class', (data.h1Class));`);
+                expect(result).to.contain(`_text('Hello');`);
+                expect(result).to.contain(`_elementClose('h1');`);
             } catch (e) {
                 done(e);
             }

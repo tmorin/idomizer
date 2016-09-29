@@ -13,9 +13,9 @@ describe('babel-idomizer', () => {
             if (err) {
                 return done(err);
             }
-            expect(result.code).to.contain(`o('h1', null, null, 'class', data.h1Class);`);
-            expect(result.code).to.contain(`t('\\n        Hello\\n    ');`);
-            expect(result.code).to.contain(`c('h1');`);
+            expect(result.code).to.contain(`_elementOpen('h1', null, null, 'class', data.h1Class);`);
+            expect(result.code).to.contain(`_text('\\n        Hello\\n    ');`);
+            expect(result.code).to.contain(`_elementClose('h1');`);
             done();
         });
     });

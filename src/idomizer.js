@@ -11,7 +11,8 @@ function assign() {
 
 /**
  * @typedef {Object} BUILT_IN_TAGS
- * The built in tags provided by idomizer.
+ * @desc The built in tags provided by idomizer.
+ *
  * @example <caption>tpl-logger</caption>
  * idomizer.compile(`<tpl-logger level="info" content="data.foo: {{data.foo}}" />`);
  *
@@ -45,6 +46,9 @@ function assign() {
  *
  * @property {function} tpl-logger to append a console message
  * @property {function} tpl-each to iterate over an array
+ * @property {function} tpl-if to condition a sub tree
+ * @property {function} tpl-else-if to condition a sub tree within a tpl-if element
+ * @property {function} tpl-else to condition a sub tree within a tpl-if element
  * @property {function} tpl-text to create a text node
  * @property {function} tpl-call to call an helpers with the current _data_ value
  */
@@ -91,7 +95,7 @@ const BUILT_IN_TAGS = {
     },
     'tpl-text': {
         onopentag(name, attrs, key, statics, varArgs, options) {
-            return `t(${statics.value || varArgs.value});`;
+            return `_text(${statics.value || varArgs.value});`;
         }
     },
     'tpl-call': {
@@ -104,12 +108,15 @@ const BUILT_IN_TAGS = {
 
 /**
  * @typedef {Object} OPTIONS
- * The overridable options of idomizer.
+ * @desc The override-able options of idomizer.
  * @property {boolean} pretty Append a end of line character ('\\n' ) after each statements.
- * @property {boolean} ignoreStaticAttributes discovered static attributes will be handled as dynamic attributes.
+ * @property {boolean} ignoreStaticAttributes Discovered static attributes will be handled as dynamic attributes.
  * @property {!RegExp} evaluation A RegExp to extracts expressions to evaluate.
  * @property {!string} attributeKey The value of the IncrementalDOM's key.
- * @property {!string} attributePlaceholder The flag to make the element acting as a placeholder.
+ * <br>using a constant value: <code>&lt;hr tpl-key="'constant value'"&gt;</code>
+ * <br>using a dynamic value: <code>&lt;hr tpl-key="dynamicValue"&gt;</code>
+ * @property {!string} attributeSkip The flag to skip the process eventual children.
+ * <code>&lt;p tpl-skip&gt;&lt;!-- existing will not be touched --&gt;&lt;/p&gt;</code>
  * @property {!string} varDataName The name of the variable exposing the data.
  * @property {!string} varHelpersName The name of the variable exposing the helpers.
  * @property {!Array<string>} selfClosingElements The list of self closing elements. (http://www.w3.org/TR/html5/syntax.html#void-elements)
@@ -120,7 +127,7 @@ const OPTIONS = {
     ignoreStaticAttributes: false,
     evaluation: /\{\{([\s\S]+?)}}/gm,
     attributeKey: 'tpl-key',
-    attributePlaceholder: 'tpl-placeholder',
+    attributeSkip: 'tpl-skip',
     varDataName: 'data',
     varHelpersName: 'helpers',
     selfClosingElements: ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'],
@@ -135,8 +142,8 @@ function isSelfClosing(name = '', options = OPTIONS) {
     return options.selfClosingElements.indexOf(name) > -1;
 }
 
-function getFunctionName(name = '', placeholder = false, options = OPTIONS) {
-    return placeholder ? 'ph' : (isSelfClosing(name, options) ? 'v' : 'o');
+function getFunctionName(name = '', options = OPTIONS) {
+    return isSelfClosing(name, options) ? '_elementVoid' : '_elementOpen';
 }
 
 function append(body = '', line = '', options = OPTIONS) {
@@ -144,8 +151,8 @@ function append(body = '', line = '', options = OPTIONS) {
 }
 
 /**
- * Configuration to transform an expression ino a compliant JavaScript fragment.
  * @typedef {Object} Evaluator
+ * @desc Configuration to transform an expression into a compliant JavaScript fragment.
  * @private
  * @property {!string} appender Appender between statements
  * @property {!function(text: string)} toText to convert a text statements
@@ -213,9 +220,9 @@ function parseAttributes(attrs = {}, options = OPTIONS) {
     let statics = {},
         varArgs = {},
         key,
-        placeholder = attrs[options.attributePlaceholder] !== null && attrs[options.attributePlaceholder] !== undefined;
+        skip = attrs[options.attributeSkip] !== null && attrs[options.attributeSkip] !== undefined;
     Object.keys(attrs)
-        .filter(key => [options.attributePlaceholder].indexOf(key) < 0)
+        .filter(key => [options.attributeSkip].indexOf(key) < 0)
         .forEach(function (key) {
             let value = unwrapExpressions(attrs[key]);
             if (value.search(options.evaluation) > -1 || options.ignoreStaticAttributes) {
@@ -227,7 +234,7 @@ function parseAttributes(attrs = {}, options = OPTIONS) {
     key = statics[options.attributeKey] || varArgs[options.attributeKey];
     delete statics[options.attributeKey];
     delete varArgs[options.attributeKey];
-    return [statics, varArgs, key, placeholder];
+    return [statics, varArgs, key, skip];
 }
 
 /**
@@ -273,16 +280,18 @@ export function compile(html = '', options = {}) {
     let fnBody = '';
     let parser = new htmlparser2.Parser({
         onopentag(name, attrs) {
-            let [statics, varArgs, key, placeholder] = parseAttributes(attrs, options);
-            parser.skipClosing = placeholder;
+            let [statics, varArgs, key, skip] = parseAttributes(attrs, options);
             if (options.tags[name]) {
                 let element = options.tags[name];
                 if (typeof element.onopentag === 'function') {
                     fnBody = append(fnBody, element.onopentag(name, attrs, key, statics, varArgs, options), options);
                 }
             } else {
-                let fn = getFunctionName(name, placeholder, options);
+                let fn = getFunctionName(name, options);
                 fnBody = append(fnBody, `${fn}('${name}', ${key ? `${key}` : 'null'}, ${staticsToJs(statics)}, ${varArgsToJs(varArgs)});`, options);
+                if (skip) {
+                    fnBody = append(fnBody, `_skip();`, options);
+                }
             }
         },
         onclosetag(name) {
@@ -291,16 +300,15 @@ export function compile(html = '', options = {}) {
                 if (typeof element.onclosetag === 'function') {
                     fnBody = append(fnBody, element.onclosetag(name, options), options);
                 }
-            } else if (!isSelfClosing(name, options) && !parser.skipClosing) {
-                fnBody = append(fnBody, `c('${name}');`, options);
+            } else if (!isSelfClosing(name, options)) {
+                fnBody = append(fnBody, `_elementClose('${name}');`, options);
             }
-            parser.skipClosing = false;
         },
         ontext(text){
             if (text.search(options.evaluation) > -1) {
                 fnBody = append(fnBody, `${evaluate(text, inlineEvaluator, options)}`, options);
             } else {
-                fnBody = append(fnBody, `t('${stringify(text)}');`, options);
+                fnBody = append(fnBody, `_text('${stringify(text)}');`, options);
             }
         }
     }, {
@@ -316,11 +324,11 @@ export function compile(html = '', options = {}) {
     parser.parseComplete(wrapExpressions(html, options));
 
     let fnWrapper = `
-        var o = i.elementOpen,
-            c = i.elementClose,
-            v = i.elementVoid,
-            t = i.text,
-            ph = i.elementPlaceholder;
+        var _elementOpen = i.elementOpen,
+            _elementClose = i.elementClose,
+            _elementVoid = i.elementVoid,
+            _text = i.text,
+            _skip = i.skip;
         return function (_data_) {
             var ${options.varHelpersName || 'helpers'} = h || {},
                 ${options.varDataName || 'data'} = _data_ || {};
