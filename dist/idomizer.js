@@ -81,7 +81,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * @typedef {Object} BUILT_IN_TAGS
-	 * The built in tags provided by idomizer.
+	 * @desc The built in tags provided by idomizer.
+	 *
 	 * @example <caption>tpl-logger</caption>
 	 * idomizer.compile(`<tpl-logger level="info" content="data.foo: {{data.foo}}" />`);
 	 *
@@ -115,6 +116,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * @property {function} tpl-logger to append a console message
 	 * @property {function} tpl-each to iterate over an array
+	 * @property {function} tpl-if to condition a sub tree
+	 * @property {function} tpl-else-if to condition a sub tree within a tpl-if element
+	 * @property {function} tpl-else to condition a sub tree within a tpl-if element
 	 * @property {function} tpl-text to create a text node
 	 * @property {function} tpl-call to call an helpers with the current _data_ value
 	 */
@@ -161,7 +165,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    'tpl-text': {
 	        onopentag: function onopentag(name, attrs, key, statics, varArgs, options) {
-	            return 't(' + (statics.value || varArgs.value) + ');';
+	            return '_text(' + (statics.value || varArgs.value) + ');';
 	        }
 	    },
 	    'tpl-call': {
@@ -174,12 +178,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * @typedef {Object} OPTIONS
-	 * The overridable options of idomizer.
+	 * @desc The override-able options of idomizer.
 	 * @property {boolean} pretty Append a end of line character ('\\n' ) after each statements.
-	 * @property {boolean} ignoreStaticAttributes discovered static attributes will be handled as dynamic attributes.
+	 * @property {boolean} ignoreStaticAttributes Discovered static attributes will be handled as dynamic attributes.
 	 * @property {!RegExp} evaluation A RegExp to extracts expressions to evaluate.
 	 * @property {!string} attributeKey The value of the IncrementalDOM's key.
-	 * @property {!string} attributePlaceholder The flag to make the element acting as a placeholder.
+	 * <br>using a constant value: <code>&lt;hr tpl-key="'constant value'"&gt;</code>
+	 * <br>using a dynamic value: <code>&lt;hr tpl-key="dynamicValue"&gt;</code>
+	 * @property {!string} attributeSkip The flag to skip the process eventual children.
+	 * <code>&lt;p tpl-skip&gt;&lt;!-- existing will not be touched --&gt;&lt;/p&gt;</code>
 	 * @property {!string} varDataName The name of the variable exposing the data.
 	 * @property {!string} varHelpersName The name of the variable exposing the helpers.
 	 * @property {!Array<string>} selfClosingElements The list of self closing elements. (http://www.w3.org/TR/html5/syntax.html#void-elements)
@@ -190,7 +197,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    ignoreStaticAttributes: false,
 	    evaluation: /\{\{([\s\S]+?)}}/gm,
 	    attributeKey: 'tpl-key',
-	    attributePlaceholder: 'tpl-placeholder',
+	    attributeSkip: 'tpl-skip',
 	    varDataName: 'data',
 	    varHelpersName: 'helpers',
 	    selfClosingElements: ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'],
@@ -198,37 +205,36 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	function stringify() {
-	    var value = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
+	    var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 
 	    return value.replace(/'/gim, '\\\'').replace(/\n/gi, '\\n');
 	}
 
 	function isSelfClosing() {
-	    var name = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
-	    var options = arguments.length <= 1 || arguments[1] === undefined ? OPTIONS : arguments[1];
+	    var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+	    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : OPTIONS;
 
 	    return options.selfClosingElements.indexOf(name) > -1;
 	}
 
 	function getFunctionName() {
-	    var name = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
-	    var placeholder = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
-	    var options = arguments.length <= 2 || arguments[2] === undefined ? OPTIONS : arguments[2];
+	    var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+	    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : OPTIONS;
 
-	    return placeholder ? 'ph' : isSelfClosing(name, options) ? 'v' : 'o';
+	    return isSelfClosing(name, options) ? '_elementVoid' : '_elementOpen';
 	}
 
 	function append() {
-	    var body = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
-	    var line = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
-	    var options = arguments.length <= 2 || arguments[2] === undefined ? OPTIONS : arguments[2];
+	    var body = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+	    var line = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+	    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : OPTIONS;
 
 	    return body + (options.pretty ? '\n' : '') + line;
 	}
 
 	/**
-	 * Configuration to transform an expression ino a compliant JavaScript fragment.
 	 * @typedef {Object} Evaluator
+	 * @desc Configuration to transform an expression into a compliant JavaScript fragment.
 	 * @private
 	 * @property {!string} appender Appender between statements
 	 * @property {!function(text: string)} toText to convert a text statements
@@ -301,15 +307,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	function parseAttributes() {
-	    var attrs = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	    var options = arguments.length <= 1 || arguments[1] === undefined ? OPTIONS : arguments[1];
+	    var attrs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : OPTIONS;
 
 	    var statics = {},
 	        varArgs = {},
 	        key = void 0,
-	        placeholder = attrs[options.attributePlaceholder] !== null && attrs[options.attributePlaceholder] !== undefined;
+	        skip = attrs[options.attributeSkip] !== null && attrs[options.attributeSkip] !== undefined;
 	    Object.keys(attrs).filter(function (key) {
-	        return [options.attributePlaceholder].indexOf(key) < 0;
+	        return [options.attributeSkip].indexOf(key) < 0;
 	    }).forEach(function (key) {
 	        var value = unwrapExpressions(attrs[key]);
 	        if (value.search(options.evaluation) > -1 || options.ignoreStaticAttributes) {
@@ -321,7 +327,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key = statics[options.attributeKey] || varArgs[options.attributeKey];
 	    delete statics[options.attributeKey];
 	    delete varArgs[options.attributeKey];
-	    return [statics, varArgs, key, placeholder];
+	    return [statics, varArgs, key, skip];
 	}
 
 	/**
@@ -330,7 +336,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {string} the JavaScript
 	 */
 	function varArgsToJs() {
-	    var varArgs = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	    var varArgs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
 	    var keys = Object.keys(varArgs);
 	    return keys.length > 0 ? keys.map(function (key) {
@@ -344,7 +350,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {string} the JavaScript
 	 */
 	function staticsToJs() {
-	    var statics = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	    var statics = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
 	    var keys = Object.keys(statics);
 	    return keys.length > 0 ? '[' + keys.map(function (key) {
@@ -369,8 +375,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {function(i: IncrementalDOM, h: Object)} the function factory
 	 */
 	function compile() {
-	    var html = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
-	    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	    var html = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+	    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
 	    options = assign({}, OPTIONS, options, {
 	        tags: assign({}, BUILT_IN_TAGS, options.tags)
@@ -385,17 +391,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var statics = _parseAttributes2[0];
 	            var varArgs = _parseAttributes2[1];
 	            var key = _parseAttributes2[2];
-	            var placeholder = _parseAttributes2[3];
+	            var skip = _parseAttributes2[3];
 
-	            parser.skipClosing = placeholder;
 	            if (options.tags[name]) {
 	                var element = options.tags[name];
 	                if (typeof element.onopentag === 'function') {
 	                    fnBody = append(fnBody, element.onopentag(name, attrs, key, statics, varArgs, options), options);
 	                }
 	            } else {
-	                var fn = getFunctionName(name, placeholder, options);
+	                var fn = getFunctionName(name, options);
 	                fnBody = append(fnBody, fn + '(\'' + name + '\', ' + (key ? '' + key : 'null') + ', ' + staticsToJs(statics) + ', ' + varArgsToJs(varArgs) + ');', options);
+	                if (skip) {
+	                    fnBody = append(fnBody, '_skip();', options);
+	                }
 	            }
 	        },
 	        onclosetag: function onclosetag(name) {
@@ -404,16 +412,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	                if (typeof element.onclosetag === 'function') {
 	                    fnBody = append(fnBody, element.onclosetag(name, options), options);
 	                }
-	            } else if (!isSelfClosing(name, options) && !parser.skipClosing) {
-	                fnBody = append(fnBody, 'c(\'' + name + '\');', options);
+	            } else if (!isSelfClosing(name, options)) {
+	                fnBody = append(fnBody, '_elementClose(\'' + name + '\');', options);
 	            }
-	            parser.skipClosing = false;
 	        },
 	        ontext: function ontext(text) {
 	            if (text.search(options.evaluation) > -1) {
 	                fnBody = append(fnBody, '' + evaluate(text, inlineEvaluator, options), options);
 	            } else {
-	                fnBody = append(fnBody, 't(\'' + stringify(text) + '\');', options);
+	                fnBody = append(fnBody, '_text(\'' + stringify(text) + '\');', options);
 	            }
 	        }
 	    }, {
@@ -428,7 +435,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // wrap inline expression with a CDATA tag to allow inline javascript
 	    parser.parseComplete(wrapExpressions(html, options));
 
-	    var fnWrapper = '\n        var o = i.elementOpen,\n            c = i.elementClose,\n            v = i.elementVoid,\n            t = i.text,\n            ph = i.elementPlaceholder;\n        return function (_data_) {\n            var ' + (options.varHelpersName || 'helpers') + ' = h || {},\n                ' + (options.varDataName || 'data') + ' = _data_ || {};\n            ' + fnBody + '\n        };\n    ';
+	    var fnWrapper = '\n        var _elementOpen = i.elementOpen,\n            _elementClose = i.elementClose,\n            _elementVoid = i.elementVoid,\n            _text = i.text,\n            _skip = i.skip;\n        return function (_data_) {\n            var ' + (options.varHelpersName || 'helpers') + ' = h || {},\n                ' + (options.varDataName || 'data') + ' = _data_ || {};\n            ' + fnBody + '\n        };\n    ';
 
 	    var factory = new Function(['i', 'h'], fnWrapper);
 
