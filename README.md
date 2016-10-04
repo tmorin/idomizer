@@ -49,14 +49,14 @@ let template = idomizer`<h1 class="{{data.h1Class}}">Hello</h1>`;
 ```
 will be compiled into:
 ```javascript
-var template = function (i, h) {
-  var _elementOpen = i.elementOpen,
-      _elementClose = i.elementClose,
-      _elementVoid = i.elementVoid,
-      _text = i.text,
-      _skip = i.skip;
+var template = function (_i, _h) {
+  var _elementOpen = _i.elementOpen,
+      _elementClose = _i.elementClose,
+      _elementVoid = _i.elementVoid,
+      _text = _i.text,
+      _skip = _i.skip;
   return function (_data_) {
-    var helpers = h || {},
+    var helpers = _h || {},
         data = _data_ || {};
     _elementOpen('h1', null, null, 'class', data.h1Class);
     _text('Hello');
@@ -100,14 +100,14 @@ bundle.transform({ extension: 'html' }, idomizerify);
 
 ```javascript
 // idomizer.compile('<h1 class="main">Hello</h1>') will return:
-function template(i, h) {
-  var _elementOpen = i.elementOpen,
-      _elementClose = i.elementClose,
-      _elementVoid = i.elementVoid,
-      _text = i.text,
-      _skip = i.skip;
+function template(_i, _h) {
+  var _elementOpen = _i.elementOpen,
+      _elementClose = _i.elementClose,
+      _elementVoid = _i.elementVoid,
+      _text = _i.text,
+      _skip = _i.skip;
   return function (_data_) {
-    var helpers = h || {},
+    var helpers = _h || {},
         data = _data_ || {};
     _elementOpen('h1', null, ['class', 'main'], null);
     _text('Hello');
@@ -129,14 +129,14 @@ idomizer.compile(`<h1 class="main">Hello</h1>`)(IncrementalDOM);
 ```
 To
 ```javascript
-function template(i, h) {
-  var _elementOpen = i.elementOpen,
-      _elementClose = i.elementClose,
-      _elementVoid = i.elementVoid,
-      _text = i.text,
-      _skip = i.skip;
+function template(_i, _h) {
+  var _elementOpen = _i.elementOpen,
+      _elementClose = _i.elementClose,
+      _elementVoid = _i.elementVoid,
+      _text = _i.text,
+      _skip = _i.skip;
   return function (_data_) {
-    var helpers = h || {},
+    var helpers = _h || {},
         data = _data_ || {};
     _elementOpen('h1', null, ['class', 'main'], null);
     _text('Hello');
@@ -153,14 +153,14 @@ idomizer.compile(`<h1 class="{{data.h1Class}}">Hello</h1>`)(IncrementalDOM)
 ```
 To
 ```javascript
-function template(i, h) {
-  var _elementOpen = i.elementOpen,
-      _elementClose = i.elementClose,
-      _elementVoid = i.elementVoid,
-      _text = i.text,
-      _skip = i.skip;
+function template(_i, _h) {
+  var _elementOpen = _i.elementOpen,
+      _elementClose = _i.elementClose,
+      _elementVoid = _i.elementVoid,
+      _text = _i.text,
+      _skip = _i.skip;
   return function (_data_) {
-    var helpers = h || {},
+    var helpers = _h || {},
         data = _data_ || {};
     _elementOpen('h1', null, null, 'class', (data.h1Class));
     _text('Hello');
@@ -177,14 +177,14 @@ idomizer.compile(`<input type="text" value="{{data.value}}">`)(IncrementalDOM)
 ```
 To
 ```javascript
-function template(i, h) {
-  var _elementOpen = i.elementOpen,
-      _elementClose = i.elementClose,
-      _elementVoid = i.elementVoid,
-      _text = i.text,
-      _skip = i.skip;
+function template(_i, _h) {
+  var _elementOpen = _i.elementOpen,
+      _elementClose = _i.elementClose,
+      _elementVoid = _i.elementVoid,
+      _text = _i.text,
+      _skip = _i.skip;
   return function (_data_) {
-    var helpers = h || {},
+    var helpers = _h || {},
         data = _data_ || {};
     _elementVoid('input', null, ['type', 'text'], 'value', (data.value));
   };
@@ -199,14 +199,14 @@ idomizer.compile(`<strong><tpl-text value="data.value"/></strong>`)(IncrementalD
 ```
 To
 ```javascript
-function template(i, h) {
-  var _elementOpen = i.elementOpen,
-      _elementClose = i.elementClose,
-      _elementVoid = i.elementVoid,
-      _text = i.text,
-      _skip = i.skip;
+function template(_i, _h) {
+  var _elementOpen = _i.elementOpen,
+      _elementClose = _i.elementClose,
+      _elementVoid = _i.elementVoid,
+      _text = _i.text,
+      _skip = _i.skip;
   return function (_data_) {
-    var helpers = h || {},
+    var helpers = _h || {},
         data = _data_ || {};
     _elementOpen('strong', null, null, null);
     _text(data.value);
@@ -231,14 +231,14 @@ idomizer.compile(`
 ```
 To
 ```javascript
-function template(i, h) {
-  var _elementOpen = i.elementOpen,
-      _elementClose = i.elementClose,
-      _elementVoid = i.elementVoid,
-      _text = i.text,
-      _skip = i.skip;
+function template(_i, _h) {
+  var _elementOpen = _i.elementOpen,
+      _elementClose = _i.elementClose,
+      _elementVoid = _i.elementVoid,
+      _text = _i.text,
+      _skip = _i.skip;
   return function (_data_) {
-    var helpers = h || {},
+    var helpers = _h || {},
         data = _data_ || {};
     if (data.yes) {
         _text('YES!');
@@ -265,14 +265,14 @@ idomizer.compile(`
 ```
 To
 ```javascript
-function template(i, h) {
-  var _elementOpen = i.elementOpen,
-      _elementClose = i.elementClose,
-      _elementVoid = i.elementVoid,
-      _text = i.text,
-      _skip = i.skip;
+function template(_i, _h) {
+  var _elementOpen = _i.elementOpen,
+      _elementClose = _i.elementClose,
+      _elementVoid = _i.elementVoid,
+      _text = _i.text,
+      _skip = _i.skip;
   return function (_data_) {
-    var helpers = h || {},
+    var helpers = _h || {},
         data = _data_ || {};
     (data.items || []).forEach(function (item, index) {
         _elementOpen('strong', (index), null, null);
@@ -299,14 +299,14 @@ idomizer.compile(`
 ```
 To
 ```javascript
-function template(i, h) {
-  var _elementOpen = i.elementOpen,
-      _elementClose = i.elementClose,
-      _elementVoid = i.elementVoid,
-      _text = i.text,
-      _skip = i.skip;
+function template(_i, _h) {
+  var _elementOpen = _i.elementOpen,
+      _elementClose = _i.elementClose,
+      _elementVoid = _i.elementVoid,
+      _text = _i.text,
+      _skip = _i.skip;
   return function (_data_) {
-    var helpers = h || {},
+    var helpers = _h || {},
         data = _data_ || {};
     data.items.forEach(function (item, i) {
         _elementOpen('strong', (i), null, null);
@@ -335,14 +335,14 @@ idomizer.compile(`<strong>strong text</strong><x-test></x-test><strong>strong te
 ```
 To
 ```javascript
-function template(i, h) {
-  var _elementOpen = i.elementOpen,
-      _elementClose = i.elementClose,
-      _elementVoid = i.elementVoid,
-      _text = i.text,
-      _skip = i.skip;
+function template(_i, _h) {
+  var _elementOpen = _i.elementOpen,
+      _elementClose = _i.elementClose,
+      _elementVoid = _i.elementVoid,
+      _text = _i.text,
+      _skip = _i.skip;
   return function (_data_) {
-    var helpers = h || {},
+    var helpers = _h || {},
         data = _data_ || {};
     _elementOpen('strong', null, null, null);
       _text('strong text');
@@ -368,14 +368,14 @@ idomizer.compile(`
 ```
 To
 ```javascript
-function template(i, h) {
-  var _elementOpen = i.elementOpen,
-      _elementClose = i.elementClose,
-      _elementVoid = i.elementVoid,
-      _text = i.text,
-      _skip = i.skip;
+function template(_i, _h) {
+  var _elementOpen = _i.elementOpen,
+      _elementClose = _i.elementClose,
+      _elementVoid = _i.elementVoid,
+      _text = _i.text,
+      _skip = _i.skip;
   return function (_data_) {
-    var helpers = h || {},
+    var helpers = _h || {},
         data = _data_ || {};
     _elementOpen('strong', null, null, null);
         _text('strong text');
@@ -386,4 +386,34 @@ function template(i, h) {
     _elementClose('strong');
   };
 }
+```
+
+### Custom elements
+
+For Incremental DOM, custom elements are regular HTML elements.
+So, if a custom element generates a sub-tree (i.e. a light DOM) outside a ShadowDOM node,
+it will be overridden during the execution of the function `patch()`.
+To control this default behavior, Incremental DOM provides the function `skip()` saying:
+_don't touch the inner light DOM of the current node!_
+
+By default idomizier detects the custom elements and force the call of the function `skip()` to protect their light DOM nodes.
+Custom elements are detected according to the following rules:
+
+- from the name, because of the `-` character
+- from the attribute `ìs`
+
+Obviously, this behavior can be deactivated:
+
+- globally (for a whole HTML template)
+    ```javascript
+    const render = compile(`<x-element><p>will part of the light DOM</p></x-element>`, {skipCustomElements : false})
+    ````
+- locally (an HTML element), ``
+    ```javascript
+    const render = compile(`<x-element tpl-skip="deactivated"><p>will part of the light DOM</p></x-element>`)
+    ````
+
+If the **skip** flag is not set (globally or locally) the following snippet will raise an error:
+```html
+<x-element><p>will part of the light DOM</p></x-element>
 ```

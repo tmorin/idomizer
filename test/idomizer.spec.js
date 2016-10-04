@@ -217,6 +217,84 @@ describe('idomizer', () => {
         });
     });
 
+    it('should skip content node of custom element', (done) => {
+        let render = compile(`<strong>strong text bis</strong><custom-element></custom-element><strong>strong text bis</strong>`)(IncrementalDOM);
+        env('', function (err, win) {
+            let body = win.document.body;
+            global.Element = win.Element;
+            global.Document = win.Document;
+            body.innerHTML = `<strong>strong text</strong><custom-element>skipped content</custom-element><strong>strong text</strong>`;
+            IncrementalDOM.patch(body, render);
+            expect(body.innerHTML.trim()).to.eq('<strong>strong text bis</strong><custom-element>skipped content</custom-element><strong>strong text bis</strong>', 'render');
+            done();
+        });
+    });
+
+    it('should not skip content node of custom element - locally', (done) => {
+        let render = compile(`<strong>strong text bis</strong><custom-element tpl-skip="deactivated">content</custom-element><strong>strong text bis</strong>`)(IncrementalDOM);
+        env('', function (err, win) {
+            let body = win.document.body;
+            global.Element = win.Element;
+            global.Document = win.Document;
+            body.innerHTML = `<strong>strong text</strong><custom-element>skipped content</custom-element><strong>strong text</strong>`;
+            IncrementalDOM.patch(body, render);
+            expect(body.innerHTML.trim()).to.eq('<strong>strong text bis</strong><custom-element>content</custom-element><strong>strong text bis</strong>', 'render');
+            done();
+        });
+    });
+
+    it('should not skip content node of custom element - globally', (done) => {
+        let render = compile(`<strong>strong text bis</strong><custom-element>content</custom-element><strong>strong text bis</strong>`, {skipCustomElements: false})(IncrementalDOM);
+        env('', function (err, win) {
+            let body = win.document.body;
+            global.Element = win.Element;
+            global.Document = win.Document;
+            body.innerHTML = `<strong>strong text</strong><custom-element>skipped content</custom-element><strong>strong text</strong>`;
+            IncrementalDOM.patch(body, render);
+            expect(body.innerHTML.trim()).to.eq('<strong>strong text bis</strong><custom-element>content</custom-element><strong>strong text bis</strong>', 'render');
+            done();
+        });
+    });
+
+    it('should skip content node of custom element having is attribute', (done) => {
+        let render = compile(`<strong>strong text bis</strong><p is="custom-element"></p><strong>strong text bis</strong>`)(IncrementalDOM);
+        env('', function (err, win) {
+            let body = win.document.body;
+            global.Element = win.Element;
+            global.Document = win.Document;
+            body.innerHTML = `<strong>strong text</strong><p is="custom-element">skipped content</p><strong>strong text</strong>`;
+            IncrementalDOM.patch(body, render);
+            expect(body.innerHTML.trim()).to.eq('<strong>strong text bis</strong><p>skipped content</p><strong>strong text bis</strong>', 'render');
+            done();
+        });
+    });
+
+    it('should not skip content node of custom element having is attribute - locally', (done) => {
+        let render = compile(`<strong>strong text bis</strong><p is="custom-element" tpl-skip="deactivated">content</p><strong>strong text bis</strong>`)(IncrementalDOM);
+        env('', function (err, win) {
+            let body = win.document.body;
+            global.Element = win.Element;
+            global.Document = win.Document;
+            body.innerHTML = `<strong>strong text</strong><p is="custom-element">skipped content</p><strong>strong text</strong>`;
+            IncrementalDOM.patch(body, render);
+            expect(body.innerHTML.trim()).to.eq('<strong>strong text bis</strong><p>content</p><strong>strong text bis</strong>', 'render');
+            done();
+        });
+    });
+
+    it('should not skip content node of custom element having is attribute - globally', (done) => {
+        let render = compile(`<strong>strong text bis</strong><p is="custom-element">content</p><strong>strong text bis</strong>`, {skipCustomElements: false})(IncrementalDOM);
+        env('', function (err, win) {
+            let body = win.document.body;
+            global.Element = win.Element;
+            global.Document = win.Document;
+            body.innerHTML = `<strong>strong text</strong><p is="custom-element">skipped content</p><strong>strong text</strong>`;
+            IncrementalDOM.patch(body, render);
+            expect(body.innerHTML.trim()).to.eq('<strong>strong text bis</strong><p>content</p><strong>strong text bis</strong>', 'render');
+            done();
+        });
+    });
+
     it('should ignore static attributes', (done) => {
         let render = compile(`<h1 class="foo {{data.h1Class}} bar" id="anId">Hello</h1>`, {ignoreStaticAttributes: true})(IncrementalDOM);
         env('', function (err, win) {

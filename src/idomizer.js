@@ -116,7 +116,8 @@ const BUILT_IN_TAGS = {
  * <br>using a constant value: <code>&lt;hr tpl-key="'constant value'"&gt;</code>
  * <br>using a dynamic value: <code>&lt;hr tpl-key="dynamicValue"&gt;</code>
  * @property {!string} attributeSkip The flag to skip the process eventual children.
- * <code>&lt;p tpl-skip&gt;&lt;!-- existing will not be touched --&gt;&lt;/p&gt;</code>
+ * <code>&lt;p tpl-skip&gt;&lt;!-- existing children will not be touched --&gt;&lt;/p&gt;</code>
+ * @property {!boolean} skipCustomElements If true element name having <code>-</code> or having an attribute <code>is</code> will be skipped. By default <code>true</code>.
  * @property {!string} varDataName The name of the variable exposing the data.
  * @property {!string} varHelpersName The name of the variable exposing the helpers.
  * @property {!Array<string>} selfClosingElements The list of self closing elements. (http://www.w3.org/TR/html5/syntax.html#void-elements)
@@ -128,6 +129,7 @@ const OPTIONS = {
     evaluation: /\{\{([\s\S]+?)}}/gm,
     attributeKey: 'tpl-key',
     attributeSkip: 'tpl-skip',
+    skipCustomElements: true,
     varDataName: 'data',
     varHelpersName: 'helpers',
     selfClosingElements: ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'],
@@ -216,11 +218,19 @@ function unwrapExpressions(value) {
     return value.replace(/<!\[CDATA\[/gim, '').replace(/]]>/gim, '');
 }
 
+function checkSkipAttribute(attrs = {}, options = OPTIONS) {
+    return attrs.hasOwnProperty(options.attributeSkip) && attrs[options.attributeSkip] !== 'deactivated';
+}
+
+function checkIsAttribute(attrs = {}, options = OPTIONS) {
+    return options.skipCustomElements && attrs.hasOwnProperty('is') && attrs[options.attributeSkip] !== 'deactivated';
+}
+
 function parseAttributes(attrs = {}, options = OPTIONS) {
     let statics = {},
         varArgs = {},
         key,
-        skip = attrs[options.attributeSkip] !== null && attrs[options.attributeSkip] !== undefined;
+        skip = checkSkipAttribute(attrs, options) || checkIsAttribute(attrs, options);
     Object.keys(attrs)
         .filter(key => [options.attributeSkip].indexOf(key) < 0)
         .forEach(function (key) {
@@ -257,6 +267,10 @@ function staticsToJs(statics = {}) {
     return keys.length > 0 ? `[${keys.map(key => `'${key}', '${stringify(statics[key])}'`).join(', ')}]` : 'null';
 }
 
+function checkCustomElement(name = '', attrs = {}, options = OPTIONS) {
+    return options.skipCustomElements && attrs[options.attributeSkip] !== 'deactivated' && name.indexOf('-') > -1;
+}
+
 /**
  * Compile the given HTML template into a function factory.
  *
@@ -289,7 +303,7 @@ export function compile(html = '', options = {}) {
             } else {
                 let fn = getFunctionName(name, options);
                 fnBody = append(fnBody, `${fn}('${name}', ${key ? `${key}` : 'null'}, ${staticsToJs(statics)}, ${varArgsToJs(varArgs)});`, options);
-                if (skip) {
+                if (skip || checkCustomElement(name, attrs, options)) {
                     fnBody = append(fnBody, `_skip();`, options);
                 }
             }
@@ -324,19 +338,19 @@ export function compile(html = '', options = {}) {
     parser.parseComplete(wrapExpressions(html, options));
 
     let fnWrapper = `
-        var _elementOpen = i.elementOpen,
-            _elementClose = i.elementClose,
-            _elementVoid = i.elementVoid,
-            _text = i.text,
-            _skip = i.skip;
+        var _elementOpen = _i.elementOpen,
+            _elementClose = _i.elementClose,
+            _elementVoid = _i.elementVoid,
+            _text = _i.text,
+            _skip = _i.skip;
         return function (_data_) {
-            var ${options.varHelpersName || 'helpers'} = h || {},
+            var ${options.varHelpersName || 'helpers'} = _h || {},
                 ${options.varDataName || 'data'} = _data_ || {};
             ${fnBody}
         };
     `;
 
-    let factory = new Function(['i', 'h'], fnWrapper);
+    let factory = new Function(['_i', '_h'], fnWrapper);
 
     return factory;
 }

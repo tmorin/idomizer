@@ -186,7 +186,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * <br>using a constant value: <code>&lt;hr tpl-key="'constant value'"&gt;</code>
 	 * <br>using a dynamic value: <code>&lt;hr tpl-key="dynamicValue"&gt;</code>
 	 * @property {!string} attributeSkip The flag to skip the process eventual children.
-	 * <code>&lt;p tpl-skip&gt;&lt;!-- existing will not be touched --&gt;&lt;/p&gt;</code>
+	 * <code>&lt;p tpl-skip&gt;&lt;!-- existing children will not be touched --&gt;&lt;/p&gt;</code>
+	 * @property {!boolean} skipCustomElements If true element name having <code>-</code> or having an attribute <code>is</code> will be skipped. By default <code>true</code>.
 	 * @property {!string} varDataName The name of the variable exposing the data.
 	 * @property {!string} varHelpersName The name of the variable exposing the helpers.
 	 * @property {!Array<string>} selfClosingElements The list of self closing elements. (http://www.w3.org/TR/html5/syntax.html#void-elements)
@@ -198,6 +199,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    evaluation: /\{\{([\s\S]+?)}}/gm,
 	    attributeKey: 'tpl-key',
 	    attributeSkip: 'tpl-skip',
+	    skipCustomElements: true,
 	    varDataName: 'data',
 	    varHelpersName: 'helpers',
 	    selfClosingElements: ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'],
@@ -306,6 +308,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return value.replace(/<!\[CDATA\[/gim, '').replace(/]]>/gim, '');
 	}
 
+	function checkSkipAttribute() {
+	    var attrs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : OPTIONS;
+
+	    return attrs.hasOwnProperty(options.attributeSkip) && attrs[options.attributeSkip] !== 'deactivated';
+	}
+
+	function checkIsAttribute() {
+	    var attrs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : OPTIONS;
+
+	    return options.skipCustomElements && attrs.hasOwnProperty('is') && attrs[options.attributeSkip] !== 'deactivated';
+	}
+
 	function parseAttributes() {
 	    var attrs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 	    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : OPTIONS;
@@ -313,7 +329,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var statics = {},
 	        varArgs = {},
 	        key = void 0,
-	        skip = attrs[options.attributeSkip] !== null && attrs[options.attributeSkip] !== undefined;
+	        skip = checkSkipAttribute(attrs, options) || checkIsAttribute(attrs, options);
 	    Object.keys(attrs).filter(function (key) {
 	        return [options.attributeSkip].indexOf(key) < 0;
 	    }).forEach(function (key) {
@@ -356,6 +372,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return keys.length > 0 ? '[' + keys.map(function (key) {
 	        return '\'' + key + '\', \'' + stringify(statics[key]) + '\'';
 	    }).join(', ') + ']' : 'null';
+	}
+
+	function checkCustomElement() {
+	    var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+	    var attrs = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+	    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : OPTIONS;
+
+	    return options.skipCustomElements && attrs[options.attributeSkip] !== 'deactivated' && name.indexOf('-') > -1;
 	}
 
 	/**
@@ -401,7 +425,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            } else {
 	                var fn = getFunctionName(name, options);
 	                fnBody = append(fnBody, fn + '(\'' + name + '\', ' + (key ? '' + key : 'null') + ', ' + staticsToJs(statics) + ', ' + varArgsToJs(varArgs) + ');', options);
-	                if (skip) {
+	                if (skip || checkCustomElement(name, attrs, options)) {
 	                    fnBody = append(fnBody, '_skip();', options);
 	                }
 	            }
@@ -435,9 +459,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // wrap inline expression with a CDATA tag to allow inline javascript
 	    parser.parseComplete(wrapExpressions(html, options));
 
-	    var fnWrapper = '\n        var _elementOpen = i.elementOpen,\n            _elementClose = i.elementClose,\n            _elementVoid = i.elementVoid,\n            _text = i.text,\n            _skip = i.skip;\n        return function (_data_) {\n            var ' + (options.varHelpersName || 'helpers') + ' = h || {},\n                ' + (options.varDataName || 'data') + ' = _data_ || {};\n            ' + fnBody + '\n        };\n    ';
+	    var fnWrapper = '\n        var _elementOpen = _i.elementOpen,\n            _elementClose = _i.elementClose,\n            _elementVoid = _i.elementVoid,\n            _text = _i.text,\n            _skip = _i.skip;\n        return function (_data_) {\n            var ' + (options.varHelpersName || 'helpers') + ' = _h || {},\n                ' + (options.varDataName || 'data') + ' = _data_ || {};\n            ' + fnBody + '\n        };\n    ';
 
-	    var factory = new Function(['i', 'h'], fnWrapper);
+	    var factory = new Function(['_i', '_h'], fnWrapper);
 
 	    return factory;
 	}
