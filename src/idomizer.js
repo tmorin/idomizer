@@ -177,7 +177,6 @@ const attributeEvaluator = {
  */
 const inlineEvaluator = {
     appender: ' ',
-    toText: text => `t('${stringify(text)}');`,
     toJs: clause => `${clause}`
 };
 

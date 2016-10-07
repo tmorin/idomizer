@@ -263,9 +263,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	var inlineEvaluator = {
 	    appender: ' ',
-	    toText: function toText(text) {
-	        return 't(\'' + stringify(text) + '\');';
-	    },
 	    toJs: function toJs(clause) {
 	        return '' + clause;
 	    }

@@ -5,3 +5,5 @@ test:
   override:
     - npm run clean
     - npm run test
+  post:
+    - npm run coveralls
