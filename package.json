@@ -40,8 +40,7 @@
   "scripts": {
     "clean": "rimraf .nyc_output coverage dist lib *.tgz",
     "lint": "jshint src test",
-    "nyc": "nyc",
-    "test": "nyc --require babel-register --require babel-polyfill mocha --recursive",
+    "test": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text mocha --recursive",
     "test:watch": "mocha --compilers js:babel-register --recursive --watch",
     "coveralls": "nyc report --reporter=text-lcov | coveralls --verbose",
     "check": "npm run lint && npm run test",
@@ -72,8 +71,10 @@
     "browserify": "^13.0.0",
     "chai": "^3.4.0",
     "coveralls": "^2.11.9",
+    "cross-env": "^3.1.1",
     "esdoc": "^0.4.0",
     "incremental-dom": "^0.5.0",
+    "istanbul": "^0.4.5",
     "jsdom": "^9.0.0",
     "jshint": "^2.8.0",
     "json-loader": "^0.5.0",
@@ -92,5 +93,24 @@
         "*.js"
       ]
     }
-  ]
+  ],
+  "babel": {
+    "presets": [
+      "es2015"
+    ],
+    "env": {
+      "test": {
+        "plugins": [
+          "istanbul"
+        ]
+      }
+    }
+  },
+  "nyc": {
+    "require": [
+      "babel-register"
+    ],
+    "sourceMap": false,
+    "instrument": false
+  }
 }
