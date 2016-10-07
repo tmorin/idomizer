@@ -36,7 +36,7 @@ See [plugins](http://babeljs.io/docs/advanced/plugins) to get more information a
 
 ```javascript
 {
-    plugins: ['idomizers/src/plugins/babel-idomizer.js']
+    plugins: ['idomizers/lib/plugins/babel-idomizer.js']
 }
 ```
 
@@ -407,11 +407,11 @@ Obviously, this behavior can be deactivated:
 - globally (for a whole HTML template)
     ```javascript
     const render = compile(`<x-element><p>will part of the light DOM</p></x-element>`, {skipCustomElements : false})
-    ````
+    ```
 - locally (an HTML element), ``
     ```javascript
     const render = compile(`<x-element tpl-skip="deactivated"><p>will part of the light DOM</p></x-element>`)
-    ````
+    ```
 
 If the **skip** flag is not set (globally or locally) the following snippet will raise an error:
 ```html
