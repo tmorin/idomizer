@@ -197,6 +197,8 @@ function template(_i, _h) {
 From
 ```javascript
 idomizer.compile(`<strong><tpl-text value="data.value"/></strong>`)(IncrementalDOM)
+// or
+idomizer.compile(`<strong>{{= data.value }}</strong>`)(IncrementalDOM)
 ```
 To
 ```javascript
