@@ -314,4 +314,16 @@ describe('idomizer', () => {
         });
     });
 
+    it('should interpolate text node', (done) => {
+        let render1 = compile(`<p>t {{= txtNode1 }} t {{= txtNode2 }}</p>`)(IncrementalDOM);
+        env('', function (err, win) {
+            let body = win.document.body;
+            global.Element = win.Element;
+            global.Document = win.Document;
+            IncrementalDOM.patch(body, render1, {txtNode1: 'value1', txtNode2: 'value2'});
+            expect(body.innerHTML.trim()).to.eq('<p>t value1 t value2</p>', 'render1');
+            done();
+        });
+    });
+
 });

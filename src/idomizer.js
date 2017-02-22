@@ -111,7 +111,8 @@ const BUILT_IN_TAGS = {
  * @desc The override-able options of idomizer.
  * @property {boolean} pretty Append a end of line character ('\\n' ) after each statements.
  * @property {boolean} ignoreStaticAttributes Discovered static attributes will be handled as dynamic attributes.
- * @property {!RegExp} evaluation A RegExp to extracts expressions to evaluate.
+ * @property {!RegExp} evaluation A RegExp to extract expressions to evaluate.
+ * @property {!RegExp} interpolation A RegExp to extract an expression to interpolate.
  * @property {!string} attributeKey The value of the IncrementalDOM's key.
  * <br>using a constant value: <code>&lt;hr tpl-key="'constant value'"&gt;</code>
  * <br>using a dynamic value: <code>&lt;hr tpl-key="dynamicValue"&gt;</code>
@@ -127,6 +128,7 @@ const OPTIONS = {
     pretty: false,
     ignoreStaticAttributes: false,
     evaluation: /\{\{([\s\S]+?)}}/gm,
+    interpolation: /\{\{=([\s\S]+?)\}\}/gm,
     attributeKey: 'tpl-key',
     attributeSkip: 'tpl-skip',
     skipCustomElements: true,
@@ -159,6 +161,7 @@ function append(body = '', line = '', options = OPTIONS) {
  * @property {!string} appender Appender between statements
  * @property {!function(text: string)} toText to convert a text statements
  * @property {!function(clause: string)} toJs to convert a js statements
+ * @property {!function(path: string)} toTextNode to interpolate value within a text node
  */
 
 /**
@@ -177,8 +180,31 @@ const attributeEvaluator = {
  */
 const inlineEvaluator = {
     appender: ' ',
-    toJs: clause => `${clause}`
+    toJs: clause => `${clause}`,
+    toTextNode: path => `_text(_data_.${stringify(path.trim())});`
 };
+
+/**
+ * Interpolate the string to return a JavaScript compliant syntax.
+ * @param {!string} value the value
+ * @param {!Evaluator} evaluator the evaluator's configuration
+ * @param {!OPTIONS} options the options
+ * @returns {string} a compliant JavaScript fragment
+ */
+function interpolate(value, evaluator, options) {
+    let js = [];
+    let result;
+    let lastIndex = 0;
+    while ((result = options.interpolation.exec(value)) !== null) {
+        let full = result[0];
+        let group = result[1];
+        let index = result.index;
+        js.push(evaluator.toTextNode(group));
+        lastIndex = index + full.length;
+    }
+    let after = value.substring(lastIndex, value.length);
+    return js.join(evaluator.appender);
+}
 
 /**
  * Evaluate the string to return a JavaScript compliant syntax.
@@ -318,7 +344,9 @@ export function compile(html = '', options = {}) {
             }
         },
         ontext(text){
-            if (text.search(options.evaluation) > -1) {
+            if (text.search(options.interpolation) > -1) {
+                fnBody = append(fnBody, `${interpolate(text, inlineEvaluator, options)}`, options);
+            } else if (text.search(options.evaluation) > -1) {
                 fnBody = append(fnBody, `${evaluate(text, inlineEvaluator, options)}`, options);
             } else {
                 fnBody = append(fnBody, `_text('${stringify(text)}');`, options);
