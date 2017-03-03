@@ -4,14 +4,14 @@
 [![Dependency Status](https://david-dm.org/tmorin/idomizer.svg)](https://david-dm.org/tmorin/idomizer)
 [![devDependency Status](https://david-dm.org/tmorin/idomizer/dev-status.svg)](https://david-dm.org/tmorin/idomizer#info=devDependencies)
 [![Coverage Status](https://coveralls.io/repos/github/tmorin/idomizer/badge.svg?branch=master)](https://coveralls.io/github/tmorin/idomizer?branch=master)
-<img data-ice="coverageBadge" src="http://tmorin.github.io/idomizer//badge.svg">
+<img data-ice="coverageBadge" src="http://tmorin.github.io/idomizer/badge.svg">
 
-An HTML template compiler providing an _incremental-dom_ render factory.
+An HTML template compiler providing an [incremental-dom](google.github.io/incremental-dom) render factory.
 
 Versions and compatibilities:
 
-- idomizer 0.5.x and below are compatible with _incremental-dom_ 0.4.x and below.
-- idomizer 0.6.x and above are compatible with _incremental-dom_ 0.5.x and above.
+- idomizer <= 0.5 -> _incremental-dom_ 0.4 and below.
+- idomizer >= 0.6 -> _incremental-dom_ 0.5 and above.
 
 ## Installation
 

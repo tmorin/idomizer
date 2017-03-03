@@ -6,9 +6,9 @@ import {expect} from 'chai';
 describe('idomizerify', () => {
 
     it('should convert an idomizer file into a string function', (done) => {
-        let dummyJsFile = join(__dirname, 'plugins/dummy.idomizer');
-        let content = `<h1 class="{{data.h1Class}}">Hello</h1>`;
-        runTransform(idomizerify, dummyJsFile, {content}, (err, result) => {
+        const dummyJsFile = join(__dirname, 'plugins/dummy.idomizer');
+        const content = `<h1 class="{{data.h1Class}}">Hello</h1>`;
+        runTransform(idomizerify, dummyJsFile, {content, config: {skipExceptions: false}}, (err, result) => {
             if (err) {
                 return done(err);
             }

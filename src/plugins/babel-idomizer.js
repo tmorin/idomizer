@@ -6,9 +6,9 @@ import {toStringFunction} from './utils.js';
 export default function ({types: t}) {
     return {
         visitor: {
-            TaggedTemplateExpression(path) {
+            TaggedTemplateExpression(path, state) {
                 if (path.node.tag.name === 'idomizer' && path.node.quasi.quasis.length === 1) {
-                    let factory = toStringFunction(path.node.quasi.quasis[0].value.cooked);
+                    let factory = toStringFunction(path.node.quasi.quasis[0].value.cooked, state.opts);
                     path.replaceWithSourceString(factory);
                 }
             }

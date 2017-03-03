@@ -24,7 +24,7 @@ xdescribe('idomizer-loader', () => {
                 path: context,
                 filename: outputFilename
             },
-            module: {
+            rules: {
                 loaders: [
                     {test: /\.idomizer$/, loader: 'idomizer-loader'}
                 ]
