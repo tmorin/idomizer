@@ -162,7 +162,7 @@ function append(body = '', line = '', options = OPTIONS) {
 }
 
 function createSafeJsBlock(value) {
-    return `(function () { try { return ${value} } catch(e) { return '' } })()`
+    return `(function () { try { return ${value} } catch(e) { return '' } })()`;
 }
 
 /**

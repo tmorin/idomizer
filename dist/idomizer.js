@@ -10815,18 +10815,21 @@ var BUILT_IN_TAGS = {
  * @desc The override-able options of idomizer.
  * @property {boolean} pretty Append a end of line character ('\\n' ) after each statements.
  * @property {boolean} ignoreStaticAttributes Discovered static attributes will be handled as dynamic attributes.
- * @property {!RegExp} interpolation RegExp to inject interpolated values.
- * @property {!RegExp} expression RegExp to inject JavaScript code.
- * @property {!string} attributeKey The value of the IncrementalDOM's key. Should be used when dealing with loops.
- * <br>using a constant value: <code>&lt;hr tpl-key="'constant value'"&gt;</code>
- * <br>using a dynamic value: <code>&lt;hr tpl-key="dynamicValue"&gt;</code>
- * @property {!string} attributeSkip The flag to skip the process eventual children.
+ * @property {RegExp} interpolation RegExp to inject interpolated values.
+ * @property {RegExp} expression RegExp to inject JavaScript code.
+ * @property {string} attributeKey The value of the IncrementalDOM's key. Should be used when dealing with loops.
+ * <ul>
+ *     <li>using a constant value: <code>&lt;hr tpl-key="'constant value'"&gt;</code>/li>
+ *     <li>using a dynamic value: <code>&lt;hr tpl-key="dynamicValue"&gt;</code></li>
+ * </ul>
+ * @property {string} attributeSkip The flag to skip the process eventual children.
  * <code>&lt;p tpl-skip&gt;&lt;!-- existing children will not be touched --&gt;&lt;/p&gt;</code>
- * @property {!boolean} skipCustomElements If true element name having <code>-</code> or having an attribute <code>is</code> will be skipped. By default <code>true</code>.
- * @property {!string} varDataName The name of the variable exposing the data.
- * @property {!string} varHelpersName The name of the variable exposing the helpers.
- * @property {!Array<string>} selfClosingElements The list of self closing elements. (http://www.w3.org/TR/html5/syntax.html#void-elements)
- * @property {!BUILT_IN_TAGS} tags The built in and custom tags.
+ * @property {boolean} skipExceptions If true exceptions raised during interpolation will be skipped and an empty string wil be used as result value.<br>By default <code>true</code>.
+ * @property {boolean} skipCustomElements If true element name having <code>-</code> or having an attribute <code>is</code> will be skipped.<br>By default <code>true</code>.
+ * @property {string} varDataName The name of the variable exposing the data.
+ * @property {string} varHelpersName The name of the variable exposing the helpers.
+ * @property {Array<string>} selfClosingElements The list of self closing elements. (http://www.w3.org/TR/html5/syntax.html#void-elements)
+ * @property {BUILT_IN_TAGS} tags The built in and custom tags.
  */
 var OPTIONS = {
     pretty: false,
@@ -10835,6 +10838,7 @@ var OPTIONS = {
     expression: /\[\[([\s\S]+?)]]/gm,
     attributeKey: 'tpl-key',
     attributeSkip: 'tpl-skip',
+    skipExceptions: true,
     skipCustomElements: true,
     varDataName: 'data',
     varHelpersName: 'helpers',
@@ -10873,13 +10877,17 @@ function append() {
     return body;
 }
 
+function createSafeJsBlock(value) {
+    return '(function () { try { return ' + value + ' } catch(e) { return \'\' } })()';
+}
+
 /**
  * @typedef {Object} Evaluator
  * @desc Configuration to transform an expression into a compliant JavaScript fragment.
  * @private
  * @property {!string} appender Appender between statements
- * @property {!function(text: string)} toText to convert a text statements
- * @property {!function(clause: string)} toJs to convert a js statements
+ * @property {!function(value: string, options: OPTIONS)} toText to convert a text statements
+ * @property {!function(value: string, options: OPTIONS)} inject to convert a js statements
  */
 
 /**
@@ -10891,8 +10899,8 @@ var attributeEvaluator = {
     toText: function toText(value) {
         return '\'' + stringify(value) + '\'';
     },
-    toString: function toString(value) {
-        return '(' + value + ')';
+    inject: function inject(value, options) {
+        return options.skipExceptions ? createSafeJsBlock(value.trim()) : '(' + value.trim() + ')';
     }
 };
 
@@ -10902,11 +10910,8 @@ var attributeEvaluator = {
  */
 var inlineInterpolationEvaluator = {
     appender: ' ',
-    toText: function toText(value) {
-        return '_text(' + stringify(value.trim()) + ');';
-    },
-    toString: function toString(value) {
-        return '_text(' + value.trim() + ');';
+    inject: function inject(value, options) {
+        return options.skipExceptions ? '_text(' + createSafeJsBlock(value.trim()) + ');' : '_text(' + value.trim() + ');';
     }
 };
 
@@ -10916,10 +10921,7 @@ var inlineInterpolationEvaluator = {
  */
 var inlineExpressionEvaluator = {
     appender: ' ',
-    toText: function toText(value) {
-        return '_text(' + stringify(value.trim()) + ');';
-    },
-    toString: function toString(value) {
+    inject: function inject(value) {
         return '' + value;
     }
 };
@@ -10942,14 +10944,16 @@ function evaluate(value, evaluator, regex, options) {
         var index = result.index;
         var before = value.substring(lastIndex, index);
         if (before) {
-            js.push(evaluator.toText(before));
+            js.push(evaluator.toText(before, options));
         }
-        js.push(evaluator.toString(group));
+        if (group.trim()) {
+            js.push(evaluator.inject(group, options));
+        }
         lastIndex = index + full.length;
     }
     var after = value.substring(lastIndex, value.length);
     if (after) {
-        js.push(evaluator.toText(after));
+        js.push(evaluator.toText(after, options));
     }
     return js.join(evaluator.appender);
 }
