@@ -37,12 +37,11 @@ See [plugins](http://babeljs.io/docs/advanced/plugins) to get more information a
 
 ```javascript
 {
-    plugins: ['idomizers/lib/plugins/babel-idomizer.js']
+    plugins: ['idomizer/lib/plugins/babel-idomizer.js']
 }
 ```
 
 Presently the plugin only support ES6 templates tagged with _idomizer_.
-Further more the template can not contain expressions like ``${anExpression}``.
 
 For instance,
 ```javascript
@@ -65,6 +64,8 @@ var template = function (_i, _h) {
   };
 };
 ```
+
+Be aware the template can not contain expressions like ``${anExpression}``.
 
 ### Webpack
 
@@ -198,7 +199,7 @@ From
 ```javascript
 idomizer.compile(`<strong><tpl-text value="data.value"/></strong>`)(IncrementalDOM)
 // or
-idomizer.compile(`<strong>{{= data.value }}</strong>`)(IncrementalDOM)
+idomizer.compile(`<strong>{{ data.value }}</strong>`)(IncrementalDOM)
 ```
 To
 ```javascript
@@ -293,11 +294,11 @@ function template(_i, _h) {
 From
 ```javascript
 idomizer.compile(`
-    {{ data.items.forEach(function (item, i) { }}
+    [[ data.items.forEach(function (item, i) { ]]
         <strong tpl-key="{{i}}">
             <tpl-text value="i"/>-<tpl-text value="item"/>
         </strong>
-    {{ }); }}
+    [[ }); ]]
 `)(IncrementalDOM);
 ```
 To

@@ -3,7 +3,7 @@ import IncrementalDOM from 'incremental-dom';
 import {env} from 'jsdom';
 import {expect} from 'chai';
 
-describe('idomizer', () => {
+describe.only('idomizer', () => {
 
     it('should render a simple h1 with a static attribute', (done) => {
         let render = compile(`<h1 class="main">Hello</h1>`)(IncrementalDOM);
@@ -20,7 +20,7 @@ describe('idomizer', () => {
     });
 
     it('should render a simple h1 with a dynamic attributes', (done) => {
-        let render = compile(`<h1 class="foo {{data.h1Class}} bar">Hello</h1>`)(IncrementalDOM);
+        let render = compile(`<h1 class="foo {{ data.h1Class }} bar">Hello</h1>`)(IncrementalDOM);
         env('', function (err, win) {
             let body = win.document.body;
             global.Element = win.Element;
@@ -90,7 +90,7 @@ describe('idomizer', () => {
 
     it('should iterate over items with an inline statement', (done) => {
         let render = compile(`
-            {{ data.items.forEach(function (item, index) { }}<strong><tpl-text value="index"/>-<tpl-text value="item"/></strong>{{ }); }}
+            [[ data.items.forEach(function (item, index) { ]]<strong><tpl-text value="index"/>-<tpl-text value="item"/></strong>[[ }); ]]
         `)(IncrementalDOM);
         env('', function (err, win) {
             let body = win.document.body;
@@ -138,13 +138,13 @@ describe('idomizer', () => {
 
     it('should handle conditional statements with inline statements', (done) => {
         let render = compile(`
-            {{ if (data.items.length > 0 && data.items.length < 2) { }}
+            [[ if (data.items.length > 0 && data.items.length < 2) { ]]
                 <p>1 item</p>
-            {{ } else if (data.items.length > 1) { }}
+            [[ } else if (data.items.length > 1) { ]]
                 <p>items</p>
-            {{ } else { }}
+            [[ } else { ]]
                 <p>no items</p>
-            {{ } }}
+            [[ } ]]
         `)(IncrementalDOM);
         env('', function (err, win) {
             let body = win.document.body;
@@ -315,13 +315,15 @@ describe('idomizer', () => {
     });
 
     it('should interpolate text node', (done) => {
-        let render1 = compile(`<p>t {{= data.txtNode1 }} t {{= data.txtNode2 }}</p>`)(IncrementalDOM);
+        let render1 = compile(`
+            [[ if (data.v1 > 0) { ]]YES[[ } ]]<p class="a {{ data.att1 }} a {{ data.att2 }}">t {{ data.txtNode1 }} t {{ data.txtNode2 }}</p>
+        `)(IncrementalDOM);
         env('', function (err, win) {
             let body = win.document.body;
             global.Element = win.Element;
             global.Document = win.Document;
-            IncrementalDOM.patch(body, render1, {txtNode1: 'value1', txtNode2: 'value2'});
-            expect(body.innerHTML.trim()).to.eq('<p>t value1 t value2</p>', 'render1');
+            IncrementalDOM.patch(body, render1, {v1: 1, txtNode1: 'value1', txtNode2: 'value2', att1: 'a1', att2: 'a2'});
+            expect(body.innerHTML.trim()).to.eq('YES<p class="a a1 a a2">t value1 t value2</p>', 'render1');
             done();
         });
     });
