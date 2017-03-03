@@ -1,6 +1,6 @@
 'use strict';
 
-var webpack = require('webpack');
+const webpack = require('webpack');
 
 module.exports = {
     module: {
@@ -12,15 +12,5 @@ module.exports = {
     output: {
         library: 'idomizer',
         libraryTarget: 'umd'
-    },
-    devServer: {
-        contentBase: './dist',
-        noInfo: false,
-        hot: true,
-        inline: true,
-        watchOptions: {
-            aggregateTimeout: 300,
-            poll: 1000
-        }
     }
 };

@@ -45,8 +45,8 @@
     "coveralls": "nyc report --reporter=text-lcov | coveralls --verbose",
     "check": "npm run lint && npm run test",
     "build:lib": "babel src --out-dir lib",
-    "build:umd": "webpack src/idomizer.js dist/idomizer.js --config webpack.config.development.js",
-    "build:umd:min": "webpack src/idomizer.js dist/idomizer.min.js --config webpack.config.production.js",
+    "build:umd": "webpack src/idomizer.js dist/idomizer.js --config config.js --define process.env.NODE_ENV='production'",
+    "build:umd:min": "webpack src/idomizer.js dist/idomizer.min.js --config config.js --optimize-minimize --define process.env.NODE_ENV='production'",
     "build": "npm run build:lib && npm run build:umd && npm run build:umd:min",
     "preversion": "npm run check",
     "version": "npm run build && git add -A dist",
@@ -82,8 +82,7 @@
     "nyc": "^10.0.0",
     "rimraf": "^2.4.0",
     "systemjs": "^0.20.0",
-    "webpack": "^2.2.0",
-    "webpack-dev-server": "^2.4.0"
+    "webpack": "^2.2.0"
   },
   "npmName": "idomizer",
   "npmFileMap": [
