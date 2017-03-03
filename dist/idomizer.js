@@ -10815,9 +10815,9 @@ var BUILT_IN_TAGS = {
  * @desc The override-able options of idomizer.
  * @property {boolean} pretty Append a end of line character ('\\n' ) after each statements.
  * @property {boolean} ignoreStaticAttributes Discovered static attributes will be handled as dynamic attributes.
- * @property {!RegExp} evaluation A RegExp to extract expressions to evaluate.
- * @property {!RegExp} interpolation A RegExp to extract an expression to interpolate.
- * @property {!string} attributeKey The value of the IncrementalDOM's key.
+ * @property {!RegExp} interpolation RegExp to inject interpolated values.
+ * @property {!RegExp} expression RegExp to inject JavaScript code.
+ * @property {!string} attributeKey The value of the IncrementalDOM's key. Should be used when dealing with loops.
  * <br>using a constant value: <code>&lt;hr tpl-key="'constant value'"&gt;</code>
  * <br>using a dynamic value: <code>&lt;hr tpl-key="dynamicValue"&gt;</code>
  * @property {!string} attributeSkip The flag to skip the process eventual children.
@@ -10831,8 +10831,8 @@ var BUILT_IN_TAGS = {
 var OPTIONS = {
     pretty: false,
     ignoreStaticAttributes: false,
-    evaluation: /\{\{([\s\S]+?)}}/gm,
-    interpolation: /\{\{=([\s\S]+?)\}\}/gm,
+    interpolation: /\{\{([\s\S]+?)}}/gm,
+    expression: /\[\[([\s\S]+?)]]/gm,
     attributeKey: 'tpl-key',
     attributeSkip: 'tpl-skip',
     skipCustomElements: true,
@@ -10867,7 +10867,10 @@ function append() {
     var line = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
     var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : OPTIONS;
 
-    return body + (options.pretty ? '\n' : '') + line;
+    if (line) {
+        return body + (options.pretty ? '\n' : '') + line;
+    }
+    return body;
 }
 
 /**
@@ -10877,7 +10880,6 @@ function append() {
  * @property {!string} appender Appender between statements
  * @property {!function(text: string)} toText to convert a text statements
  * @property {!function(clause: string)} toJs to convert a js statements
- * @property {!function(path: string)} toTextNode to interpolate value within a text node
  */
 
 /**
@@ -10886,25 +10888,39 @@ function append() {
  */
 var attributeEvaluator = {
     appender: ' + ',
-    toText: function toText(text) {
-        return '\'' + stringify(text) + '\'';
+    toText: function toText(value) {
+        return '\'' + stringify(value) + '\'';
     },
-    toJs: function toJs(clause) {
-        return '(' + clause + ')';
+    toString: function toString(value) {
+        return '(' + value + ')';
     }
 };
 
 /**
- * Evaluator of inline's value.
+ * Evaluator of inline interpolation.
  * @type {Evaluator}
  */
-var inlineEvaluator = {
+var inlineInterpolationEvaluator = {
     appender: ' ',
-    toJs: function toJs(clause) {
-        return '' + clause;
+    toText: function toText(value) {
+        return '_text(' + stringify(value.trim()) + ');';
     },
-    toTextNode: function toTextNode(path) {
-        return '_text(' + stringify(path.trim()) + ');';
+    toString: function toString(value) {
+        return '_text(' + value.trim() + ');';
+    }
+};
+
+/**
+ * Evaluator of an inline expression.
+ * @type {Evaluator}
+ */
+var inlineExpressionEvaluator = {
+    appender: ' ',
+    toText: function toText(value) {
+        return '_text(' + stringify(value.trim()) + ');';
+    },
+    toString: function toString(value) {
+        return '' + value;
     }
 };
 
@@ -10912,36 +10928,15 @@ var inlineEvaluator = {
  * Interpolate the string to return a JavaScript compliant syntax.
  * @param {!string} value the value
  * @param {!Evaluator} evaluator the evaluator's configuration
+ * @param {!RegExp} regex the regex used to capture the groups to evaluate
  * @param {!OPTIONS} options the options
  * @returns {string} a compliant JavaScript fragment
  */
-function interpolate(value, evaluator, options) {
+function evaluate(value, evaluator, regex, options) {
     var js = [];
     var result = void 0;
     var lastIndex = 0;
-    while ((result = options.interpolation.exec(value)) !== null) {
-        var full = result[0];
-        var group = result[1];
-        var index = result.index;
-        js.push(evaluator.toTextNode(group));
-        lastIndex = index + full.length;
-    }
-    var after = value.substring(lastIndex, value.length);
-    return js.join(evaluator.appender);
-}
-
-/**
- * Evaluate the string to return a JavaScript compliant syntax.
- * @param {!string} value the value
- * @param {!Evaluator} evaluator the evaluator's configuration
- * @param {!OPTIONS} options the options
- * @returns {string} a compliant JavaScript fragment
- */
-function evaluate(value, evaluator, options) {
-    var js = [];
-    var result = void 0;
-    var lastIndex = 0;
-    while ((result = options.evaluation.exec(value)) !== null) {
+    while ((result = regex.exec(value)) !== null) {
         var full = result[0];
         var group = result[1];
         var index = result.index;
@@ -10949,7 +10944,7 @@ function evaluate(value, evaluator, options) {
         if (before) {
             js.push(evaluator.toText(before));
         }
-        js.push(evaluator.toJs(group));
+        js.push(evaluator.toString(group));
         lastIndex = index + full.length;
     }
     var after = value.substring(lastIndex, value.length);
@@ -10960,7 +10955,7 @@ function evaluate(value, evaluator, options) {
 }
 
 function wrapExpressions(value, options) {
-    return value.replace(options.evaluation, '<![CDATA[$&]]>');
+    return value.replace(options.interpolation, '<![CDATA[$&]]>').replace(options.expression, '<![CDATA[$&]]>');
 }
 
 function unwrapExpressions(value) {
@@ -10993,8 +10988,8 @@ function parseAttributes() {
         return [options.attributeSkip].indexOf(key) < 0;
     }).forEach(function (key) {
         var value = unwrapExpressions(attrs[key]);
-        if (value.search(options.evaluation) > -1 || options.ignoreStaticAttributes) {
-            varArgs[key] = evaluate(value, attributeEvaluator, options);
+        if (value.search(options.interpolation) > -1 || options.ignoreStaticAttributes) {
+            varArgs[key] = evaluate(value, attributeEvaluator, options.interpolation, options);
         } else {
             statics[key] = value;
         }
@@ -11098,10 +11093,10 @@ function compile() {
             }
         },
         ontext: function ontext(text) {
-            if (text.search(options.interpolation) > -1) {
-                fnBody = append(fnBody, '' + interpolate(text, inlineEvaluator, options), options);
-            } else if (text.search(options.evaluation) > -1) {
-                fnBody = append(fnBody, '' + evaluate(text, inlineEvaluator, options), options);
+            if (text.search(options.expression) > -1) {
+                fnBody = append(fnBody, '' + evaluate(text, inlineExpressionEvaluator, options.expression, options), options);
+            } else if (text.search(options.interpolation) > -1) {
+                fnBody = append(fnBody, '' + evaluate(text, inlineInterpolationEvaluator, options.interpolation, options), options);
             } else {
                 fnBody = append(fnBody, '_text(\'' + stringify(text) + '\');', options);
             }
@@ -11120,9 +11115,7 @@ function compile() {
 
     var fnWrapper = '\n        var _elementOpen = _i.elementOpen,\n            _elementClose = _i.elementClose,\n            _elementVoid = _i.elementVoid,\n            _text = _i.text,\n            _skip = _i.skip;\n        return function (_data_) {\n            var ' + (options.varHelpersName || 'helpers') + ' = _h,\n                ' + (options.varDataName || 'data') + ' = _data_;\n            ' + fnBody + '\n        };\n    ';
 
-    var factory = new Function(['_i', '_h'], fnWrapper);
-
-    return factory;
+    return new Function(['_i', '_h'], fnWrapper);
 }
 
 /***/ })
