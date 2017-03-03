@@ -10799,7 +10799,7 @@ var BUILT_IN_TAGS = {
     },
     'tpl-text': {
         onopentag: function onopentag(name, attrs, key, statics, varArgs, options) {
-            return '_text(' + (statics.value || varArgs.value) + ');';
+            return inlineInterpolationEvaluator.inject(statics.value || varArgs.value, options);
         }
     },
     'tpl-call': {
