@@ -27,9 +27,9 @@ function assign() {
  *
  * @example <caption>tpl-if, tpl-else-if and tpl-else</caption>
  * idomizer.compile(`
- *   <tpl-if condition="data.values.length === 1">
+ *   <tpl-if expression="data.values.length === 1">
  *     <p>1 value</p>
- *   <tpl-else-if condition="data.values.length > 1" />
+ *   <tpl-else-if expression="data.values.length > 1" />
  *     <p>some values</p>
  *   <tpl-else />
  *     <p>no values to display</p>
@@ -181,7 +181,7 @@ const attributeEvaluator = {
 const inlineEvaluator = {
     appender: ' ',
     toJs: clause => `${clause}`,
-    toTextNode: path => `_text(_data_.${stringify(path.trim())});`
+    toTextNode: path => `_text(${stringify(path.trim())});`
 };
 
 /**
@@ -371,8 +371,8 @@ export function compile(html = '', options = {}) {
             _text = _i.text,
             _skip = _i.skip;
         return function (_data_) {
-            var ${options.varHelpersName || 'helpers'} = _h || {},
-                ${options.varDataName || 'data'} = _data_ || {};
+            var ${options.varHelpersName || 'helpers'} = _h,
+                ${options.varDataName || 'data'} = _data_;
             ${fnBody}
         };
     `;

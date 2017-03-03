@@ -10731,9 +10731,9 @@ function assign() {
  *
  * @example <caption>tpl-if, tpl-else-if and tpl-else</caption>
  * idomizer.compile(`
- *   <tpl-if condition="data.values.length === 1">
+ *   <tpl-if expression="data.values.length === 1">
  *     <p>1 value</p>
- *   <tpl-else-if condition="data.values.length > 1" />
+ *   <tpl-else-if expression="data.values.length > 1" />
  *     <p>some values</p>
  *   <tpl-else />
  *     <p>no values to display</p>
@@ -10904,7 +10904,7 @@ var inlineEvaluator = {
         return '' + clause;
     },
     toTextNode: function toTextNode(path) {
-        return '_text(_data_.' + stringify(path.trim()) + ');';
+        return '_text(' + stringify(path.trim()) + ');';
     }
 };
 
@@ -11118,7 +11118,7 @@ function compile() {
     // wrap inline expression with a CDATA tag to allow inline javascript
     parser.parseComplete(wrapExpressions(html, options));
 
-    var fnWrapper = '\n        var _elementOpen = _i.elementOpen,\n            _elementClose = _i.elementClose,\n            _elementVoid = _i.elementVoid,\n            _text = _i.text,\n            _skip = _i.skip;\n        return function (_data_) {\n            var ' + (options.varHelpersName || 'helpers') + ' = _h || {},\n                ' + (options.varDataName || 'data') + ' = _data_ || {};\n            ' + fnBody + '\n        };\n    ';
+    var fnWrapper = '\n        var _elementOpen = _i.elementOpen,\n            _elementClose = _i.elementClose,\n            _elementVoid = _i.elementVoid,\n            _text = _i.text,\n            _skip = _i.skip;\n        return function (_data_) {\n            var ' + (options.varHelpersName || 'helpers') + ' = _h,\n                ' + (options.varDataName || 'data') + ' = _data_;\n            ' + fnBody + '\n        };\n    ';
 
     var factory = new Function(['_i', '_h'], fnWrapper);
 

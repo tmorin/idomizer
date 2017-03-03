@@ -315,7 +315,7 @@ describe('idomizer', () => {
     });
 
     it('should interpolate text node', (done) => {
-        let render1 = compile(`<p>t {{= txtNode1 }} t {{= txtNode2 }}</p>`)(IncrementalDOM);
+        let render1 = compile(`<p>t {{= data.txtNode1 }} t {{= data.txtNode2 }}</p>`)(IncrementalDOM);
         env('', function (err, win) {
             let body = win.document.body;
             global.Element = win.Element;
