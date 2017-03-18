@@ -20,8 +20,8 @@ $ npm install idomizer
 ```
 
 ```html
-<script src="path/to/incremental-dom"></script>
-<script src="path/to/idomizer.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/incrementaldom/0.5.1/incremental-dom-min.js"></script>
+<script src="https://unpkg.com/idomizer/dist/idomizer.min.js"></script>
 <script>
     var factory = idomizer.compile('<h1>Hello!</h1>');
     var render = factory(IncrementalDOM);
