@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 59);
+/******/ 	return __webpack_require__(__webpack_require__.s = 25);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -120,9 +120,9 @@ if (typeof Object.create === 'function') {
 
 
 
-var base64 = __webpack_require__(25)
-var ieee754 = __webpack_require__(44)
-var isArray = __webpack_require__(46)
+var base64 = __webpack_require__(26)
+var ieee754 = __webpack_require__(45)
+var isArray = __webpack_require__(47)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -1988,7 +1988,7 @@ function forEach(xs, f) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var Parser = __webpack_require__(19),
-    DomHandler = __webpack_require__(28);
+    DomHandler = __webpack_require__(29);
 
 function defineProp(name, value){
 	delete module.exports[name];
@@ -2002,22 +2002,22 @@ module.exports = {
 	ElementType: __webpack_require__(5),
 	DomHandler: DomHandler,
 	get FeedHandler(){
-		return defineProp("FeedHandler", __webpack_require__(41));
+		return defineProp("FeedHandler", __webpack_require__(42));
 	},
 	get Stream(){
-		return defineProp("Stream", __webpack_require__(43));
+		return defineProp("Stream", __webpack_require__(44));
 	},
 	get WritableStream(){
 		return defineProp("WritableStream", __webpack_require__(21));
 	},
 	get ProxyHandler(){
-		return defineProp("ProxyHandler", __webpack_require__(42));
+		return defineProp("ProxyHandler", __webpack_require__(43));
 	},
 	get DomUtils(){
-		return defineProp("DomUtils", __webpack_require__(30));
+		return defineProp("DomUtils", __webpack_require__(31));
 	},
 	get CollectingHandler(){
-		return defineProp("CollectingHandler", __webpack_require__(40));
+		return defineProp("CollectingHandler", __webpack_require__(41));
 	},
 	// For legacy support
 	DefaultHandler: DomHandler,
@@ -2717,11 +2717,11 @@ var EE = __webpack_require__(6).EventEmitter;
 var inherits = __webpack_require__(0);
 
 inherits(Stream, EE);
-Stream.Readable = __webpack_require__(52);
-Stream.Writable = __webpack_require__(54);
-Stream.Duplex = __webpack_require__(48);
-Stream.Transform = __webpack_require__(53);
-Stream.PassThrough = __webpack_require__(51);
+Stream.Readable = __webpack_require__(53);
+Stream.Writable = __webpack_require__(55);
+Stream.Duplex = __webpack_require__(49);
+Stream.Transform = __webpack_require__(54);
+Stream.PassThrough = __webpack_require__(52);
 
 // Backwards-compat with node 0.4.x
 Stream.Stream = Stream;
@@ -5379,7 +5379,7 @@ util.inherits = __webpack_require__(0);
 
 /*<replacement>*/
 var internalUtil = {
-  deprecate: __webpack_require__(56)
+  deprecate: __webpack_require__(57)
 };
 /*</replacement>*/
 
@@ -5901,7 +5901,7 @@ function CorkedRequest(state) {
     }
   };
 }
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(47).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(48).setImmediate))
 
 /***/ }),
 /* 16 */
@@ -6184,7 +6184,7 @@ Object.keys(domLvl1).forEach(function(key) {
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var decodeMap = __webpack_require__(45);
+var decodeMap = __webpack_require__(46);
 
 module.exports = decodeCodePoint;
 
@@ -7490,7 +7490,7 @@ Tokenizer.prototype._emitPartial = function(value){
 module.exports = Stream;
 
 var Parser = __webpack_require__(19),
-    WritableStream = __webpack_require__(8).Writable || __webpack_require__(57).Writable,
+    WritableStream = __webpack_require__(8).Writable || __webpack_require__(58).Writable,
     StringDecoder = __webpack_require__(16).StringDecoder,
     Buffer = __webpack_require__(1).Buffer;
 
@@ -7672,7 +7672,7 @@ var processNextTick = __webpack_require__(13);
 /*</replacement>*/
 
 /*<replacement>*/
-var isArray = __webpack_require__(50);
+var isArray = __webpack_require__(51);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -7711,7 +7711,7 @@ util.inherits = __webpack_require__(0);
 /*</replacement>*/
 
 /*<replacement>*/
-var debugUtil = __webpack_require__(58);
+var debugUtil = __webpack_require__(59);
 var debug = void 0;
 if (debugUtil && debugUtil.debuglog) {
   debug = debugUtil.debuglog('stream');
@@ -7720,7 +7720,7 @@ if (debugUtil && debugUtil.debuglog) {
 }
 /*</replacement>*/
 
-var BufferList = __webpack_require__(49);
+var BufferList = __webpack_require__(50);
 var StringDecoder;
 
 util.inherits(Readable, Stream);
@@ -8613,2080 +8613,6 @@ function indexOf(xs, x) {
 "use strict";
 
 
-exports.byteLength = byteLength
-exports.toByteArray = toByteArray
-exports.fromByteArray = fromByteArray
-
-var lookup = []
-var revLookup = []
-var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
-
-var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-for (var i = 0, len = code.length; i < len; ++i) {
-  lookup[i] = code[i]
-  revLookup[code.charCodeAt(i)] = i
-}
-
-revLookup['-'.charCodeAt(0)] = 62
-revLookup['_'.charCodeAt(0)] = 63
-
-function placeHoldersCount (b64) {
-  var len = b64.length
-  if (len % 4 > 0) {
-    throw new Error('Invalid string. Length must be a multiple of 4')
-  }
-
-  // the number of equal signs (place holders)
-  // if there are two placeholders, than the two characters before it
-  // represent one byte
-  // if there is only one, then the three characters before it represent 2 bytes
-  // this is just a cheap hack to not do indexOf twice
-  return b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0
-}
-
-function byteLength (b64) {
-  // base64 is 4/3 + up to two characters of the original data
-  return b64.length * 3 / 4 - placeHoldersCount(b64)
-}
-
-function toByteArray (b64) {
-  var i, j, l, tmp, placeHolders, arr
-  var len = b64.length
-  placeHolders = placeHoldersCount(b64)
-
-  arr = new Arr(len * 3 / 4 - placeHolders)
-
-  // if there are placeholders, only get up to the last complete 4 chars
-  l = placeHolders > 0 ? len - 4 : len
-
-  var L = 0
-
-  for (i = 0, j = 0; i < l; i += 4, j += 3) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)]
-    arr[L++] = (tmp >> 16) & 0xFF
-    arr[L++] = (tmp >> 8) & 0xFF
-    arr[L++] = tmp & 0xFF
-  }
-
-  if (placeHolders === 2) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4)
-    arr[L++] = tmp & 0xFF
-  } else if (placeHolders === 1) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2)
-    arr[L++] = (tmp >> 8) & 0xFF
-    arr[L++] = tmp & 0xFF
-  }
-
-  return arr
-}
-
-function tripletToBase64 (num) {
-  return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
-}
-
-function encodeChunk (uint8, start, end) {
-  var tmp
-  var output = []
-  for (var i = start; i < end; i += 3) {
-    tmp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
-    output.push(tripletToBase64(tmp))
-  }
-  return output.join('')
-}
-
-function fromByteArray (uint8) {
-  var tmp
-  var len = uint8.length
-  var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
-  var output = ''
-  var parts = []
-  var maxChunkLength = 16383 // must be multiple of 3
-
-  // go through the array every three bytes, we'll deal with trailing stuff later
-  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
-    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
-  }
-
-  // pad the end with zeros, but make sure to not forget the extra bytes
-  if (extraBytes === 1) {
-    tmp = uint8[len - 1]
-    output += lookup[tmp >> 2]
-    output += lookup[(tmp << 4) & 0x3F]
-    output += '=='
-  } else if (extraBytes === 2) {
-    tmp = (uint8[len - 2] << 8) + (uint8[len - 1])
-    output += lookup[tmp >> 10]
-    output += lookup[(tmp >> 4) & 0x3F]
-    output += lookup[(tmp << 2) & 0x3F]
-    output += '='
-  }
-
-  parts.push(output)
-
-  return parts.join('')
-}
-
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/*
-  Module dependencies
-*/
-var ElementType = __webpack_require__(27);
-var entities = __webpack_require__(37);
-
-/*
-  Boolean Attributes
-*/
-var booleanAttributes = {
-  __proto__: null,
-  allowfullscreen: true,
-  async: true,
-  autofocus: true,
-  autoplay: true,
-  checked: true,
-  controls: true,
-  default: true,
-  defer: true,
-  disabled: true,
-  hidden: true,
-  ismap: true,
-  loop: true,
-  multiple: true,
-  muted: true,
-  open: true,
-  readonly: true,
-  required: true,
-  reversed: true,
-  scoped: true,
-  seamless: true,
-  selected: true,
-  typemustmatch: true
-};
-
-var unencodedElements = {
-  __proto__: null,
-  style: true,
-  script: true,
-  xmp: true,
-  iframe: true,
-  noembed: true,
-  noframes: true,
-  plaintext: true,
-  noscript: true
-};
-
-/*
-  Format attributes
-*/
-function formatAttrs(attributes, opts) {
-  if (!attributes) return;
-
-  var output = '',
-      value;
-
-  // Loop through the attributes
-  for (var key in attributes) {
-    value = attributes[key];
-    if (output) {
-      output += ' ';
-    }
-
-    if (!value && booleanAttributes[key]) {
-      output += key;
-    } else {
-      output += key + '="' + (opts.decodeEntities ? entities.encodeXML(value) : value) + '"';
-    }
-  }
-
-  return output;
-}
-
-/*
-  Self-enclosing tags (stolen from node-htmlparser)
-*/
-var singleTag = {
-  __proto__: null,
-  area: true,
-  base: true,
-  basefont: true,
-  br: true,
-  col: true,
-  command: true,
-  embed: true,
-  frame: true,
-  hr: true,
-  img: true,
-  input: true,
-  isindex: true,
-  keygen: true,
-  link: true,
-  meta: true,
-  param: true,
-  source: true,
-  track: true,
-  wbr: true,
-};
-
-
-var render = module.exports = function(dom, opts) {
-  if (!Array.isArray(dom) && !dom.cheerio) dom = [dom];
-  opts = opts || {};
-
-  var output = '';
-
-  for(var i = 0; i < dom.length; i++){
-    var elem = dom[i];
-
-    if (elem.type === 'root')
-      output += render(elem.children, opts);
-    else if (ElementType.isTag(elem))
-      output += renderTag(elem, opts);
-    else if (elem.type === ElementType.Directive)
-      output += renderDirective(elem);
-    else if (elem.type === ElementType.Comment)
-      output += renderComment(elem);
-    else if (elem.type === ElementType.CDATA)
-      output += renderCdata(elem);
-    else
-      output += renderText(elem, opts);
-  }
-
-  return output;
-};
-
-function renderTag(elem, opts) {
-  // Handle SVG
-  if (elem.name === "svg") opts = {decodeEntities: opts.decodeEntities, xmlMode: true};
-
-  var tag = '<' + elem.name,
-      attribs = formatAttrs(elem.attribs, opts);
-
-  if (attribs) {
-    tag += ' ' + attribs;
-  }
-
-  if (
-    opts.xmlMode
-    && (!elem.children || elem.children.length === 0)
-  ) {
-    tag += '/>';
-  } else {
-    tag += '>';
-    if (elem.children) {
-      tag += render(elem.children, opts);
-    }
-
-    if (!singleTag[elem.name] || opts.xmlMode) {
-      tag += '</' + elem.name + '>';
-    }
-  }
-
-  return tag;
-}
-
-function renderDirective(elem) {
-  return '<' + elem.data + '>';
-}
-
-function renderText(elem, opts) {
-  var data = elem.data || '';
-
-  // if entities weren't decoded, no need to encode them back
-  if (opts.decodeEntities && !(elem.parent && elem.parent.name in unencodedElements)) {
-    data = entities.encodeXML(data);
-  }
-
-  return data;
-}
-
-function renderCdata(elem) {
-  return '<![CDATA[' + elem.children[0].data + ']]>';
-}
-
-function renderComment(elem) {
-  return '<!--' + elem.data + '-->';
-}
-
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports) {
-
-//Types of elements found in the DOM
-module.exports = {
-	Text: "text", //Text
-	Directive: "directive", //<? ... ?>
-	Comment: "comment", //<!-- ... -->
-	Script: "script", //<script> tags
-	Style: "style", //<style> tags
-	Tag: "tag", //Any tag
-	CDATA: "cdata", //<![CDATA[ ... ]]>
-
-	isTag: function(elem){
-		return elem.type === "tag" || elem.type === "script" || elem.type === "style";
-	}
-};
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var ElementType = __webpack_require__(5);
-
-var re_whitespace = /\s+/g;
-var NodePrototype = __webpack_require__(17);
-var ElementPrototype = __webpack_require__(29);
-
-function DomHandler(callback, options, elementCB){
-	if(typeof callback === "object"){
-		elementCB = options;
-		options = callback;
-		callback = null;
-	} else if(typeof options === "function"){
-		elementCB = options;
-		options = defaultOpts;
-	}
-	this._callback = callback;
-	this._options = options || defaultOpts;
-	this._elementCB = elementCB;
-	this.dom = [];
-	this._done = false;
-	this._tagStack = [];
-	this._parser = this._parser || null;
-}
-
-//default options
-var defaultOpts = {
-	normalizeWhitespace: false, //Replace all whitespace with single spaces
-	withStartIndices: false, //Add startIndex properties to nodes
-};
-
-DomHandler.prototype.onparserinit = function(parser){
-	this._parser = parser;
-};
-
-//Resets the handler back to starting state
-DomHandler.prototype.onreset = function(){
-	DomHandler.call(this, this._callback, this._options, this._elementCB);
-};
-
-//Signals the handler that parsing is done
-DomHandler.prototype.onend = function(){
-	if(this._done) return;
-	this._done = true;
-	this._parser = null;
-	this._handleCallback(null);
-};
-
-DomHandler.prototype._handleCallback =
-DomHandler.prototype.onerror = function(error){
-	if(typeof this._callback === "function"){
-		this._callback(error, this.dom);
-	} else {
-		if(error) throw error;
-	}
-};
-
-DomHandler.prototype.onclosetag = function(){
-	//if(this._tagStack.pop().name !== name) this._handleCallback(Error("Tagname didn't match!"));
-	var elem = this._tagStack.pop();
-	if(this._elementCB) this._elementCB(elem);
-};
-
-DomHandler.prototype._addDomElement = function(element){
-	var parent = this._tagStack[this._tagStack.length - 1];
-	var siblings = parent ? parent.children : this.dom;
-	var previousSibling = siblings[siblings.length - 1];
-
-	element.next = null;
-
-	if(this._options.withStartIndices){
-		element.startIndex = this._parser.startIndex;
-	}
-
-	if (this._options.withDomLvl1) {
-		element.__proto__ = element.type === "tag" ? ElementPrototype : NodePrototype;
-	}
-
-	if(previousSibling){
-		element.prev = previousSibling;
-		previousSibling.next = element;
-	} else {
-		element.prev = null;
-	}
-
-	siblings.push(element);
-	element.parent = parent || null;
-};
-
-DomHandler.prototype.onopentag = function(name, attribs){
-	var element = {
-		type: name === "script" ? ElementType.Script : name === "style" ? ElementType.Style : ElementType.Tag,
-		name: name,
-		attribs: attribs,
-		children: []
-	};
-
-	this._addDomElement(element);
-
-	this._tagStack.push(element);
-};
-
-DomHandler.prototype.ontext = function(data){
-	//the ignoreWhitespace is officially dropped, but for now,
-	//it's an alias for normalizeWhitespace
-	var normalize = this._options.normalizeWhitespace || this._options.ignoreWhitespace;
-
-	var lastTag;
-
-	if(!this._tagStack.length && this.dom.length && (lastTag = this.dom[this.dom.length-1]).type === ElementType.Text){
-		if(normalize){
-			lastTag.data = (lastTag.data + data).replace(re_whitespace, " ");
-		} else {
-			lastTag.data += data;
-		}
-	} else {
-		if(
-			this._tagStack.length &&
-			(lastTag = this._tagStack[this._tagStack.length - 1]) &&
-			(lastTag = lastTag.children[lastTag.children.length - 1]) &&
-			lastTag.type === ElementType.Text
-		){
-			if(normalize){
-				lastTag.data = (lastTag.data + data).replace(re_whitespace, " ");
-			} else {
-				lastTag.data += data;
-			}
-		} else {
-			if(normalize){
-				data = data.replace(re_whitespace, " ");
-			}
-
-			this._addDomElement({
-				data: data,
-				type: ElementType.Text
-			});
-		}
-	}
-};
-
-DomHandler.prototype.oncomment = function(data){
-	var lastTag = this._tagStack[this._tagStack.length - 1];
-
-	if(lastTag && lastTag.type === ElementType.Comment){
-		lastTag.data += data;
-		return;
-	}
-
-	var element = {
-		data: data,
-		type: ElementType.Comment
-	};
-
-	this._addDomElement(element);
-	this._tagStack.push(element);
-};
-
-DomHandler.prototype.oncdatastart = function(){
-	var element = {
-		children: [{
-			data: "",
-			type: ElementType.Text
-		}],
-		type: ElementType.CDATA
-	};
-
-	this._addDomElement(element);
-	this._tagStack.push(element);
-};
-
-DomHandler.prototype.oncommentend = DomHandler.prototype.oncdataend = function(){
-	this._tagStack.pop();
-};
-
-DomHandler.prototype.onprocessinginstruction = function(name, data){
-	this._addDomElement({
-		name: name,
-		data: data,
-		type: ElementType.Directive
-	});
-};
-
-module.exports = DomHandler;
-
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// DOM-Level-1-compliant structure
-var NodePrototype = __webpack_require__(17);
-var ElementPrototype = module.exports = Object.create(NodePrototype);
-
-var domLvl1 = {
-	tagName: "name"
-};
-
-Object.keys(domLvl1).forEach(function(key) {
-	var shorthand = domLvl1[key];
-	Object.defineProperty(ElementPrototype, key, {
-		get: function() {
-			return this[shorthand] || null;
-		},
-		set: function(val) {
-			this[shorthand] = val;
-			return val;
-		}
-	});
-});
-
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var DomUtils = module.exports;
-
-[
-	__webpack_require__(35),
-	__webpack_require__(36),
-	__webpack_require__(33),
-	__webpack_require__(34),
-	__webpack_require__(32),
-	__webpack_require__(31)
-].forEach(function(ext){
-	Object.keys(ext).forEach(function(key){
-		DomUtils[key] = ext[key].bind(DomUtils);
-	});
-});
-
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports) {
-
-// removeSubsets
-// Given an array of nodes, remove any member that is contained by another.
-exports.removeSubsets = function(nodes) {
-	var idx = nodes.length, node, ancestor, replace;
-
-	// Check if each node (or one of its ancestors) is already contained in the
-	// array.
-	while (--idx > -1) {
-		node = ancestor = nodes[idx];
-
-		// Temporarily remove the node under consideration
-		nodes[idx] = null;
-		replace = true;
-
-		while (ancestor) {
-			if (nodes.indexOf(ancestor) > -1) {
-				replace = false;
-				nodes.splice(idx, 1);
-				break;
-			}
-			ancestor = ancestor.parent;
-		}
-
-		// If the node has been found to be unique, re-insert it.
-		if (replace) {
-			nodes[idx] = node;
-		}
-	}
-
-	return nodes;
-};
-
-// Source: http://dom.spec.whatwg.org/#dom-node-comparedocumentposition
-var POSITION = {
-	DISCONNECTED: 1,
-	PRECEDING: 2,
-	FOLLOWING: 4,
-	CONTAINS: 8,
-	CONTAINED_BY: 16
-};
-
-// Compare the position of one node against another node in any other document.
-// The return value is a bitmask with the following values:
-//
-// document order:
-// > There is an ordering, document order, defined on all the nodes in the
-// > document corresponding to the order in which the first character of the
-// > XML representation of each node occurs in the XML representation of the
-// > document after expansion of general entities. Thus, the document element
-// > node will be the first node. Element nodes occur before their children.
-// > Thus, document order orders element nodes in order of the occurrence of
-// > their start-tag in the XML (after expansion of entities). The attribute
-// > nodes of an element occur after the element and before its children. The
-// > relative order of attribute nodes is implementation-dependent./
-// Source:
-// http://www.w3.org/TR/DOM-Level-3-Core/glossary.html#dt-document-order
-//
-// @argument {Node} nodaA The first node to use in the comparison
-// @argument {Node} nodeB The second node to use in the comparison
-//
-// @return {Number} A bitmask describing the input nodes' relative position.
-//         See http://dom.spec.whatwg.org/#dom-node-comparedocumentposition for
-//         a description of these values.
-var comparePos = exports.compareDocumentPosition = function(nodeA, nodeB) {
-	var aParents = [];
-	var bParents = [];
-	var current, sharedParent, siblings, aSibling, bSibling, idx;
-
-	if (nodeA === nodeB) {
-		return 0;
-	}
-
-	current = nodeA;
-	while (current) {
-		aParents.unshift(current);
-		current = current.parent;
-	}
-	current = nodeB;
-	while (current) {
-		bParents.unshift(current);
-		current = current.parent;
-	}
-
-	idx = 0;
-	while (aParents[idx] === bParents[idx]) {
-		idx++;
-	}
-
-	if (idx === 0) {
-		return POSITION.DISCONNECTED;
-	}
-
-	sharedParent = aParents[idx - 1];
-	siblings = sharedParent.children;
-	aSibling = aParents[idx];
-	bSibling = bParents[idx];
-
-	if (siblings.indexOf(aSibling) > siblings.indexOf(bSibling)) {
-		if (sharedParent === nodeB) {
-			return POSITION.FOLLOWING | POSITION.CONTAINED_BY;
-		}
-		return POSITION.FOLLOWING;
-	} else {
-		if (sharedParent === nodeA) {
-			return POSITION.PRECEDING | POSITION.CONTAINS;
-		}
-		return POSITION.PRECEDING;
-	}
-};
-
-// Sort an array of nodes based on their relative position in the document and
-// remove any duplicate nodes. If the array contains nodes that do not belong
-// to the same document, sort order is unspecified.
-//
-// @argument {Array} nodes Array of DOM nodes
-//
-// @returns {Array} collection of unique nodes, sorted in document order
-exports.uniqueSort = function(nodes) {
-	var idx = nodes.length, node, position;
-
-	nodes = nodes.slice();
-
-	while (--idx > -1) {
-		node = nodes[idx];
-		position = nodes.indexOf(node);
-		if (position > -1 && position < idx) {
-			nodes.splice(idx, 1);
-		}
-	}
-	nodes.sort(function(a, b) {
-		var relative = comparePos(a, b);
-		if (relative & POSITION.PRECEDING) {
-			return -1;
-		} else if (relative & POSITION.FOLLOWING) {
-			return 1;
-		}
-		return 0;
-	});
-
-	return nodes;
-};
-
-
-/***/ }),
-/* 32 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var ElementType = __webpack_require__(5);
-var isTag = exports.isTag = ElementType.isTag;
-
-exports.testElement = function(options, element){
-	for(var key in options){
-		if(!options.hasOwnProperty(key));
-		else if(key === "tag_name"){
-			if(!isTag(element) || !options.tag_name(element.name)){
-				return false;
-			}
-		} else if(key === "tag_type"){
-			if(!options.tag_type(element.type)) return false;
-		} else if(key === "tag_contains"){
-			if(isTag(element) || !options.tag_contains(element.data)){
-				return false;
-			}
-		} else if(!element.attribs || !options[key](element.attribs[key])){
-			return false;
-		}
-	}
-	return true;
-};
-
-var Checks = {
-	tag_name: function(name){
-		if(typeof name === "function"){
-			return function(elem){ return isTag(elem) && name(elem.name); };
-		} else if(name === "*"){
-			return isTag;
-		} else {
-			return function(elem){ return isTag(elem) && elem.name === name; };
-		}
-	},
-	tag_type: function(type){
-		if(typeof type === "function"){
-			return function(elem){ return type(elem.type); };
-		} else {
-			return function(elem){ return elem.type === type; };
-		}
-	},
-	tag_contains: function(data){
-		if(typeof data === "function"){
-			return function(elem){ return !isTag(elem) && data(elem.data); };
-		} else {
-			return function(elem){ return !isTag(elem) && elem.data === data; };
-		}
-	}
-};
-
-function getAttribCheck(attrib, value){
-	if(typeof value === "function"){
-		return function(elem){ return elem.attribs && value(elem.attribs[attrib]); };
-	} else {
-		return function(elem){ return elem.attribs && elem.attribs[attrib] === value; };
-	}
-}
-
-function combineFuncs(a, b){
-	return function(elem){
-		return a(elem) || b(elem);
-	};
-}
-
-exports.getElements = function(options, element, recurse, limit){
-	var funcs = Object.keys(options).map(function(key){
-		var value = options[key];
-		return key in Checks ? Checks[key](value) : getAttribCheck(key, value);
-	});
-
-	return funcs.length === 0 ? [] : this.filter(
-		funcs.reduce(combineFuncs),
-		element, recurse, limit
-	);
-};
-
-exports.getElementById = function(id, element, recurse){
-	if(!Array.isArray(element)) element = [element];
-	return this.findOne(getAttribCheck("id", id), element, recurse !== false);
-};
-
-exports.getElementsByTagName = function(name, element, recurse, limit){
-	return this.filter(Checks.tag_name(name), element, recurse, limit);
-};
-
-exports.getElementsByTagType = function(type, element, recurse, limit){
-	return this.filter(Checks.tag_type(type), element, recurse, limit);
-};
-
-
-/***/ }),
-/* 33 */
-/***/ (function(module, exports) {
-
-exports.removeElement = function(elem){
-	if(elem.prev) elem.prev.next = elem.next;
-	if(elem.next) elem.next.prev = elem.prev;
-
-	if(elem.parent){
-		var childs = elem.parent.children;
-		childs.splice(childs.lastIndexOf(elem), 1);
-	}
-};
-
-exports.replaceElement = function(elem, replacement){
-	var prev = replacement.prev = elem.prev;
-	if(prev){
-		prev.next = replacement;
-	}
-
-	var next = replacement.next = elem.next;
-	if(next){
-		next.prev = replacement;
-	}
-
-	var parent = replacement.parent = elem.parent;
-	if(parent){
-		var childs = parent.children;
-		childs[childs.lastIndexOf(elem)] = replacement;
-	}
-};
-
-exports.appendChild = function(elem, child){
-	child.parent = elem;
-
-	if(elem.children.push(child) !== 1){
-		var sibling = elem.children[elem.children.length - 2];
-		sibling.next = child;
-		child.prev = sibling;
-		child.next = null;
-	}
-};
-
-exports.append = function(elem, next){
-	var parent = elem.parent,
-		currNext = elem.next;
-
-	next.next = currNext;
-	next.prev = elem;
-	elem.next = next;
-	next.parent = parent;
-
-	if(currNext){
-		currNext.prev = next;
-		if(parent){
-			var childs = parent.children;
-			childs.splice(childs.lastIndexOf(currNext), 0, next);
-		}
-	} else if(parent){
-		parent.children.push(next);
-	}
-};
-
-exports.prepend = function(elem, prev){
-	var parent = elem.parent;
-	if(parent){
-		var childs = parent.children;
-		childs.splice(childs.lastIndexOf(elem), 0, prev);
-	}
-
-	if(elem.prev){
-		elem.prev.next = prev;
-	}
-	
-	prev.parent = parent;
-	prev.prev = elem.prev;
-	prev.next = elem;
-	elem.prev = prev;
-};
-
-
-
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var isTag = __webpack_require__(5).isTag;
-
-module.exports = {
-	filter: filter,
-	find: find,
-	findOneChild: findOneChild,
-	findOne: findOne,
-	existsOne: existsOne,
-	findAll: findAll
-};
-
-function filter(test, element, recurse, limit){
-	if(!Array.isArray(element)) element = [element];
-
-	if(typeof limit !== "number" || !isFinite(limit)){
-		limit = Infinity;
-	}
-	return find(test, element, recurse !== false, limit);
-}
-
-function find(test, elems, recurse, limit){
-	var result = [], childs;
-
-	for(var i = 0, j = elems.length; i < j; i++){
-		if(test(elems[i])){
-			result.push(elems[i]);
-			if(--limit <= 0) break;
-		}
-
-		childs = elems[i].children;
-		if(recurse && childs && childs.length > 0){
-			childs = find(test, childs, recurse, limit);
-			result = result.concat(childs);
-			limit -= childs.length;
-			if(limit <= 0) break;
-		}
-	}
-
-	return result;
-}
-
-function findOneChild(test, elems){
-	for(var i = 0, l = elems.length; i < l; i++){
-		if(test(elems[i])) return elems[i];
-	}
-
-	return null;
-}
-
-function findOne(test, elems){
-	var elem = null;
-
-	for(var i = 0, l = elems.length; i < l && !elem; i++){
-		if(!isTag(elems[i])){
-			continue;
-		} else if(test(elems[i])){
-			elem = elems[i];
-		} else if(elems[i].children.length > 0){
-			elem = findOne(test, elems[i].children);
-		}
-	}
-
-	return elem;
-}
-
-function existsOne(test, elems){
-	for(var i = 0, l = elems.length; i < l; i++){
-		if(
-			isTag(elems[i]) && (
-				test(elems[i]) || (
-					elems[i].children.length > 0 &&
-					existsOne(test, elems[i].children)
-				)
-			)
-		){
-			return true;
-		}
-	}
-
-	return false;
-}
-
-function findAll(test, elems){
-	var result = [];
-	for(var i = 0, j = elems.length; i < j; i++){
-		if(!isTag(elems[i])) continue;
-		if(test(elems[i])) result.push(elems[i]);
-
-		if(elems[i].children.length > 0){
-			result = result.concat(findAll(test, elems[i].children));
-		}
-	}
-	return result;
-}
-
-
-/***/ }),
-/* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var ElementType = __webpack_require__(5),
-    getOuterHTML = __webpack_require__(26),
-    isTag = ElementType.isTag;
-
-module.exports = {
-	getInnerHTML: getInnerHTML,
-	getOuterHTML: getOuterHTML,
-	getText: getText
-};
-
-function getInnerHTML(elem, opts){
-	return elem.children ? elem.children.map(function(elem){
-		return getOuterHTML(elem, opts);
-	}).join("") : "";
-}
-
-function getText(elem){
-	if(Array.isArray(elem)) return elem.map(getText).join("");
-	if(isTag(elem) || elem.type === ElementType.CDATA) return getText(elem.children);
-	if(elem.type === ElementType.Text) return elem.data;
-	return "";
-}
-
-
-/***/ }),
-/* 36 */
-/***/ (function(module, exports) {
-
-var getChildren = exports.getChildren = function(elem){
-	return elem.children;
-};
-
-var getParent = exports.getParent = function(elem){
-	return elem.parent;
-};
-
-exports.getSiblings = function(elem){
-	var parent = getParent(elem);
-	return parent ? getChildren(parent) : [elem];
-};
-
-exports.getAttributeValue = function(elem, name){
-	return elem.attribs && elem.attribs[name];
-};
-
-exports.hasAttrib = function(elem, name){
-	return !!elem.attribs && hasOwnProperty.call(elem.attribs, name);
-};
-
-exports.getName = function(elem){
-	return elem.name;
-};
-
-
-/***/ }),
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var encode = __webpack_require__(39),
-    decode = __webpack_require__(38);
-
-exports.decode = function(data, level){
-	return (!level || level <= 0 ? decode.XML : decode.HTML)(data);
-};
-
-exports.decodeStrict = function(data, level){
-	return (!level || level <= 0 ? decode.XML : decode.HTMLStrict)(data);
-};
-
-exports.encode = function(data, level){
-	return (!level || level <= 0 ? encode.XML : encode.HTML)(data);
-};
-
-exports.encodeXML = encode.XML;
-
-exports.encodeHTML4 =
-exports.encodeHTML5 =
-exports.encodeHTML  = encode.HTML;
-
-exports.decodeXML =
-exports.decodeXMLStrict = decode.XML;
-
-exports.decodeHTML4 =
-exports.decodeHTML5 =
-exports.decodeHTML = decode.HTML;
-
-exports.decodeHTML4Strict =
-exports.decodeHTML5Strict =
-exports.decodeHTMLStrict = decode.HTMLStrict;
-
-exports.escape = encode.escape;
-
-
-/***/ }),
-/* 38 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var entityMap = __webpack_require__(11),
-    legacyMap = __webpack_require__(22),
-    xmlMap    = __webpack_require__(12),
-    decodeCodePoint = __webpack_require__(18);
-
-var decodeXMLStrict  = getStrictDecoder(xmlMap),
-    decodeHTMLStrict = getStrictDecoder(entityMap);
-
-function getStrictDecoder(map){
-	var keys = Object.keys(map).join("|"),
-	    replace = getReplacer(map);
-
-	keys += "|#[xX][\\da-fA-F]+|#\\d+";
-
-	var re = new RegExp("&(?:" + keys + ");", "g");
-
-	return function(str){
-		return String(str).replace(re, replace);
-	};
-}
-
-var decodeHTML = (function(){
-	var legacy = Object.keys(legacyMap)
-		.sort(sorter);
-
-	var keys = Object.keys(entityMap)
-		.sort(sorter);
-
-	for(var i = 0, j = 0; i < keys.length; i++){
-		if(legacy[j] === keys[i]){
-			keys[i] += ";?";
-			j++;
-		} else {
-			keys[i] += ";";
-		}
-	}
-
-	var re = new RegExp("&(?:" + keys.join("|") + "|#[xX][\\da-fA-F]+;?|#\\d+;?)", "g"),
-	    replace = getReplacer(entityMap);
-
-	function replacer(str){
-		if(str.substr(-1) !== ";") str += ";";
-		return replace(str);
-	}
-
-	//TODO consider creating a merged map
-	return function(str){
-		return String(str).replace(re, replacer);
-	};
-}());
-
-function sorter(a, b){
-	return a < b ? 1 : -1;
-}
-
-function getReplacer(map){
-	return function replace(str){
-		if(str.charAt(1) === "#"){
-			if(str.charAt(2) === "X" || str.charAt(2) === "x"){
-				return decodeCodePoint(parseInt(str.substr(3), 16));
-			}
-			return decodeCodePoint(parseInt(str.substr(2), 10));
-		}
-		return map[str.slice(1, -1)];
-	};
-}
-
-module.exports = {
-	XML: decodeXMLStrict,
-	HTML: decodeHTML,
-	HTMLStrict: decodeHTMLStrict
-};
-
-/***/ }),
-/* 39 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var inverseXML = getInverseObj(__webpack_require__(12)),
-    xmlReplacer = getInverseReplacer(inverseXML);
-
-exports.XML = getInverse(inverseXML, xmlReplacer);
-
-var inverseHTML = getInverseObj(__webpack_require__(11)),
-    htmlReplacer = getInverseReplacer(inverseHTML);
-
-exports.HTML = getInverse(inverseHTML, htmlReplacer);
-
-function getInverseObj(obj){
-	return Object.keys(obj).sort().reduce(function(inverse, name){
-		inverse[obj[name]] = "&" + name + ";";
-		return inverse;
-	}, {});
-}
-
-function getInverseReplacer(inverse){
-	var single = [],
-	    multiple = [];
-
-	Object.keys(inverse).forEach(function(k){
-		if(k.length === 1){
-			single.push("\\" + k);
-		} else {
-			multiple.push(k);
-		}
-	});
-
-	//TODO add ranges
-	multiple.unshift("[" + single.join("") + "]");
-
-	return new RegExp(multiple.join("|"), "g");
-}
-
-var re_nonASCII = /[^\0-\x7F]/g,
-    re_astralSymbols = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
-
-function singleCharReplacer(c){
-	return "&#x" + c.charCodeAt(0).toString(16).toUpperCase() + ";";
-}
-
-function astralReplacer(c){
-	// http://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
-	var high = c.charCodeAt(0);
-	var low  = c.charCodeAt(1);
-	var codePoint = (high - 0xD800) * 0x400 + low - 0xDC00 + 0x10000;
-	return "&#x" + codePoint.toString(16).toUpperCase() + ";";
-}
-
-function getInverse(inverse, re){
-	function func(name){
-		return inverse[name];
-	}
-
-	return function(data){
-		return data
-				.replace(re, func)
-				.replace(re_astralSymbols, astralReplacer)
-				.replace(re_nonASCII, singleCharReplacer);
-	};
-}
-
-var re_xmlChars = getInverseReplacer(inverseXML);
-
-function escapeXML(data){
-	return data
-			.replace(re_xmlChars, singleCharReplacer)
-			.replace(re_astralSymbols, astralReplacer)
-			.replace(re_nonASCII, singleCharReplacer);
-}
-
-exports.escape = escapeXML;
-
-
-/***/ }),
-/* 40 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = CollectingHandler;
-
-function CollectingHandler(cbs){
-	this._cbs = cbs || {};
-	this.events = [];
-}
-
-var EVENTS = __webpack_require__(3).EVENTS;
-Object.keys(EVENTS).forEach(function(name){
-	if(EVENTS[name] === 0){
-		name = "on" + name;
-		CollectingHandler.prototype[name] = function(){
-			this.events.push([name]);
-			if(this._cbs[name]) this._cbs[name]();
-		};
-	} else if(EVENTS[name] === 1){
-		name = "on" + name;
-		CollectingHandler.prototype[name] = function(a){
-			this.events.push([name, a]);
-			if(this._cbs[name]) this._cbs[name](a);
-		};
-	} else if(EVENTS[name] === 2){
-		name = "on" + name;
-		CollectingHandler.prototype[name] = function(a, b){
-			this.events.push([name, a, b]);
-			if(this._cbs[name]) this._cbs[name](a, b);
-		};
-	} else {
-		throw Error("wrong number of arguments");
-	}
-});
-
-CollectingHandler.prototype.onreset = function(){
-	this.events = [];
-	if(this._cbs.onreset) this._cbs.onreset();
-};
-
-CollectingHandler.prototype.restart = function(){
-	if(this._cbs.onreset) this._cbs.onreset();
-
-	for(var i = 0, len = this.events.length; i < len; i++){
-		if(this._cbs[this.events[i][0]]){
-
-			var num = this.events[i].length;
-
-			if(num === 1){
-				this._cbs[this.events[i][0]]();
-			} else if(num === 2){
-				this._cbs[this.events[i][0]](this.events[i][1]);
-			} else {
-				this._cbs[this.events[i][0]](this.events[i][1], this.events[i][2]);
-			}
-		}
-	}
-};
-
-
-/***/ }),
-/* 41 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var index = __webpack_require__(3),
-    DomHandler = index.DomHandler,
-    DomUtils = index.DomUtils;
-
-//TODO: make this a streamable handler
-function FeedHandler(callback, options){
-	this.init(callback, options);
-}
-
-__webpack_require__(0)(FeedHandler, DomHandler);
-
-FeedHandler.prototype.init = DomHandler;
-
-function getElements(what, where){
-	return DomUtils.getElementsByTagName(what, where, true);
-}
-function getOneElement(what, where){
-	return DomUtils.getElementsByTagName(what, where, true, 1)[0];
-}
-function fetch(what, where, recurse){
-	return DomUtils.getText(
-		DomUtils.getElementsByTagName(what, where, recurse, 1)
-	).trim();
-}
-
-function addConditionally(obj, prop, what, where, recurse){
-	var tmp = fetch(what, where, recurse);
-	if(tmp) obj[prop] = tmp;
-}
-
-var isValidFeed = function(value){
-	return value === "rss" || value === "feed" || value === "rdf:RDF";
-};
-
-FeedHandler.prototype.onend = function(){
-	var feed = {},
-	    feedRoot = getOneElement(isValidFeed, this.dom),
-	    tmp, childs;
-
-	if(feedRoot){
-		if(feedRoot.name === "feed"){
-			childs = feedRoot.children;
-
-			feed.type = "atom";
-			addConditionally(feed, "id", "id", childs);
-			addConditionally(feed, "title", "title", childs);
-			if((tmp = getOneElement("link", childs)) && (tmp = tmp.attribs) && (tmp = tmp.href)) feed.link = tmp;
-			addConditionally(feed, "description", "subtitle", childs);
-			if((tmp = fetch("updated", childs))) feed.updated = new Date(tmp);
-			addConditionally(feed, "author", "email", childs, true);
-
-			feed.items = getElements("entry", childs).map(function(item){
-				var entry = {}, tmp;
-
-				item = item.children;
-
-				addConditionally(entry, "id", "id", item);
-				addConditionally(entry, "title", "title", item);
-				if((tmp = getOneElement("link", item)) && (tmp = tmp.attribs) && (tmp = tmp.href)) entry.link = tmp;
-				if((tmp = fetch("summary", item) || fetch("content", item))) entry.description = tmp;
-				if((tmp = fetch("updated", item))) entry.pubDate = new Date(tmp);
-				return entry;
-			});
-		} else {
-			childs = getOneElement("channel", feedRoot.children).children;
-
-			feed.type = feedRoot.name.substr(0, 3);
-			feed.id = "";
-			addConditionally(feed, "title", "title", childs);
-			addConditionally(feed, "link", "link", childs);
-			addConditionally(feed, "description", "description", childs);
-			if((tmp = fetch("lastBuildDate", childs))) feed.updated = new Date(tmp);
-			addConditionally(feed, "author", "managingEditor", childs, true);
-
-			feed.items = getElements("item", feedRoot.children).map(function(item){
-				var entry = {}, tmp;
-
-				item = item.children;
-
-				addConditionally(entry, "id", "guid", item);
-				addConditionally(entry, "title", "title", item);
-				addConditionally(entry, "link", "link", item);
-				addConditionally(entry, "description", "description", item);
-				if((tmp = fetch("pubDate", item))) entry.pubDate = new Date(tmp);
-				return entry;
-			});
-		}
-	}
-	this.dom = feed;
-	DomHandler.prototype._handleCallback.call(
-		this, feedRoot ? null : Error("couldn't find root of feed")
-	);
-};
-
-module.exports = FeedHandler;
-
-
-/***/ }),
-/* 42 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = ProxyHandler;
-
-function ProxyHandler(cbs){
-	this._cbs = cbs || {};
-}
-
-var EVENTS = __webpack_require__(3).EVENTS;
-Object.keys(EVENTS).forEach(function(name){
-	if(EVENTS[name] === 0){
-		name = "on" + name;
-		ProxyHandler.prototype[name] = function(){
-			if(this._cbs[name]) this._cbs[name]();
-		};
-	} else if(EVENTS[name] === 1){
-		name = "on" + name;
-		ProxyHandler.prototype[name] = function(a){
-			if(this._cbs[name]) this._cbs[name](a);
-		};
-	} else if(EVENTS[name] === 2){
-		name = "on" + name;
-		ProxyHandler.prototype[name] = function(a, b){
-			if(this._cbs[name]) this._cbs[name](a, b);
-		};
-	} else {
-		throw Error("wrong number of arguments");
-	}
-});
-
-/***/ }),
-/* 43 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = Stream;
-
-var Parser = __webpack_require__(21);
-
-function Stream(options){
-	Parser.call(this, new Cbs(this), options);
-}
-
-__webpack_require__(0)(Stream, Parser);
-
-Stream.prototype.readable = true;
-
-function Cbs(scope){
-	this.scope = scope;
-}
-
-var EVENTS = __webpack_require__(3).EVENTS;
-
-Object.keys(EVENTS).forEach(function(name){
-	if(EVENTS[name] === 0){
-		Cbs.prototype["on" + name] = function(){
-			this.scope.emit(name);
-		};
-	} else if(EVENTS[name] === 1){
-		Cbs.prototype["on" + name] = function(a){
-			this.scope.emit(name, a);
-		};
-	} else if(EVENTS[name] === 2){
-		Cbs.prototype["on" + name] = function(a, b){
-			this.scope.emit(name, a, b);
-		};
-	} else {
-		throw Error("wrong number of arguments!");
-	}
-});
-
-/***/ }),
-/* 44 */
-/***/ (function(module, exports) {
-
-exports.read = function (buffer, offset, isLE, mLen, nBytes) {
-  var e, m
-  var eLen = nBytes * 8 - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var nBits = -7
-  var i = isLE ? (nBytes - 1) : 0
-  var d = isLE ? -1 : 1
-  var s = buffer[offset + i]
-
-  i += d
-
-  e = s & ((1 << (-nBits)) - 1)
-  s >>= (-nBits)
-  nBits += eLen
-  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-  m = e & ((1 << (-nBits)) - 1)
-  e >>= (-nBits)
-  nBits += mLen
-  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-  if (e === 0) {
-    e = 1 - eBias
-  } else if (e === eMax) {
-    return m ? NaN : ((s ? -1 : 1) * Infinity)
-  } else {
-    m = m + Math.pow(2, mLen)
-    e = e - eBias
-  }
-  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
-}
-
-exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
-  var e, m, c
-  var eLen = nBytes * 8 - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
-  var i = isLE ? 0 : (nBytes - 1)
-  var d = isLE ? 1 : -1
-  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
-
-  value = Math.abs(value)
-
-  if (isNaN(value) || value === Infinity) {
-    m = isNaN(value) ? 1 : 0
-    e = eMax
-  } else {
-    e = Math.floor(Math.log(value) / Math.LN2)
-    if (value * (c = Math.pow(2, -e)) < 1) {
-      e--
-      c *= 2
-    }
-    if (e + eBias >= 1) {
-      value += rt / c
-    } else {
-      value += rt * Math.pow(2, 1 - eBias)
-    }
-    if (value * c >= 2) {
-      e++
-      c /= 2
-    }
-
-    if (e + eBias >= eMax) {
-      m = 0
-      e = eMax
-    } else if (e + eBias >= 1) {
-      m = (value * c - 1) * Math.pow(2, mLen)
-      e = e + eBias
-    } else {
-      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
-      e = 0
-    }
-  }
-
-  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
-
-  e = (e << mLen) | m
-  eLen += mLen
-  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
-
-  buffer[offset + i - d] |= s * 128
-}
-
-
-/***/ }),
-/* 45 */
-/***/ (function(module, exports) {
-
-module.exports = {
-	"0": 65533,
-	"128": 8364,
-	"130": 8218,
-	"131": 402,
-	"132": 8222,
-	"133": 8230,
-	"134": 8224,
-	"135": 8225,
-	"136": 710,
-	"137": 8240,
-	"138": 352,
-	"139": 8249,
-	"140": 338,
-	"142": 381,
-	"145": 8216,
-	"146": 8217,
-	"147": 8220,
-	"148": 8221,
-	"149": 8226,
-	"150": 8211,
-	"151": 8212,
-	"152": 732,
-	"153": 8482,
-	"154": 353,
-	"155": 8250,
-	"156": 339,
-	"158": 382,
-	"159": 376
-};
-
-/***/ }),
-/* 46 */
-/***/ (function(module, exports) {
-
-var toString = {}.toString;
-
-module.exports = Array.isArray || function (arr) {
-  return toString.call(arr) == '[object Array]';
-};
-
-
-/***/ }),
-/* 47 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var apply = Function.prototype.apply;
-
-// DOM APIs, for completeness
-
-exports.setTimeout = function() {
-  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
-};
-exports.setInterval = function() {
-  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
-};
-exports.clearTimeout =
-exports.clearInterval = function(timeout) {
-  if (timeout) {
-    timeout.close();
-  }
-};
-
-function Timeout(id, clearFn) {
-  this._id = id;
-  this._clearFn = clearFn;
-}
-Timeout.prototype.unref = Timeout.prototype.ref = function() {};
-Timeout.prototype.close = function() {
-  this._clearFn.call(window, this._id);
-};
-
-// Does not start the time, just sets up the members needed.
-exports.enroll = function(item, msecs) {
-  clearTimeout(item._idleTimeoutId);
-  item._idleTimeout = msecs;
-};
-
-exports.unenroll = function(item) {
-  clearTimeout(item._idleTimeoutId);
-  item._idleTimeout = -1;
-};
-
-exports._unrefActive = exports.active = function(item) {
-  clearTimeout(item._idleTimeoutId);
-
-  var msecs = item._idleTimeout;
-  if (msecs >= 0) {
-    item._idleTimeoutId = setTimeout(function onTimeout() {
-      if (item._onTimeout)
-        item._onTimeout();
-    }, msecs);
-  }
-};
-
-// setimmediate attaches itself to the global object
-__webpack_require__(55);
-exports.setImmediate = setImmediate;
-exports.clearImmediate = clearImmediate;
-
-
-/***/ }),
-/* 48 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(2)
-
-
-/***/ }),
-/* 49 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var Buffer = __webpack_require__(1).Buffer;
-/*<replacement>*/
-var bufferShim = __webpack_require__(10);
-/*</replacement>*/
-
-module.exports = BufferList;
-
-function BufferList() {
-  this.head = null;
-  this.tail = null;
-  this.length = 0;
-}
-
-BufferList.prototype.push = function (v) {
-  var entry = { data: v, next: null };
-  if (this.length > 0) this.tail.next = entry;else this.head = entry;
-  this.tail = entry;
-  ++this.length;
-};
-
-BufferList.prototype.unshift = function (v) {
-  var entry = { data: v, next: this.head };
-  if (this.length === 0) this.tail = entry;
-  this.head = entry;
-  ++this.length;
-};
-
-BufferList.prototype.shift = function () {
-  if (this.length === 0) return;
-  var ret = this.head.data;
-  if (this.length === 1) this.head = this.tail = null;else this.head = this.head.next;
-  --this.length;
-  return ret;
-};
-
-BufferList.prototype.clear = function () {
-  this.head = this.tail = null;
-  this.length = 0;
-};
-
-BufferList.prototype.join = function (s) {
-  if (this.length === 0) return '';
-  var p = this.head;
-  var ret = '' + p.data;
-  while (p = p.next) {
-    ret += s + p.data;
-  }return ret;
-};
-
-BufferList.prototype.concat = function (n) {
-  if (this.length === 0) return bufferShim.alloc(0);
-  if (this.length === 1) return this.head.data;
-  var ret = bufferShim.allocUnsafe(n >>> 0);
-  var p = this.head;
-  var i = 0;
-  while (p) {
-    p.data.copy(ret, i);
-    i += p.data.length;
-    p = p.next;
-  }
-  return ret;
-};
-
-/***/ }),
-/* 50 */
-/***/ (function(module, exports) {
-
-var toString = {}.toString;
-
-module.exports = Array.isArray || function (arr) {
-  return toString.call(arr) == '[object Array]';
-};
-
-
-/***/ }),
-/* 51 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(23)
-
-
-/***/ }),
-/* 52 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(process) {var Stream = (function (){
-  try {
-    return __webpack_require__(8); // hack to fix a circular dependency issue when used with browserify
-  } catch(_){}
-}());
-exports = module.exports = __webpack_require__(24);
-exports.Stream = Stream || exports;
-exports.Readable = exports;
-exports.Writable = __webpack_require__(15);
-exports.Duplex = __webpack_require__(2);
-exports.Transform = __webpack_require__(14);
-exports.PassThrough = __webpack_require__(23);
-
-if (!process.browser && process.env.READABLE_STREAM === 'disable' && Stream) {
-  module.exports = Stream;
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
-
-/***/ }),
-/* 53 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(14)
-
-
-/***/ }),
-/* 54 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(15)
-
-
-/***/ }),
-/* 55 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
-    "use strict";
-
-    if (global.setImmediate) {
-        return;
-    }
-
-    var nextHandle = 1; // Spec says greater than zero
-    var tasksByHandle = {};
-    var currentlyRunningATask = false;
-    var doc = global.document;
-    var registerImmediate;
-
-    function setImmediate(callback) {
-      // Callback can either be a function or a string
-      if (typeof callback !== "function") {
-        callback = new Function("" + callback);
-      }
-      // Copy function arguments
-      var args = new Array(arguments.length - 1);
-      for (var i = 0; i < args.length; i++) {
-          args[i] = arguments[i + 1];
-      }
-      // Store and register the task
-      var task = { callback: callback, args: args };
-      tasksByHandle[nextHandle] = task;
-      registerImmediate(nextHandle);
-      return nextHandle++;
-    }
-
-    function clearImmediate(handle) {
-        delete tasksByHandle[handle];
-    }
-
-    function run(task) {
-        var callback = task.callback;
-        var args = task.args;
-        switch (args.length) {
-        case 0:
-            callback();
-            break;
-        case 1:
-            callback(args[0]);
-            break;
-        case 2:
-            callback(args[0], args[1]);
-            break;
-        case 3:
-            callback(args[0], args[1], args[2]);
-            break;
-        default:
-            callback.apply(undefined, args);
-            break;
-        }
-    }
-
-    function runIfPresent(handle) {
-        // From the spec: "Wait until any invocations of this algorithm started before this one have completed."
-        // So if we're currently running a task, we'll need to delay this invocation.
-        if (currentlyRunningATask) {
-            // Delay by doing a setTimeout. setImmediate was tried instead, but in Firefox 7 it generated a
-            // "too much recursion" error.
-            setTimeout(runIfPresent, 0, handle);
-        } else {
-            var task = tasksByHandle[handle];
-            if (task) {
-                currentlyRunningATask = true;
-                try {
-                    run(task);
-                } finally {
-                    clearImmediate(handle);
-                    currentlyRunningATask = false;
-                }
-            }
-        }
-    }
-
-    function installNextTickImplementation() {
-        registerImmediate = function(handle) {
-            process.nextTick(function () { runIfPresent(handle); });
-        };
-    }
-
-    function canUsePostMessage() {
-        // The test against `importScripts` prevents this implementation from being installed inside a web worker,
-        // where `global.postMessage` means something completely different and can't be used for this purpose.
-        if (global.postMessage && !global.importScripts) {
-            var postMessageIsAsynchronous = true;
-            var oldOnMessage = global.onmessage;
-            global.onmessage = function() {
-                postMessageIsAsynchronous = false;
-            };
-            global.postMessage("", "*");
-            global.onmessage = oldOnMessage;
-            return postMessageIsAsynchronous;
-        }
-    }
-
-    function installPostMessageImplementation() {
-        // Installs an event handler on `global` for the `message` event: see
-        // * https://developer.mozilla.org/en/DOM/window.postMessage
-        // * http://www.whatwg.org/specs/web-apps/current-work/multipage/comms.html#crossDocumentMessages
-
-        var messagePrefix = "setImmediate$" + Math.random() + "$";
-        var onGlobalMessage = function(event) {
-            if (event.source === global &&
-                typeof event.data === "string" &&
-                event.data.indexOf(messagePrefix) === 0) {
-                runIfPresent(+event.data.slice(messagePrefix.length));
-            }
-        };
-
-        if (global.addEventListener) {
-            global.addEventListener("message", onGlobalMessage, false);
-        } else {
-            global.attachEvent("onmessage", onGlobalMessage);
-        }
-
-        registerImmediate = function(handle) {
-            global.postMessage(messagePrefix + handle, "*");
-        };
-    }
-
-    function installMessageChannelImplementation() {
-        var channel = new MessageChannel();
-        channel.port1.onmessage = function(event) {
-            var handle = event.data;
-            runIfPresent(handle);
-        };
-
-        registerImmediate = function(handle) {
-            channel.port2.postMessage(handle);
-        };
-    }
-
-    function installReadyStateChangeImplementation() {
-        var html = doc.documentElement;
-        registerImmediate = function(handle) {
-            // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
-            // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
-            var script = doc.createElement("script");
-            script.onreadystatechange = function () {
-                runIfPresent(handle);
-                script.onreadystatechange = null;
-                html.removeChild(script);
-                script = null;
-            };
-            html.appendChild(script);
-        };
-    }
-
-    function installSetTimeoutImplementation() {
-        registerImmediate = function(handle) {
-            setTimeout(runIfPresent, 0, handle);
-        };
-    }
-
-    // If supported, we should attach to the prototype of global, since that is where setTimeout et al. live.
-    var attachTo = Object.getPrototypeOf && Object.getPrototypeOf(global);
-    attachTo = attachTo && attachTo.setTimeout ? attachTo : global;
-
-    // Don't get fooled by e.g. browserify environments.
-    if ({}.toString.call(global.process) === "[object process]") {
-        // For Node.js before 0.9
-        installNextTickImplementation();
-
-    } else if (canUsePostMessage()) {
-        // For non-IE10 modern browsers
-        installPostMessageImplementation();
-
-    } else if (global.MessageChannel) {
-        // For web workers, where supported
-        installMessageChannelImplementation();
-
-    } else if (doc && "onreadystatechange" in doc.createElement("script")) {
-        // For IE 6–8
-        installReadyStateChangeImplementation();
-
-    } else {
-        // For older browsers
-        installSetTimeoutImplementation();
-    }
-
-    attachTo.setImmediate = setImmediate;
-    attachTo.clearImmediate = clearImmediate;
-}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(7)))
-
-/***/ }),
-/* 56 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global) {
-/**
- * Module exports.
- */
-
-module.exports = deprecate;
-
-/**
- * Mark that a method should not be used.
- * Returns a modified function which warns once by default.
- *
- * If `localStorage.noDeprecation = true` is set, then it is a no-op.
- *
- * If `localStorage.throwDeprecation = true` is set, then deprecated functions
- * will throw an Error when invoked.
- *
- * If `localStorage.traceDeprecation = true` is set, then deprecated functions
- * will invoke `console.trace()` instead of `console.error()`.
- *
- * @param {Function} fn - the function to deprecate
- * @param {String} msg - the string to print to the console when `fn` is invoked
- * @returns {Function} a new "deprecated" version of `fn`
- * @api public
- */
-
-function deprecate (fn, msg) {
-  if (config('noDeprecation')) {
-    return fn;
-  }
-
-  var warned = false;
-  function deprecated() {
-    if (!warned) {
-      if (config('throwDeprecation')) {
-        throw new Error(msg);
-      } else if (config('traceDeprecation')) {
-        console.trace(msg);
-      } else {
-        console.warn(msg);
-      }
-      warned = true;
-    }
-    return fn.apply(this, arguments);
-  }
-
-  return deprecated;
-}
-
-/**
- * Checks `localStorage` for boolean values for the given `name`.
- *
- * @param {String} name
- * @returns {Boolean}
- * @api private
- */
-
-function config (name) {
-  // accessing global.localStorage can trigger a DOMException in sandboxed iframes
-  try {
-    if (!global.localStorage) return false;
-  } catch (_) {
-    return false;
-  }
-  var val = global.localStorage[name];
-  if (null == val) return false;
-  return String(val).toLowerCase() === 'true';
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
-
-/***/ }),
-/* 57 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
-/* 58 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
-/* 59 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -11118,6 +9044,2080 @@ function compile() {
 
     return new Function(['_i', '_h'], fnWrapper);
 }
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.byteLength = byteLength
+exports.toByteArray = toByteArray
+exports.fromByteArray = fromByteArray
+
+var lookup = []
+var revLookup = []
+var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
+
+var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+for (var i = 0, len = code.length; i < len; ++i) {
+  lookup[i] = code[i]
+  revLookup[code.charCodeAt(i)] = i
+}
+
+revLookup['-'.charCodeAt(0)] = 62
+revLookup['_'.charCodeAt(0)] = 63
+
+function placeHoldersCount (b64) {
+  var len = b64.length
+  if (len % 4 > 0) {
+    throw new Error('Invalid string. Length must be a multiple of 4')
+  }
+
+  // the number of equal signs (place holders)
+  // if there are two placeholders, than the two characters before it
+  // represent one byte
+  // if there is only one, then the three characters before it represent 2 bytes
+  // this is just a cheap hack to not do indexOf twice
+  return b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0
+}
+
+function byteLength (b64) {
+  // base64 is 4/3 + up to two characters of the original data
+  return b64.length * 3 / 4 - placeHoldersCount(b64)
+}
+
+function toByteArray (b64) {
+  var i, j, l, tmp, placeHolders, arr
+  var len = b64.length
+  placeHolders = placeHoldersCount(b64)
+
+  arr = new Arr(len * 3 / 4 - placeHolders)
+
+  // if there are placeholders, only get up to the last complete 4 chars
+  l = placeHolders > 0 ? len - 4 : len
+
+  var L = 0
+
+  for (i = 0, j = 0; i < l; i += 4, j += 3) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)]
+    arr[L++] = (tmp >> 16) & 0xFF
+    arr[L++] = (tmp >> 8) & 0xFF
+    arr[L++] = tmp & 0xFF
+  }
+
+  if (placeHolders === 2) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4)
+    arr[L++] = tmp & 0xFF
+  } else if (placeHolders === 1) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2)
+    arr[L++] = (tmp >> 8) & 0xFF
+    arr[L++] = tmp & 0xFF
+  }
+
+  return arr
+}
+
+function tripletToBase64 (num) {
+  return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
+}
+
+function encodeChunk (uint8, start, end) {
+  var tmp
+  var output = []
+  for (var i = start; i < end; i += 3) {
+    tmp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
+    output.push(tripletToBase64(tmp))
+  }
+  return output.join('')
+}
+
+function fromByteArray (uint8) {
+  var tmp
+  var len = uint8.length
+  var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
+  var output = ''
+  var parts = []
+  var maxChunkLength = 16383 // must be multiple of 3
+
+  // go through the array every three bytes, we'll deal with trailing stuff later
+  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
+    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
+  }
+
+  // pad the end with zeros, but make sure to not forget the extra bytes
+  if (extraBytes === 1) {
+    tmp = uint8[len - 1]
+    output += lookup[tmp >> 2]
+    output += lookup[(tmp << 4) & 0x3F]
+    output += '=='
+  } else if (extraBytes === 2) {
+    tmp = (uint8[len - 2] << 8) + (uint8[len - 1])
+    output += lookup[tmp >> 10]
+    output += lookup[(tmp >> 4) & 0x3F]
+    output += lookup[(tmp << 2) & 0x3F]
+    output += '='
+  }
+
+  parts.push(output)
+
+  return parts.join('')
+}
+
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+  Module dependencies
+*/
+var ElementType = __webpack_require__(28);
+var entities = __webpack_require__(38);
+
+/*
+  Boolean Attributes
+*/
+var booleanAttributes = {
+  __proto__: null,
+  allowfullscreen: true,
+  async: true,
+  autofocus: true,
+  autoplay: true,
+  checked: true,
+  controls: true,
+  default: true,
+  defer: true,
+  disabled: true,
+  hidden: true,
+  ismap: true,
+  loop: true,
+  multiple: true,
+  muted: true,
+  open: true,
+  readonly: true,
+  required: true,
+  reversed: true,
+  scoped: true,
+  seamless: true,
+  selected: true,
+  typemustmatch: true
+};
+
+var unencodedElements = {
+  __proto__: null,
+  style: true,
+  script: true,
+  xmp: true,
+  iframe: true,
+  noembed: true,
+  noframes: true,
+  plaintext: true,
+  noscript: true
+};
+
+/*
+  Format attributes
+*/
+function formatAttrs(attributes, opts) {
+  if (!attributes) return;
+
+  var output = '',
+      value;
+
+  // Loop through the attributes
+  for (var key in attributes) {
+    value = attributes[key];
+    if (output) {
+      output += ' ';
+    }
+
+    if (!value && booleanAttributes[key]) {
+      output += key;
+    } else {
+      output += key + '="' + (opts.decodeEntities ? entities.encodeXML(value) : value) + '"';
+    }
+  }
+
+  return output;
+}
+
+/*
+  Self-enclosing tags (stolen from node-htmlparser)
+*/
+var singleTag = {
+  __proto__: null,
+  area: true,
+  base: true,
+  basefont: true,
+  br: true,
+  col: true,
+  command: true,
+  embed: true,
+  frame: true,
+  hr: true,
+  img: true,
+  input: true,
+  isindex: true,
+  keygen: true,
+  link: true,
+  meta: true,
+  param: true,
+  source: true,
+  track: true,
+  wbr: true,
+};
+
+
+var render = module.exports = function(dom, opts) {
+  if (!Array.isArray(dom) && !dom.cheerio) dom = [dom];
+  opts = opts || {};
+
+  var output = '';
+
+  for(var i = 0; i < dom.length; i++){
+    var elem = dom[i];
+
+    if (elem.type === 'root')
+      output += render(elem.children, opts);
+    else if (ElementType.isTag(elem))
+      output += renderTag(elem, opts);
+    else if (elem.type === ElementType.Directive)
+      output += renderDirective(elem);
+    else if (elem.type === ElementType.Comment)
+      output += renderComment(elem);
+    else if (elem.type === ElementType.CDATA)
+      output += renderCdata(elem);
+    else
+      output += renderText(elem, opts);
+  }
+
+  return output;
+};
+
+function renderTag(elem, opts) {
+  // Handle SVG
+  if (elem.name === "svg") opts = {decodeEntities: opts.decodeEntities, xmlMode: true};
+
+  var tag = '<' + elem.name,
+      attribs = formatAttrs(elem.attribs, opts);
+
+  if (attribs) {
+    tag += ' ' + attribs;
+  }
+
+  if (
+    opts.xmlMode
+    && (!elem.children || elem.children.length === 0)
+  ) {
+    tag += '/>';
+  } else {
+    tag += '>';
+    if (elem.children) {
+      tag += render(elem.children, opts);
+    }
+
+    if (!singleTag[elem.name] || opts.xmlMode) {
+      tag += '</' + elem.name + '>';
+    }
+  }
+
+  return tag;
+}
+
+function renderDirective(elem) {
+  return '<' + elem.data + '>';
+}
+
+function renderText(elem, opts) {
+  var data = elem.data || '';
+
+  // if entities weren't decoded, no need to encode them back
+  if (opts.decodeEntities && !(elem.parent && elem.parent.name in unencodedElements)) {
+    data = entities.encodeXML(data);
+  }
+
+  return data;
+}
+
+function renderCdata(elem) {
+  return '<![CDATA[' + elem.children[0].data + ']]>';
+}
+
+function renderComment(elem) {
+  return '<!--' + elem.data + '-->';
+}
+
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports) {
+
+//Types of elements found in the DOM
+module.exports = {
+	Text: "text", //Text
+	Directive: "directive", //<? ... ?>
+	Comment: "comment", //<!-- ... -->
+	Script: "script", //<script> tags
+	Style: "style", //<style> tags
+	Tag: "tag", //Any tag
+	CDATA: "cdata", //<![CDATA[ ... ]]>
+
+	isTag: function(elem){
+		return elem.type === "tag" || elem.type === "script" || elem.type === "style";
+	}
+};
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var ElementType = __webpack_require__(5);
+
+var re_whitespace = /\s+/g;
+var NodePrototype = __webpack_require__(17);
+var ElementPrototype = __webpack_require__(30);
+
+function DomHandler(callback, options, elementCB){
+	if(typeof callback === "object"){
+		elementCB = options;
+		options = callback;
+		callback = null;
+	} else if(typeof options === "function"){
+		elementCB = options;
+		options = defaultOpts;
+	}
+	this._callback = callback;
+	this._options = options || defaultOpts;
+	this._elementCB = elementCB;
+	this.dom = [];
+	this._done = false;
+	this._tagStack = [];
+	this._parser = this._parser || null;
+}
+
+//default options
+var defaultOpts = {
+	normalizeWhitespace: false, //Replace all whitespace with single spaces
+	withStartIndices: false, //Add startIndex properties to nodes
+};
+
+DomHandler.prototype.onparserinit = function(parser){
+	this._parser = parser;
+};
+
+//Resets the handler back to starting state
+DomHandler.prototype.onreset = function(){
+	DomHandler.call(this, this._callback, this._options, this._elementCB);
+};
+
+//Signals the handler that parsing is done
+DomHandler.prototype.onend = function(){
+	if(this._done) return;
+	this._done = true;
+	this._parser = null;
+	this._handleCallback(null);
+};
+
+DomHandler.prototype._handleCallback =
+DomHandler.prototype.onerror = function(error){
+	if(typeof this._callback === "function"){
+		this._callback(error, this.dom);
+	} else {
+		if(error) throw error;
+	}
+};
+
+DomHandler.prototype.onclosetag = function(){
+	//if(this._tagStack.pop().name !== name) this._handleCallback(Error("Tagname didn't match!"));
+	var elem = this._tagStack.pop();
+	if(this._elementCB) this._elementCB(elem);
+};
+
+DomHandler.prototype._addDomElement = function(element){
+	var parent = this._tagStack[this._tagStack.length - 1];
+	var siblings = parent ? parent.children : this.dom;
+	var previousSibling = siblings[siblings.length - 1];
+
+	element.next = null;
+
+	if(this._options.withStartIndices){
+		element.startIndex = this._parser.startIndex;
+	}
+
+	if (this._options.withDomLvl1) {
+		element.__proto__ = element.type === "tag" ? ElementPrototype : NodePrototype;
+	}
+
+	if(previousSibling){
+		element.prev = previousSibling;
+		previousSibling.next = element;
+	} else {
+		element.prev = null;
+	}
+
+	siblings.push(element);
+	element.parent = parent || null;
+};
+
+DomHandler.prototype.onopentag = function(name, attribs){
+	var element = {
+		type: name === "script" ? ElementType.Script : name === "style" ? ElementType.Style : ElementType.Tag,
+		name: name,
+		attribs: attribs,
+		children: []
+	};
+
+	this._addDomElement(element);
+
+	this._tagStack.push(element);
+};
+
+DomHandler.prototype.ontext = function(data){
+	//the ignoreWhitespace is officially dropped, but for now,
+	//it's an alias for normalizeWhitespace
+	var normalize = this._options.normalizeWhitespace || this._options.ignoreWhitespace;
+
+	var lastTag;
+
+	if(!this._tagStack.length && this.dom.length && (lastTag = this.dom[this.dom.length-1]).type === ElementType.Text){
+		if(normalize){
+			lastTag.data = (lastTag.data + data).replace(re_whitespace, " ");
+		} else {
+			lastTag.data += data;
+		}
+	} else {
+		if(
+			this._tagStack.length &&
+			(lastTag = this._tagStack[this._tagStack.length - 1]) &&
+			(lastTag = lastTag.children[lastTag.children.length - 1]) &&
+			lastTag.type === ElementType.Text
+		){
+			if(normalize){
+				lastTag.data = (lastTag.data + data).replace(re_whitespace, " ");
+			} else {
+				lastTag.data += data;
+			}
+		} else {
+			if(normalize){
+				data = data.replace(re_whitespace, " ");
+			}
+
+			this._addDomElement({
+				data: data,
+				type: ElementType.Text
+			});
+		}
+	}
+};
+
+DomHandler.prototype.oncomment = function(data){
+	var lastTag = this._tagStack[this._tagStack.length - 1];
+
+	if(lastTag && lastTag.type === ElementType.Comment){
+		lastTag.data += data;
+		return;
+	}
+
+	var element = {
+		data: data,
+		type: ElementType.Comment
+	};
+
+	this._addDomElement(element);
+	this._tagStack.push(element);
+};
+
+DomHandler.prototype.oncdatastart = function(){
+	var element = {
+		children: [{
+			data: "",
+			type: ElementType.Text
+		}],
+		type: ElementType.CDATA
+	};
+
+	this._addDomElement(element);
+	this._tagStack.push(element);
+};
+
+DomHandler.prototype.oncommentend = DomHandler.prototype.oncdataend = function(){
+	this._tagStack.pop();
+};
+
+DomHandler.prototype.onprocessinginstruction = function(name, data){
+	this._addDomElement({
+		name: name,
+		data: data,
+		type: ElementType.Directive
+	});
+};
+
+module.exports = DomHandler;
+
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// DOM-Level-1-compliant structure
+var NodePrototype = __webpack_require__(17);
+var ElementPrototype = module.exports = Object.create(NodePrototype);
+
+var domLvl1 = {
+	tagName: "name"
+};
+
+Object.keys(domLvl1).forEach(function(key) {
+	var shorthand = domLvl1[key];
+	Object.defineProperty(ElementPrototype, key, {
+		get: function() {
+			return this[shorthand] || null;
+		},
+		set: function(val) {
+			this[shorthand] = val;
+			return val;
+		}
+	});
+});
+
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var DomUtils = module.exports;
+
+[
+	__webpack_require__(36),
+	__webpack_require__(37),
+	__webpack_require__(34),
+	__webpack_require__(35),
+	__webpack_require__(33),
+	__webpack_require__(32)
+].forEach(function(ext){
+	Object.keys(ext).forEach(function(key){
+		DomUtils[key] = ext[key].bind(DomUtils);
+	});
+});
+
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports) {
+
+// removeSubsets
+// Given an array of nodes, remove any member that is contained by another.
+exports.removeSubsets = function(nodes) {
+	var idx = nodes.length, node, ancestor, replace;
+
+	// Check if each node (or one of its ancestors) is already contained in the
+	// array.
+	while (--idx > -1) {
+		node = ancestor = nodes[idx];
+
+		// Temporarily remove the node under consideration
+		nodes[idx] = null;
+		replace = true;
+
+		while (ancestor) {
+			if (nodes.indexOf(ancestor) > -1) {
+				replace = false;
+				nodes.splice(idx, 1);
+				break;
+			}
+			ancestor = ancestor.parent;
+		}
+
+		// If the node has been found to be unique, re-insert it.
+		if (replace) {
+			nodes[idx] = node;
+		}
+	}
+
+	return nodes;
+};
+
+// Source: http://dom.spec.whatwg.org/#dom-node-comparedocumentposition
+var POSITION = {
+	DISCONNECTED: 1,
+	PRECEDING: 2,
+	FOLLOWING: 4,
+	CONTAINS: 8,
+	CONTAINED_BY: 16
+};
+
+// Compare the position of one node against another node in any other document.
+// The return value is a bitmask with the following values:
+//
+// document order:
+// > There is an ordering, document order, defined on all the nodes in the
+// > document corresponding to the order in which the first character of the
+// > XML representation of each node occurs in the XML representation of the
+// > document after expansion of general entities. Thus, the document element
+// > node will be the first node. Element nodes occur before their children.
+// > Thus, document order orders element nodes in order of the occurrence of
+// > their start-tag in the XML (after expansion of entities). The attribute
+// > nodes of an element occur after the element and before its children. The
+// > relative order of attribute nodes is implementation-dependent./
+// Source:
+// http://www.w3.org/TR/DOM-Level-3-Core/glossary.html#dt-document-order
+//
+// @argument {Node} nodaA The first node to use in the comparison
+// @argument {Node} nodeB The second node to use in the comparison
+//
+// @return {Number} A bitmask describing the input nodes' relative position.
+//         See http://dom.spec.whatwg.org/#dom-node-comparedocumentposition for
+//         a description of these values.
+var comparePos = exports.compareDocumentPosition = function(nodeA, nodeB) {
+	var aParents = [];
+	var bParents = [];
+	var current, sharedParent, siblings, aSibling, bSibling, idx;
+
+	if (nodeA === nodeB) {
+		return 0;
+	}
+
+	current = nodeA;
+	while (current) {
+		aParents.unshift(current);
+		current = current.parent;
+	}
+	current = nodeB;
+	while (current) {
+		bParents.unshift(current);
+		current = current.parent;
+	}
+
+	idx = 0;
+	while (aParents[idx] === bParents[idx]) {
+		idx++;
+	}
+
+	if (idx === 0) {
+		return POSITION.DISCONNECTED;
+	}
+
+	sharedParent = aParents[idx - 1];
+	siblings = sharedParent.children;
+	aSibling = aParents[idx];
+	bSibling = bParents[idx];
+
+	if (siblings.indexOf(aSibling) > siblings.indexOf(bSibling)) {
+		if (sharedParent === nodeB) {
+			return POSITION.FOLLOWING | POSITION.CONTAINED_BY;
+		}
+		return POSITION.FOLLOWING;
+	} else {
+		if (sharedParent === nodeA) {
+			return POSITION.PRECEDING | POSITION.CONTAINS;
+		}
+		return POSITION.PRECEDING;
+	}
+};
+
+// Sort an array of nodes based on their relative position in the document and
+// remove any duplicate nodes. If the array contains nodes that do not belong
+// to the same document, sort order is unspecified.
+//
+// @argument {Array} nodes Array of DOM nodes
+//
+// @returns {Array} collection of unique nodes, sorted in document order
+exports.uniqueSort = function(nodes) {
+	var idx = nodes.length, node, position;
+
+	nodes = nodes.slice();
+
+	while (--idx > -1) {
+		node = nodes[idx];
+		position = nodes.indexOf(node);
+		if (position > -1 && position < idx) {
+			nodes.splice(idx, 1);
+		}
+	}
+	nodes.sort(function(a, b) {
+		var relative = comparePos(a, b);
+		if (relative & POSITION.PRECEDING) {
+			return -1;
+		} else if (relative & POSITION.FOLLOWING) {
+			return 1;
+		}
+		return 0;
+	});
+
+	return nodes;
+};
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var ElementType = __webpack_require__(5);
+var isTag = exports.isTag = ElementType.isTag;
+
+exports.testElement = function(options, element){
+	for(var key in options){
+		if(!options.hasOwnProperty(key));
+		else if(key === "tag_name"){
+			if(!isTag(element) || !options.tag_name(element.name)){
+				return false;
+			}
+		} else if(key === "tag_type"){
+			if(!options.tag_type(element.type)) return false;
+		} else if(key === "tag_contains"){
+			if(isTag(element) || !options.tag_contains(element.data)){
+				return false;
+			}
+		} else if(!element.attribs || !options[key](element.attribs[key])){
+			return false;
+		}
+	}
+	return true;
+};
+
+var Checks = {
+	tag_name: function(name){
+		if(typeof name === "function"){
+			return function(elem){ return isTag(elem) && name(elem.name); };
+		} else if(name === "*"){
+			return isTag;
+		} else {
+			return function(elem){ return isTag(elem) && elem.name === name; };
+		}
+	},
+	tag_type: function(type){
+		if(typeof type === "function"){
+			return function(elem){ return type(elem.type); };
+		} else {
+			return function(elem){ return elem.type === type; };
+		}
+	},
+	tag_contains: function(data){
+		if(typeof data === "function"){
+			return function(elem){ return !isTag(elem) && data(elem.data); };
+		} else {
+			return function(elem){ return !isTag(elem) && elem.data === data; };
+		}
+	}
+};
+
+function getAttribCheck(attrib, value){
+	if(typeof value === "function"){
+		return function(elem){ return elem.attribs && value(elem.attribs[attrib]); };
+	} else {
+		return function(elem){ return elem.attribs && elem.attribs[attrib] === value; };
+	}
+}
+
+function combineFuncs(a, b){
+	return function(elem){
+		return a(elem) || b(elem);
+	};
+}
+
+exports.getElements = function(options, element, recurse, limit){
+	var funcs = Object.keys(options).map(function(key){
+		var value = options[key];
+		return key in Checks ? Checks[key](value) : getAttribCheck(key, value);
+	});
+
+	return funcs.length === 0 ? [] : this.filter(
+		funcs.reduce(combineFuncs),
+		element, recurse, limit
+	);
+};
+
+exports.getElementById = function(id, element, recurse){
+	if(!Array.isArray(element)) element = [element];
+	return this.findOne(getAttribCheck("id", id), element, recurse !== false);
+};
+
+exports.getElementsByTagName = function(name, element, recurse, limit){
+	return this.filter(Checks.tag_name(name), element, recurse, limit);
+};
+
+exports.getElementsByTagType = function(type, element, recurse, limit){
+	return this.filter(Checks.tag_type(type), element, recurse, limit);
+};
+
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports) {
+
+exports.removeElement = function(elem){
+	if(elem.prev) elem.prev.next = elem.next;
+	if(elem.next) elem.next.prev = elem.prev;
+
+	if(elem.parent){
+		var childs = elem.parent.children;
+		childs.splice(childs.lastIndexOf(elem), 1);
+	}
+};
+
+exports.replaceElement = function(elem, replacement){
+	var prev = replacement.prev = elem.prev;
+	if(prev){
+		prev.next = replacement;
+	}
+
+	var next = replacement.next = elem.next;
+	if(next){
+		next.prev = replacement;
+	}
+
+	var parent = replacement.parent = elem.parent;
+	if(parent){
+		var childs = parent.children;
+		childs[childs.lastIndexOf(elem)] = replacement;
+	}
+};
+
+exports.appendChild = function(elem, child){
+	child.parent = elem;
+
+	if(elem.children.push(child) !== 1){
+		var sibling = elem.children[elem.children.length - 2];
+		sibling.next = child;
+		child.prev = sibling;
+		child.next = null;
+	}
+};
+
+exports.append = function(elem, next){
+	var parent = elem.parent,
+		currNext = elem.next;
+
+	next.next = currNext;
+	next.prev = elem;
+	elem.next = next;
+	next.parent = parent;
+
+	if(currNext){
+		currNext.prev = next;
+		if(parent){
+			var childs = parent.children;
+			childs.splice(childs.lastIndexOf(currNext), 0, next);
+		}
+	} else if(parent){
+		parent.children.push(next);
+	}
+};
+
+exports.prepend = function(elem, prev){
+	var parent = elem.parent;
+	if(parent){
+		var childs = parent.children;
+		childs.splice(childs.lastIndexOf(elem), 0, prev);
+	}
+
+	if(elem.prev){
+		elem.prev.next = prev;
+	}
+	
+	prev.parent = parent;
+	prev.prev = elem.prev;
+	prev.next = elem;
+	elem.prev = prev;
+};
+
+
+
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isTag = __webpack_require__(5).isTag;
+
+module.exports = {
+	filter: filter,
+	find: find,
+	findOneChild: findOneChild,
+	findOne: findOne,
+	existsOne: existsOne,
+	findAll: findAll
+};
+
+function filter(test, element, recurse, limit){
+	if(!Array.isArray(element)) element = [element];
+
+	if(typeof limit !== "number" || !isFinite(limit)){
+		limit = Infinity;
+	}
+	return find(test, element, recurse !== false, limit);
+}
+
+function find(test, elems, recurse, limit){
+	var result = [], childs;
+
+	for(var i = 0, j = elems.length; i < j; i++){
+		if(test(elems[i])){
+			result.push(elems[i]);
+			if(--limit <= 0) break;
+		}
+
+		childs = elems[i].children;
+		if(recurse && childs && childs.length > 0){
+			childs = find(test, childs, recurse, limit);
+			result = result.concat(childs);
+			limit -= childs.length;
+			if(limit <= 0) break;
+		}
+	}
+
+	return result;
+}
+
+function findOneChild(test, elems){
+	for(var i = 0, l = elems.length; i < l; i++){
+		if(test(elems[i])) return elems[i];
+	}
+
+	return null;
+}
+
+function findOne(test, elems){
+	var elem = null;
+
+	for(var i = 0, l = elems.length; i < l && !elem; i++){
+		if(!isTag(elems[i])){
+			continue;
+		} else if(test(elems[i])){
+			elem = elems[i];
+		} else if(elems[i].children.length > 0){
+			elem = findOne(test, elems[i].children);
+		}
+	}
+
+	return elem;
+}
+
+function existsOne(test, elems){
+	for(var i = 0, l = elems.length; i < l; i++){
+		if(
+			isTag(elems[i]) && (
+				test(elems[i]) || (
+					elems[i].children.length > 0 &&
+					existsOne(test, elems[i].children)
+				)
+			)
+		){
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function findAll(test, elems){
+	var result = [];
+	for(var i = 0, j = elems.length; i < j; i++){
+		if(!isTag(elems[i])) continue;
+		if(test(elems[i])) result.push(elems[i]);
+
+		if(elems[i].children.length > 0){
+			result = result.concat(findAll(test, elems[i].children));
+		}
+	}
+	return result;
+}
+
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var ElementType = __webpack_require__(5),
+    getOuterHTML = __webpack_require__(27),
+    isTag = ElementType.isTag;
+
+module.exports = {
+	getInnerHTML: getInnerHTML,
+	getOuterHTML: getOuterHTML,
+	getText: getText
+};
+
+function getInnerHTML(elem, opts){
+	return elem.children ? elem.children.map(function(elem){
+		return getOuterHTML(elem, opts);
+	}).join("") : "";
+}
+
+function getText(elem){
+	if(Array.isArray(elem)) return elem.map(getText).join("");
+	if(isTag(elem) || elem.type === ElementType.CDATA) return getText(elem.children);
+	if(elem.type === ElementType.Text) return elem.data;
+	return "";
+}
+
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports) {
+
+var getChildren = exports.getChildren = function(elem){
+	return elem.children;
+};
+
+var getParent = exports.getParent = function(elem){
+	return elem.parent;
+};
+
+exports.getSiblings = function(elem){
+	var parent = getParent(elem);
+	return parent ? getChildren(parent) : [elem];
+};
+
+exports.getAttributeValue = function(elem, name){
+	return elem.attribs && elem.attribs[name];
+};
+
+exports.hasAttrib = function(elem, name){
+	return !!elem.attribs && hasOwnProperty.call(elem.attribs, name);
+};
+
+exports.getName = function(elem){
+	return elem.name;
+};
+
+
+/***/ }),
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var encode = __webpack_require__(40),
+    decode = __webpack_require__(39);
+
+exports.decode = function(data, level){
+	return (!level || level <= 0 ? decode.XML : decode.HTML)(data);
+};
+
+exports.decodeStrict = function(data, level){
+	return (!level || level <= 0 ? decode.XML : decode.HTMLStrict)(data);
+};
+
+exports.encode = function(data, level){
+	return (!level || level <= 0 ? encode.XML : encode.HTML)(data);
+};
+
+exports.encodeXML = encode.XML;
+
+exports.encodeHTML4 =
+exports.encodeHTML5 =
+exports.encodeHTML  = encode.HTML;
+
+exports.decodeXML =
+exports.decodeXMLStrict = decode.XML;
+
+exports.decodeHTML4 =
+exports.decodeHTML5 =
+exports.decodeHTML = decode.HTML;
+
+exports.decodeHTML4Strict =
+exports.decodeHTML5Strict =
+exports.decodeHTMLStrict = decode.HTMLStrict;
+
+exports.escape = encode.escape;
+
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var entityMap = __webpack_require__(11),
+    legacyMap = __webpack_require__(22),
+    xmlMap    = __webpack_require__(12),
+    decodeCodePoint = __webpack_require__(18);
+
+var decodeXMLStrict  = getStrictDecoder(xmlMap),
+    decodeHTMLStrict = getStrictDecoder(entityMap);
+
+function getStrictDecoder(map){
+	var keys = Object.keys(map).join("|"),
+	    replace = getReplacer(map);
+
+	keys += "|#[xX][\\da-fA-F]+|#\\d+";
+
+	var re = new RegExp("&(?:" + keys + ");", "g");
+
+	return function(str){
+		return String(str).replace(re, replace);
+	};
+}
+
+var decodeHTML = (function(){
+	var legacy = Object.keys(legacyMap)
+		.sort(sorter);
+
+	var keys = Object.keys(entityMap)
+		.sort(sorter);
+
+	for(var i = 0, j = 0; i < keys.length; i++){
+		if(legacy[j] === keys[i]){
+			keys[i] += ";?";
+			j++;
+		} else {
+			keys[i] += ";";
+		}
+	}
+
+	var re = new RegExp("&(?:" + keys.join("|") + "|#[xX][\\da-fA-F]+;?|#\\d+;?)", "g"),
+	    replace = getReplacer(entityMap);
+
+	function replacer(str){
+		if(str.substr(-1) !== ";") str += ";";
+		return replace(str);
+	}
+
+	//TODO consider creating a merged map
+	return function(str){
+		return String(str).replace(re, replacer);
+	};
+}());
+
+function sorter(a, b){
+	return a < b ? 1 : -1;
+}
+
+function getReplacer(map){
+	return function replace(str){
+		if(str.charAt(1) === "#"){
+			if(str.charAt(2) === "X" || str.charAt(2) === "x"){
+				return decodeCodePoint(parseInt(str.substr(3), 16));
+			}
+			return decodeCodePoint(parseInt(str.substr(2), 10));
+		}
+		return map[str.slice(1, -1)];
+	};
+}
+
+module.exports = {
+	XML: decodeXMLStrict,
+	HTML: decodeHTML,
+	HTMLStrict: decodeHTMLStrict
+};
+
+/***/ }),
+/* 40 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var inverseXML = getInverseObj(__webpack_require__(12)),
+    xmlReplacer = getInverseReplacer(inverseXML);
+
+exports.XML = getInverse(inverseXML, xmlReplacer);
+
+var inverseHTML = getInverseObj(__webpack_require__(11)),
+    htmlReplacer = getInverseReplacer(inverseHTML);
+
+exports.HTML = getInverse(inverseHTML, htmlReplacer);
+
+function getInverseObj(obj){
+	return Object.keys(obj).sort().reduce(function(inverse, name){
+		inverse[obj[name]] = "&" + name + ";";
+		return inverse;
+	}, {});
+}
+
+function getInverseReplacer(inverse){
+	var single = [],
+	    multiple = [];
+
+	Object.keys(inverse).forEach(function(k){
+		if(k.length === 1){
+			single.push("\\" + k);
+		} else {
+			multiple.push(k);
+		}
+	});
+
+	//TODO add ranges
+	multiple.unshift("[" + single.join("") + "]");
+
+	return new RegExp(multiple.join("|"), "g");
+}
+
+var re_nonASCII = /[^\0-\x7F]/g,
+    re_astralSymbols = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
+
+function singleCharReplacer(c){
+	return "&#x" + c.charCodeAt(0).toString(16).toUpperCase() + ";";
+}
+
+function astralReplacer(c){
+	// http://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
+	var high = c.charCodeAt(0);
+	var low  = c.charCodeAt(1);
+	var codePoint = (high - 0xD800) * 0x400 + low - 0xDC00 + 0x10000;
+	return "&#x" + codePoint.toString(16).toUpperCase() + ";";
+}
+
+function getInverse(inverse, re){
+	function func(name){
+		return inverse[name];
+	}
+
+	return function(data){
+		return data
+				.replace(re, func)
+				.replace(re_astralSymbols, astralReplacer)
+				.replace(re_nonASCII, singleCharReplacer);
+	};
+}
+
+var re_xmlChars = getInverseReplacer(inverseXML);
+
+function escapeXML(data){
+	return data
+			.replace(re_xmlChars, singleCharReplacer)
+			.replace(re_astralSymbols, astralReplacer)
+			.replace(re_nonASCII, singleCharReplacer);
+}
+
+exports.escape = escapeXML;
+
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = CollectingHandler;
+
+function CollectingHandler(cbs){
+	this._cbs = cbs || {};
+	this.events = [];
+}
+
+var EVENTS = __webpack_require__(3).EVENTS;
+Object.keys(EVENTS).forEach(function(name){
+	if(EVENTS[name] === 0){
+		name = "on" + name;
+		CollectingHandler.prototype[name] = function(){
+			this.events.push([name]);
+			if(this._cbs[name]) this._cbs[name]();
+		};
+	} else if(EVENTS[name] === 1){
+		name = "on" + name;
+		CollectingHandler.prototype[name] = function(a){
+			this.events.push([name, a]);
+			if(this._cbs[name]) this._cbs[name](a);
+		};
+	} else if(EVENTS[name] === 2){
+		name = "on" + name;
+		CollectingHandler.prototype[name] = function(a, b){
+			this.events.push([name, a, b]);
+			if(this._cbs[name]) this._cbs[name](a, b);
+		};
+	} else {
+		throw Error("wrong number of arguments");
+	}
+});
+
+CollectingHandler.prototype.onreset = function(){
+	this.events = [];
+	if(this._cbs.onreset) this._cbs.onreset();
+};
+
+CollectingHandler.prototype.restart = function(){
+	if(this._cbs.onreset) this._cbs.onreset();
+
+	for(var i = 0, len = this.events.length; i < len; i++){
+		if(this._cbs[this.events[i][0]]){
+
+			var num = this.events[i].length;
+
+			if(num === 1){
+				this._cbs[this.events[i][0]]();
+			} else if(num === 2){
+				this._cbs[this.events[i][0]](this.events[i][1]);
+			} else {
+				this._cbs[this.events[i][0]](this.events[i][1], this.events[i][2]);
+			}
+		}
+	}
+};
+
+
+/***/ }),
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var index = __webpack_require__(3),
+    DomHandler = index.DomHandler,
+    DomUtils = index.DomUtils;
+
+//TODO: make this a streamable handler
+function FeedHandler(callback, options){
+	this.init(callback, options);
+}
+
+__webpack_require__(0)(FeedHandler, DomHandler);
+
+FeedHandler.prototype.init = DomHandler;
+
+function getElements(what, where){
+	return DomUtils.getElementsByTagName(what, where, true);
+}
+function getOneElement(what, where){
+	return DomUtils.getElementsByTagName(what, where, true, 1)[0];
+}
+function fetch(what, where, recurse){
+	return DomUtils.getText(
+		DomUtils.getElementsByTagName(what, where, recurse, 1)
+	).trim();
+}
+
+function addConditionally(obj, prop, what, where, recurse){
+	var tmp = fetch(what, where, recurse);
+	if(tmp) obj[prop] = tmp;
+}
+
+var isValidFeed = function(value){
+	return value === "rss" || value === "feed" || value === "rdf:RDF";
+};
+
+FeedHandler.prototype.onend = function(){
+	var feed = {},
+	    feedRoot = getOneElement(isValidFeed, this.dom),
+	    tmp, childs;
+
+	if(feedRoot){
+		if(feedRoot.name === "feed"){
+			childs = feedRoot.children;
+
+			feed.type = "atom";
+			addConditionally(feed, "id", "id", childs);
+			addConditionally(feed, "title", "title", childs);
+			if((tmp = getOneElement("link", childs)) && (tmp = tmp.attribs) && (tmp = tmp.href)) feed.link = tmp;
+			addConditionally(feed, "description", "subtitle", childs);
+			if((tmp = fetch("updated", childs))) feed.updated = new Date(tmp);
+			addConditionally(feed, "author", "email", childs, true);
+
+			feed.items = getElements("entry", childs).map(function(item){
+				var entry = {}, tmp;
+
+				item = item.children;
+
+				addConditionally(entry, "id", "id", item);
+				addConditionally(entry, "title", "title", item);
+				if((tmp = getOneElement("link", item)) && (tmp = tmp.attribs) && (tmp = tmp.href)) entry.link = tmp;
+				if((tmp = fetch("summary", item) || fetch("content", item))) entry.description = tmp;
+				if((tmp = fetch("updated", item))) entry.pubDate = new Date(tmp);
+				return entry;
+			});
+		} else {
+			childs = getOneElement("channel", feedRoot.children).children;
+
+			feed.type = feedRoot.name.substr(0, 3);
+			feed.id = "";
+			addConditionally(feed, "title", "title", childs);
+			addConditionally(feed, "link", "link", childs);
+			addConditionally(feed, "description", "description", childs);
+			if((tmp = fetch("lastBuildDate", childs))) feed.updated = new Date(tmp);
+			addConditionally(feed, "author", "managingEditor", childs, true);
+
+			feed.items = getElements("item", feedRoot.children).map(function(item){
+				var entry = {}, tmp;
+
+				item = item.children;
+
+				addConditionally(entry, "id", "guid", item);
+				addConditionally(entry, "title", "title", item);
+				addConditionally(entry, "link", "link", item);
+				addConditionally(entry, "description", "description", item);
+				if((tmp = fetch("pubDate", item))) entry.pubDate = new Date(tmp);
+				return entry;
+			});
+		}
+	}
+	this.dom = feed;
+	DomHandler.prototype._handleCallback.call(
+		this, feedRoot ? null : Error("couldn't find root of feed")
+	);
+};
+
+module.exports = FeedHandler;
+
+
+/***/ }),
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = ProxyHandler;
+
+function ProxyHandler(cbs){
+	this._cbs = cbs || {};
+}
+
+var EVENTS = __webpack_require__(3).EVENTS;
+Object.keys(EVENTS).forEach(function(name){
+	if(EVENTS[name] === 0){
+		name = "on" + name;
+		ProxyHandler.prototype[name] = function(){
+			if(this._cbs[name]) this._cbs[name]();
+		};
+	} else if(EVENTS[name] === 1){
+		name = "on" + name;
+		ProxyHandler.prototype[name] = function(a){
+			if(this._cbs[name]) this._cbs[name](a);
+		};
+	} else if(EVENTS[name] === 2){
+		name = "on" + name;
+		ProxyHandler.prototype[name] = function(a, b){
+			if(this._cbs[name]) this._cbs[name](a, b);
+		};
+	} else {
+		throw Error("wrong number of arguments");
+	}
+});
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = Stream;
+
+var Parser = __webpack_require__(21);
+
+function Stream(options){
+	Parser.call(this, new Cbs(this), options);
+}
+
+__webpack_require__(0)(Stream, Parser);
+
+Stream.prototype.readable = true;
+
+function Cbs(scope){
+	this.scope = scope;
+}
+
+var EVENTS = __webpack_require__(3).EVENTS;
+
+Object.keys(EVENTS).forEach(function(name){
+	if(EVENTS[name] === 0){
+		Cbs.prototype["on" + name] = function(){
+			this.scope.emit(name);
+		};
+	} else if(EVENTS[name] === 1){
+		Cbs.prototype["on" + name] = function(a){
+			this.scope.emit(name, a);
+		};
+	} else if(EVENTS[name] === 2){
+		Cbs.prototype["on" + name] = function(a, b){
+			this.scope.emit(name, a, b);
+		};
+	} else {
+		throw Error("wrong number of arguments!");
+	}
+});
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports) {
+
+exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+  var e, m
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var nBits = -7
+  var i = isLE ? (nBytes - 1) : 0
+  var d = isLE ? -1 : 1
+  var s = buffer[offset + i]
+
+  i += d
+
+  e = s & ((1 << (-nBits)) - 1)
+  s >>= (-nBits)
+  nBits += eLen
+  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+  m = e & ((1 << (-nBits)) - 1)
+  e >>= (-nBits)
+  nBits += mLen
+  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+  if (e === 0) {
+    e = 1 - eBias
+  } else if (e === eMax) {
+    return m ? NaN : ((s ? -1 : 1) * Infinity)
+  } else {
+    m = m + Math.pow(2, mLen)
+    e = e - eBias
+  }
+  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+}
+
+exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+  var e, m, c
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+  var i = isLE ? 0 : (nBytes - 1)
+  var d = isLE ? 1 : -1
+  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+  value = Math.abs(value)
+
+  if (isNaN(value) || value === Infinity) {
+    m = isNaN(value) ? 1 : 0
+    e = eMax
+  } else {
+    e = Math.floor(Math.log(value) / Math.LN2)
+    if (value * (c = Math.pow(2, -e)) < 1) {
+      e--
+      c *= 2
+    }
+    if (e + eBias >= 1) {
+      value += rt / c
+    } else {
+      value += rt * Math.pow(2, 1 - eBias)
+    }
+    if (value * c >= 2) {
+      e++
+      c /= 2
+    }
+
+    if (e + eBias >= eMax) {
+      m = 0
+      e = eMax
+    } else if (e + eBias >= 1) {
+      m = (value * c - 1) * Math.pow(2, mLen)
+      e = e + eBias
+    } else {
+      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+      e = 0
+    }
+  }
+
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+  e = (e << mLen) | m
+  eLen += mLen
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+  buffer[offset + i - d] |= s * 128
+}
+
+
+/***/ }),
+/* 46 */
+/***/ (function(module, exports) {
+
+module.exports = {
+	"0": 65533,
+	"128": 8364,
+	"130": 8218,
+	"131": 402,
+	"132": 8222,
+	"133": 8230,
+	"134": 8224,
+	"135": 8225,
+	"136": 710,
+	"137": 8240,
+	"138": 352,
+	"139": 8249,
+	"140": 338,
+	"142": 381,
+	"145": 8216,
+	"146": 8217,
+	"147": 8220,
+	"148": 8221,
+	"149": 8226,
+	"150": 8211,
+	"151": 8212,
+	"152": 732,
+	"153": 8482,
+	"154": 353,
+	"155": 8250,
+	"156": 339,
+	"158": 382,
+	"159": 376
+};
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports) {
+
+var toString = {}.toString;
+
+module.exports = Array.isArray || function (arr) {
+  return toString.call(arr) == '[object Array]';
+};
+
+
+/***/ }),
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var apply = Function.prototype.apply;
+
+// DOM APIs, for completeness
+
+exports.setTimeout = function() {
+  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
+};
+exports.setInterval = function() {
+  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
+};
+exports.clearTimeout =
+exports.clearInterval = function(timeout) {
+  if (timeout) {
+    timeout.close();
+  }
+};
+
+function Timeout(id, clearFn) {
+  this._id = id;
+  this._clearFn = clearFn;
+}
+Timeout.prototype.unref = Timeout.prototype.ref = function() {};
+Timeout.prototype.close = function() {
+  this._clearFn.call(window, this._id);
+};
+
+// Does not start the time, just sets up the members needed.
+exports.enroll = function(item, msecs) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = msecs;
+};
+
+exports.unenroll = function(item) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = -1;
+};
+
+exports._unrefActive = exports.active = function(item) {
+  clearTimeout(item._idleTimeoutId);
+
+  var msecs = item._idleTimeout;
+  if (msecs >= 0) {
+    item._idleTimeoutId = setTimeout(function onTimeout() {
+      if (item._onTimeout)
+        item._onTimeout();
+    }, msecs);
+  }
+};
+
+// setimmediate attaches itself to the global object
+__webpack_require__(56);
+exports.setImmediate = setImmediate;
+exports.clearImmediate = clearImmediate;
+
+
+/***/ }),
+/* 49 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(2)
+
+
+/***/ }),
+/* 50 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var Buffer = __webpack_require__(1).Buffer;
+/*<replacement>*/
+var bufferShim = __webpack_require__(10);
+/*</replacement>*/
+
+module.exports = BufferList;
+
+function BufferList() {
+  this.head = null;
+  this.tail = null;
+  this.length = 0;
+}
+
+BufferList.prototype.push = function (v) {
+  var entry = { data: v, next: null };
+  if (this.length > 0) this.tail.next = entry;else this.head = entry;
+  this.tail = entry;
+  ++this.length;
+};
+
+BufferList.prototype.unshift = function (v) {
+  var entry = { data: v, next: this.head };
+  if (this.length === 0) this.tail = entry;
+  this.head = entry;
+  ++this.length;
+};
+
+BufferList.prototype.shift = function () {
+  if (this.length === 0) return;
+  var ret = this.head.data;
+  if (this.length === 1) this.head = this.tail = null;else this.head = this.head.next;
+  --this.length;
+  return ret;
+};
+
+BufferList.prototype.clear = function () {
+  this.head = this.tail = null;
+  this.length = 0;
+};
+
+BufferList.prototype.join = function (s) {
+  if (this.length === 0) return '';
+  var p = this.head;
+  var ret = '' + p.data;
+  while (p = p.next) {
+    ret += s + p.data;
+  }return ret;
+};
+
+BufferList.prototype.concat = function (n) {
+  if (this.length === 0) return bufferShim.alloc(0);
+  if (this.length === 1) return this.head.data;
+  var ret = bufferShim.allocUnsafe(n >>> 0);
+  var p = this.head;
+  var i = 0;
+  while (p) {
+    p.data.copy(ret, i);
+    i += p.data.length;
+    p = p.next;
+  }
+  return ret;
+};
+
+/***/ }),
+/* 51 */
+/***/ (function(module, exports) {
+
+var toString = {}.toString;
+
+module.exports = Array.isArray || function (arr) {
+  return toString.call(arr) == '[object Array]';
+};
+
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(23)
+
+
+/***/ }),
+/* 53 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(process) {var Stream = (function (){
+  try {
+    return __webpack_require__(8); // hack to fix a circular dependency issue when used with browserify
+  } catch(_){}
+}());
+exports = module.exports = __webpack_require__(24);
+exports.Stream = Stream || exports;
+exports.Readable = exports;
+exports.Writable = __webpack_require__(15);
+exports.Duplex = __webpack_require__(2);
+exports.Transform = __webpack_require__(14);
+exports.PassThrough = __webpack_require__(23);
+
+if (!process.browser && process.env.READABLE_STREAM === 'disable' && Stream) {
+  module.exports = Stream;
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
+
+/***/ }),
+/* 54 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(14)
+
+
+/***/ }),
+/* 55 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(15)
+
+
+/***/ }),
+/* 56 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
+    "use strict";
+
+    if (global.setImmediate) {
+        return;
+    }
+
+    var nextHandle = 1; // Spec says greater than zero
+    var tasksByHandle = {};
+    var currentlyRunningATask = false;
+    var doc = global.document;
+    var registerImmediate;
+
+    function setImmediate(callback) {
+      // Callback can either be a function or a string
+      if (typeof callback !== "function") {
+        callback = new Function("" + callback);
+      }
+      // Copy function arguments
+      var args = new Array(arguments.length - 1);
+      for (var i = 0; i < args.length; i++) {
+          args[i] = arguments[i + 1];
+      }
+      // Store and register the task
+      var task = { callback: callback, args: args };
+      tasksByHandle[nextHandle] = task;
+      registerImmediate(nextHandle);
+      return nextHandle++;
+    }
+
+    function clearImmediate(handle) {
+        delete tasksByHandle[handle];
+    }
+
+    function run(task) {
+        var callback = task.callback;
+        var args = task.args;
+        switch (args.length) {
+        case 0:
+            callback();
+            break;
+        case 1:
+            callback(args[0]);
+            break;
+        case 2:
+            callback(args[0], args[1]);
+            break;
+        case 3:
+            callback(args[0], args[1], args[2]);
+            break;
+        default:
+            callback.apply(undefined, args);
+            break;
+        }
+    }
+
+    function runIfPresent(handle) {
+        // From the spec: "Wait until any invocations of this algorithm started before this one have completed."
+        // So if we're currently running a task, we'll need to delay this invocation.
+        if (currentlyRunningATask) {
+            // Delay by doing a setTimeout. setImmediate was tried instead, but in Firefox 7 it generated a
+            // "too much recursion" error.
+            setTimeout(runIfPresent, 0, handle);
+        } else {
+            var task = tasksByHandle[handle];
+            if (task) {
+                currentlyRunningATask = true;
+                try {
+                    run(task);
+                } finally {
+                    clearImmediate(handle);
+                    currentlyRunningATask = false;
+                }
+            }
+        }
+    }
+
+    function installNextTickImplementation() {
+        registerImmediate = function(handle) {
+            process.nextTick(function () { runIfPresent(handle); });
+        };
+    }
+
+    function canUsePostMessage() {
+        // The test against `importScripts` prevents this implementation from being installed inside a web worker,
+        // where `global.postMessage` means something completely different and can't be used for this purpose.
+        if (global.postMessage && !global.importScripts) {
+            var postMessageIsAsynchronous = true;
+            var oldOnMessage = global.onmessage;
+            global.onmessage = function() {
+                postMessageIsAsynchronous = false;
+            };
+            global.postMessage("", "*");
+            global.onmessage = oldOnMessage;
+            return postMessageIsAsynchronous;
+        }
+    }
+
+    function installPostMessageImplementation() {
+        // Installs an event handler on `global` for the `message` event: see
+        // * https://developer.mozilla.org/en/DOM/window.postMessage
+        // * http://www.whatwg.org/specs/web-apps/current-work/multipage/comms.html#crossDocumentMessages
+
+        var messagePrefix = "setImmediate$" + Math.random() + "$";
+        var onGlobalMessage = function(event) {
+            if (event.source === global &&
+                typeof event.data === "string" &&
+                event.data.indexOf(messagePrefix) === 0) {
+                runIfPresent(+event.data.slice(messagePrefix.length));
+            }
+        };
+
+        if (global.addEventListener) {
+            global.addEventListener("message", onGlobalMessage, false);
+        } else {
+            global.attachEvent("onmessage", onGlobalMessage);
+        }
+
+        registerImmediate = function(handle) {
+            global.postMessage(messagePrefix + handle, "*");
+        };
+    }
+
+    function installMessageChannelImplementation() {
+        var channel = new MessageChannel();
+        channel.port1.onmessage = function(event) {
+            var handle = event.data;
+            runIfPresent(handle);
+        };
+
+        registerImmediate = function(handle) {
+            channel.port2.postMessage(handle);
+        };
+    }
+
+    function installReadyStateChangeImplementation() {
+        var html = doc.documentElement;
+        registerImmediate = function(handle) {
+            // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
+            // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
+            var script = doc.createElement("script");
+            script.onreadystatechange = function () {
+                runIfPresent(handle);
+                script.onreadystatechange = null;
+                html.removeChild(script);
+                script = null;
+            };
+            html.appendChild(script);
+        };
+    }
+
+    function installSetTimeoutImplementation() {
+        registerImmediate = function(handle) {
+            setTimeout(runIfPresent, 0, handle);
+        };
+    }
+
+    // If supported, we should attach to the prototype of global, since that is where setTimeout et al. live.
+    var attachTo = Object.getPrototypeOf && Object.getPrototypeOf(global);
+    attachTo = attachTo && attachTo.setTimeout ? attachTo : global;
+
+    // Don't get fooled by e.g. browserify environments.
+    if ({}.toString.call(global.process) === "[object process]") {
+        // For Node.js before 0.9
+        installNextTickImplementation();
+
+    } else if (canUsePostMessage()) {
+        // For non-IE10 modern browsers
+        installPostMessageImplementation();
+
+    } else if (global.MessageChannel) {
+        // For web workers, where supported
+        installMessageChannelImplementation();
+
+    } else if (doc && "onreadystatechange" in doc.createElement("script")) {
+        // For IE 6–8
+        installReadyStateChangeImplementation();
+
+    } else {
+        // For older browsers
+        installSetTimeoutImplementation();
+    }
+
+    attachTo.setImmediate = setImmediate;
+    attachTo.clearImmediate = clearImmediate;
+}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(7)))
+
+/***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {
+/**
+ * Module exports.
+ */
+
+module.exports = deprecate;
+
+/**
+ * Mark that a method should not be used.
+ * Returns a modified function which warns once by default.
+ *
+ * If `localStorage.noDeprecation = true` is set, then it is a no-op.
+ *
+ * If `localStorage.throwDeprecation = true` is set, then deprecated functions
+ * will throw an Error when invoked.
+ *
+ * If `localStorage.traceDeprecation = true` is set, then deprecated functions
+ * will invoke `console.trace()` instead of `console.error()`.
+ *
+ * @param {Function} fn - the function to deprecate
+ * @param {String} msg - the string to print to the console when `fn` is invoked
+ * @returns {Function} a new "deprecated" version of `fn`
+ * @api public
+ */
+
+function deprecate (fn, msg) {
+  if (config('noDeprecation')) {
+    return fn;
+  }
+
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      if (config('throwDeprecation')) {
+        throw new Error(msg);
+      } else if (config('traceDeprecation')) {
+        console.trace(msg);
+      } else {
+        console.warn(msg);
+      }
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+
+  return deprecated;
+}
+
+/**
+ * Checks `localStorage` for boolean values for the given `name`.
+ *
+ * @param {String} name
+ * @returns {Boolean}
+ * @api private
+ */
+
+function config (name) {
+  // accessing global.localStorage can trigger a DOMException in sandboxed iframes
+  try {
+    if (!global.localStorage) return false;
+  } catch (_) {
+    return false;
+  }
+  var val = global.localStorage[name];
+  if (null == val) return false;
+  return String(val).toLowerCase() === 'true';
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+
+/***/ }),
+/* 58 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 59 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
 
 /***/ })
 /******/ ]);

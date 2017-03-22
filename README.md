@@ -2,7 +2,7 @@
 
 [![Circle CI](https://circleci.com/gh/tmorin/idomizer/tree/master.svg?style=svg)](https://circleci.com/gh/tmorin/idomizer/tree/master)
 [![Dependency Status](https://david-dm.org/tmorin/idomizer.svg)](https://david-dm.org/tmorin/idomizer)
-[![devDependency Status](https://david-dm.org/tmorin/idomizer/dev-status.svg)](https://david-dm.org/tmorin/idomizer#info=devDependencies)
+[![devDependency Status](https://david-dm.org/tmorin/idomizer/dev-status.svg)](https://david-dm.org/tmorin/idomizer?type=dev)
 [![Coverage Status](https://coveralls.io/repos/github/tmorin/idomizer/badge.svg?branch=master)](https://coveralls.io/github/tmorin/idomizer?branch=master)
 <img data-ice="coverageBadge" src="http://tmorin.github.io/idomizer/badge.svg">
 
