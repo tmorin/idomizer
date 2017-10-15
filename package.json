@@ -73,6 +73,7 @@
     "coveralls": "^3.0.0",
     "cross-env": "^5.0.5",
     "esdoc": "^1.0.3",
+    "esdoc-standard-plugin": "^1.0.0",
     "incremental-dom": "^0.5.0",
     "istanbul": "^0.4.5",
     "jsdom": "^11.3.0",

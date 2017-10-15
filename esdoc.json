@@ -1,5 +1,12 @@
 {
   "source": "./src",
   "destination": "./esdoc",
-  "title": "idomizer"
+  "plugins": [
+    {
+      "name": "esdoc-standard-plugin",
+      "option": {
+        "title": "idomizer"
+      }
+    }
+  ]
 }
