@@ -1,6 +1,6 @@
 import {compile} from '../src/idomizer.js';
 import IncrementalDOM from 'incremental-dom';
-import {env} from 'jsdom';
+import {env} from 'jsdom/lib/old-api.js';
 import {expect} from 'chai';
 
 describe('idomizer', () => {
