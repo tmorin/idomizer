@@ -7,6 +7,6 @@ const utils = require('./utils.js');
  */
 module.exports = function (source) {
     const options = loaderUtils.getOptions(this);
-    return 'module.exports = ' + utils.toStringFunction(source, options);
+    return 'module.exports = ' + utils.toStringFunction(source || '', options || {});
 };
 
