@@ -1,13 +1,13 @@
-import {join} from 'path';
 import babelIdomizer from '../../src/plugins/babel-idomizer.js';
 import {expect} from 'chai';
-const babel = require('babel-core');
+
+const babel = require('@babel/core');
 
 describe('babel-idomizer', () => {
 
     it('should convert an idomizer file into a string function', (done) => {
         let options = {
-            plugins:  [[babelIdomizer, {skipExceptions: false}]]
+            plugins: [[babelIdomizer, {skipExceptions: false}]]
         };
         babel.transformFile('test/plugins/dummy.es6', options, (err, result) => {
             if (err) {

@@ -45,8 +45,8 @@
     "coveralls": "nyc report --reporter=text-lcov | coveralls --verbose",
     "check": "npm run lint && npm run test",
     "build:lib": "babel src --out-dir lib",
-    "build:umd": "webpack src/idomizer.js dist/idomizer.js --config config.js --define process.env.NODE_ENV='production'",
-    "build:umd:min": "webpack src/idomizer.js dist/idomizer.min.js --config config.js --optimize-minimize --define process.env.NODE_ENV='production'",
+    "build:umd": "webpack --config webpack.dev.js",
+    "build:umd:min": "webpack --config webpack.prd.js",
     "build": "npm run build:lib && npm run build:umd && npm run build:umd:min",
     "preversion": "npm run check",
     "version": "npm run build && git add -A dist",
@@ -62,13 +62,13 @@
     "loader-utils": "^1.0.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.0.0",
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.5",
-    "babel-plugin-istanbul": "^4.1.6",
-    "babel-preset-env": "^1.7.0",
-    "babel-register": "^6.0.0",
-    "browserify": "^14.5.0",
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.1.6",
+    "@babel/preset-env": "^7.1.6",
+    "@babel/register": "^7.0.0",
+    "babel-loader": "^8.0.4",
+    "babel-plugin-istanbul": "^5.1.0",
+    "browserify": "^16.2.3",
     "chai": "^4.2.0",
     "coveralls": "^3.0.2",
     "cross-env": "^5.2.0",
@@ -79,24 +79,16 @@
     "jsdom": "^11.12.0",
     "jshint": "^2.9.6",
     "json-loader": "^0.5.0",
-    "mocha": "^4.1.0",
-    "nyc": "^11.9.0",
+    "mocha": "^5.2.0",
+    "nyc": "^13.1.0",
     "rimraf": "^2.4.0",
-    "systemjs": "^0.20.0",
-    "webpack": "^3.12.0"
+    "webpack": "^4.23.1",
+    "webpack-cli": "^3.1.2",
+    "webpack-merge": "^4.1.4"
   },
-  "npmName": "idomizer",
-  "npmFileMap": [
-    {
-      "basePath": "/dist/",
-      "files": [
-        "*.js"
-      ]
-    }
-  ],
   "babel": {
     "presets": [
-      "env"
+      "@babel/preset-env"
     ],
     "env": {
       "test": {
@@ -108,7 +100,7 @@
   },
   "nyc": {
     "require": [
-      "babel-register"
+      "@babel/register"
     ],
     "sourceMap": false,
     "instrument": false
