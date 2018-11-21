@@ -1,6 +1,6 @@
 {
   "name": "idomizer",
-  "version": "0.10.2",
+  "version": "1.0.0-beta.3",
   "description": "An HTML template compiler providing an incremental-dom render factory.",
   "keywords": [
     "template",
@@ -38,24 +38,31 @@
   "main": "lib/idomizer.js",
   "jsnext:main": "src/idomizer.js",
   "scripts": {
-    "clean": "rimraf dist lib *.tgz",
     "lint": "jshint src test",
     "test:plugins": "mocha test/plugins --recursive --require @babel/register",
     "test:karma": "karma start --single-run --no-auto-watch --no-colors --browsers sl_firefox",
     "test:karma:watch": "karma start --no-single-run --auto-watch --browsers Firefox",
     "test": "npm run test:plugins && npm run test:karma",
     "check": "npm run lint && npm run test",
+    "build:clean": "rimraf dist lib *.tgz",
     "build:lib": "babel src --out-dir lib",
     "build:umd": "webpack --config webpack.dev.js",
     "build:umd:min": "webpack --config webpack.prd.js",
-    "build": "npm run build:lib && npm run build:umd && npm run build:umd:min",
-    "preversion": "npm run check",
-    "version": "npm run build && git add -A dist",
-    "postversion": "git push && git push --tags && npm run clean && npm run docs:publish",
-    "prepublish": "npm run clean && npm run check && npm run build",
+    "build": "npm run build:clean && npm run build:lib && npm run build:umd && npm run build:umd:min",
+    "release": "standard-version -a",
+    "push": "git push --follow-tags origin master && npm publish && npm run docs:publish",
     "docs:clean": "rimraf esdoc",
     "docs:build": "npm run docs:clean && esdoc -c esdoc.json",
     "docs:publish": "npm run docs:build && cd esdoc && git init && git commit --allow-empty -m 'update esdoc' && git checkout -b gh-pages && git add . && git commit -am 'update esdoc, [skip ci]' && git push git@github.com:tmorin/idomizer gh-pages --force && cd .. && npm run docs:clean"
+  },
+  "standard-version": {
+    "skip": {
+      "changelog": true
+    },
+    "scripts": {
+      "prerelease": "npm run build",
+      "precommit": "git add -A dist"
+    }
   },
   "dependencies": {
     "browserify-transform-tools": "^1.5.0",
@@ -85,6 +92,7 @@
     "karma-webpack": "^3.0.5",
     "mocha": "^5.2.0",
     "rimraf": "^2.4.0",
+    "standard-version": "^4.4.0",
     "webpack": "^4.23.1",
     "webpack-cli": "^3.1.2",
     "webpack-merge": "^4.1.4"
