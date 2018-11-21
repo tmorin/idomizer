@@ -1,0 +1,42 @@
+image: node:10
+
+stages:
+- test
+- build
+
+test_local:
+    stage: test
+    script:
+    - npm install
+    - npm test
+    cache:
+        key: "$CI_BUILD_STAGE"
+        paths:
+        - node_modules/
+
+build_lib:
+    stage: build
+    script:
+    - npm install
+    - npm run build
+    artifacts:
+        paths:
+        - dist
+        - lib
+    cache:
+        key: "$CI_BUILD_STAGE"
+        paths:
+        - node_modules/
+
+build_doc:
+    stage: build
+    script:
+    - npm install
+    - npm run docs:build
+    artifacts:
+        paths:
+        - esdoc
+    cache:
+        key: "$CI_BUILD_STAGE"
+        paths:
+        - node_modules/

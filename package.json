@@ -40,8 +40,8 @@
   "scripts": {
     "clean": "rimraf dist lib *.tgz",
     "lint": "jshint src test",
-    "test:karma": "karma start --single-run --no-auto-watch --no-colors --browsers FirefoxHeadless",
     "test:plugins": "mocha test/plugins --recursive --require @babel/register",
+    "test:karma": "karma start --single-run --no-auto-watch --no-colors --browsers sl_firefox",
     "test:karma:watch": "karma start --no-single-run --auto-watch --browsers Firefox",
     "test": "npm run test:plugins && npm run test:karma",
     "check": "npm run lint && npm run test",
@@ -81,6 +81,7 @@
     "karma-cli": "^1.0.1",
     "karma-firefox-launcher": "^1.1.0",
     "karma-mocha": "^1.3.0",
+    "karma-sauce-launcher": "^1.2.0",
     "karma-webpack": "^3.0.5",
     "mocha": "^5.2.0",
     "rimraf": "^2.4.0",

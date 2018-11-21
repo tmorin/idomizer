@@ -1,5 +1,6 @@
 # idomizer
 
+[![pipeline status](https://gitlab.com/tmorin/idomizer/badges/master/pipeline.svg)](https://gitlab.com/tmorin/idomizer/commits/master)
 [![Dependency Status](https://david-dm.org/tmorin/idomizer.svg)](https://david-dm.org/tmorin/idomizer)
 [![devDependency Status](https://david-dm.org/tmorin/idomizer/dev-status.svg)](https://david-dm.org/tmorin/idomizer?type=dev)
 <img data-ice="coverageBadge" src="http://tmorin.github.io/idomizer/badge.svg">

@@ -29,6 +29,19 @@ module.exports = (config) => {
             mocha: {
                 reporter: 'html'
             }
+        },
+
+        customLaunchers: {
+            sl_firefox: {
+                base: 'SauceLabs',
+                browserName: 'firefox'
+            }
+        },
+
+        sauceLabs: {
+            testName: 'idomizer - unit testing',
+            recordVideo: false,
+            recordScreenshots: false
         }
     });
 };
