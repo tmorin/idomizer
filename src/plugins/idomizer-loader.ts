@@ -1,6 +1,6 @@
 import loaderUtils from 'loader-utils';
 
-const utils = require('./utils.js');
+const utils = require('./utils');
 
 /**
  * @ignore

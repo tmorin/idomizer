@@ -1,6 +1,5 @@
-import babelIdomizer from '../../src/plugins/babel-idomizer.js';
-import {expect} from 'chai';
-
+const babelIdomizer = require('../../lib/plugins/babel-idomizer');
+const {expect} = require('chai');
 const babel = require('@babel/core');
 
 describe('babel-idomizer', () => {

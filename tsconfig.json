@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "declaration": true,
+    "module": "commonjs",
+    "outDir": "lib",
+    "lib": [
+      "es2018"
+    ],
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "src"
+  ]
+}

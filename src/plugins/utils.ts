@@ -1,4 +1,4 @@
-var idomizer = require('../idomizer.js');
+var idomizer = require('../idomizer');
 
 /**
  * @ignore

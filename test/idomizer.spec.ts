@@ -1,4 +1,4 @@
-import {compile} from '../src/idomizer.js';
+import {compile} from '../src/idomizer';
 import * as IncrementalDOM from 'incremental-dom';
 import {expect} from 'chai';
 

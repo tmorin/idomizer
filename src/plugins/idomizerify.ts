@@ -1,7 +1,7 @@
 import {makeStringTransform} from 'browserify-transform-tools';
-import {toStringFunction} from './utils.js';
+import {toStringFunction} from './utils';
 
-var options = {
+const options = {
     includeExtensions: ['.idomizer']
 };
 
