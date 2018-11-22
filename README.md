@@ -3,14 +3,15 @@
 [![pipeline status](https://gitlab.com/tmorin/idomizer/badges/master/pipeline.svg)](https://gitlab.com/tmorin/idomizer/commits/master)
 [![Dependency Status](https://david-dm.org/tmorin/idomizer.svg)](https://david-dm.org/tmorin/idomizer)
 [![devDependency Status](https://david-dm.org/tmorin/idomizer/dev-status.svg)](https://david-dm.org/tmorin/idomizer?type=dev)
-<img data-ice="coverageBadge" src="http://tmorin.github.io/idomizer/badge.svg">
 
-An HTML template compiler providing an [incremental-dom](https://google.github.io/incremental-dom) render factory.
+`idomizer` is an HTML template compiler providing an [incremental-dom] render factory.
+`idomizer` can be used at compile time (front end projects) or runtime time(back end projects).
 
 Versions and compatibilities:
 
 - idomizer <= 0.5 -> _incremental-dom_ 0.4 and below.
 - idomizer >= 0.6 -> _incremental-dom_ 0.5 and above.
+- idomizer >= 1.0.0 -> _incremental-dom_ 0.6 and above.
 
 ## Installation
 
@@ -19,7 +20,7 @@ $ npm install idomizer
 ```
 
 ```html
-<script src="https://ajax.googleapis.com/ajax/libs/incrementaldom/0.5.1/incremental-dom-min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/incrementaldom/0.6.0/incremental-dom-min.js"></script>
 <script src="https://unpkg.com/idomizer/dist/idomizer.min.js"></script>
 <script>
     var factory = idomizer.compile('<h1>Hello!</h1>');
@@ -30,9 +31,9 @@ $ npm install idomizer
 
 ### Babel
 
-A babel's plugin is available to compile an idomizer template into an incremental-dom render factory.
+A babel's plugin is available to compile an idomizer template into an [incremental-dom] render factory.
 
-See [plugins](http://babeljs.io/docs/advanced/plugins) to get more information about plugins in babel.
+See the [babel's plugins](https://babeljs.io/docs/en/plugins#syntax-plugins) page to get more information about plugins in babel.
 
 ```javascript
 {
@@ -40,11 +41,11 @@ See [plugins](http://babeljs.io/docs/advanced/plugins) to get more information a
 }
 ```
 
-Presently the plugin only support ES6 templates tagged with _idomizer_.
+Presently the plugin only support [ES6 Template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) tagged with _idomizer_.
 
 For instance,
 ```javascript
-let template = idomizer`<h1 class="{{data.h1Class}}">Hello</h1>`;
+const template = idomizer`<h1 class="{{data.h1Class}}">Hello</h1>`;
 ```
 will be compiled into:
 ```javascript
@@ -68,9 +69,9 @@ Be aware the template can not contain expressions like ``${anExpression}``.
 
 ### Webpack
 
-A webpack's loader is available to compile an idomizer file into an incremental-dom render factory.
+A webpack's loader is available to compile an idomizer file into an [incremental-dom] render factory.
 
-See [module.loaders](http://webpack.github.io/docs/configuration.html#module-loaders) to get more information about loaders in webpack.
+See [module.rules](https://webpack.js.org/configuration/module/#module-rules) to get more information about loaders in webpack.
 
 ```
 module.loaders: [
@@ -80,7 +81,7 @@ module.loaders: [
 
 ### Browserify
 
-A browserify's transform module is available to compile an idomizer file into an incremental-dom render factory.
+A browserify's transform module is available to compile an idomizer file into an [incremental-dom] render factory.
 
 See [transforms](https://github.com/substack/browserify-handbook#transforms) to get more information about the transform system in browserify.
 
@@ -89,9 +90,9 @@ browserify -t idomizer/lib/plugins/idomizerify main.js > bundle.js
 ```
 
 ```javascript
-var browserify = require('browserify');
-var idomizerify = require('idomizer/lib/plugins/idomizerify');
-var bundle = browserify();
+const browserify = require('browserify');
+const idomizerify = require('idomizer/lib/plugins/idomizerify');
+const bundle = browserify();
 bundle.transform({ extension: 'html' }, idomizerify);
 ```
 
@@ -362,7 +363,7 @@ function template(_i, _h) {
 
 From
 ```javascript
-let subRender = compile(`helper content`)(IncrementalDOM);
+const subRender = compile(`helper content`)(IncrementalDOM);
 idomizer.compile(`
     <strong>strong text</strong>
     <tpl-call name="subRender" />
@@ -393,11 +394,11 @@ function template(_i, _h) {
 
 ### Custom elements
 
-For Incremental DOM, custom elements are regular HTML elements.
-So, if a custom element generates a sub-tree (i.e. a light DOM) outside a ShadowDOM node,
+For [incremental-dom], custom elements are regular HTML elements.
+So, if a custom element generates a sub-tree (i.e. a light DOM) outside of a ShadowDOM node,
 it will be overridden during the execution of the function `patch()`.
-To control this default behavior, Incremental DOM provides the function `skip()` saying:
-_don't touch the inner light DOM of the current node!_
+To control this default behavior, [incremental-dom] provides the function `skip()` saying:
+_don't touch the inner light DOM of the just opened node!_
 
 By default idomizier detects the custom elements and force the call of the function `skip()` to protect their light DOM nodes.
 Custom elements are detected according to the following rules:
@@ -416,7 +417,4 @@ Obviously, this behavior can be deactivated:
     const render = compile(`<x-element tpl-skip="deactivated"><p>will part of the light DOM</p></x-element>`)
     ```
 
-If the **skip** flag is not set (globally or locally) the following snippet will raise an error:
-```html
-<x-element><p>will part of the light DOM</p></x-element>
-```
+[incremental-dom](https://google.github.io/incremental-dom)

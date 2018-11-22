@@ -1,5 +1,5 @@
-/npm-debug.log
 /.idea
-/esdoc
+/dist
 /lib
 /node_modules
+/typedoc

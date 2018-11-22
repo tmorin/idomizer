@@ -1,6 +1,6 @@
 {
   "name": "idomizer",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0",
   "description": "An HTML template compiler providing an incremental-dom render factory.",
   "keywords": [
     "template",
@@ -37,28 +37,25 @@
   },
   "main": "lib/idomizer.js",
   "jsnext:main": "src/idomizer.js",
+  "types": "lib/main.d.ts",
   "scripts": {
     "lint": "jshint src test",
-    "test:plugins": "mocha test/plugins --recursive --require @babel/register",
-    "test:karma": "karma start --single-run --no-auto-watch --no-colors --browsers sl_firefox",
-    "test:karma:watch": "karma start --no-single-run --auto-watch --browsers Firefox",
-    "test": "npm run test:plugins && npm run test:karma",
-    "check": "npm run lint && npm run test",
+    "test:plugins": "mocha --require @babel/register test/plugins/*.spec.js",
+    "test:lib": "karma start --single-run --no-auto-watch --no-colors --browsers sl_firefox",
+    "test:lib:watch": "karma start --no-single-run --auto-watch --browsers Firefox",
+    "test": "npm run test:plugins && npm run test:lib",
     "build:clean": "rimraf dist lib *.tgz",
-    "build:lib": "babel src --out-dir lib",
+    "build:lib": "tsc",
     "build:umd": "webpack --config webpack.dev.js",
     "build:umd:min": "webpack --config webpack.prd.js",
     "build": "npm run build:clean && npm run build:lib && npm run build:umd && npm run build:umd:min",
     "release": "standard-version -a",
-    "push": "git push --follow-tags origin master && npm publish && npm run docs:publish",
-    "docs:clean": "rimraf esdoc",
-    "docs:build": "npm run docs:clean && esdoc -c esdoc.json",
-    "docs:publish": "npm run docs:build && cd esdoc && git init && git commit --allow-empty -m 'update esdoc' && git checkout -b gh-pages && git add . && git commit -am 'update esdoc, [skip ci]' && git push git@github.com:tmorin/idomizer gh-pages --force && cd .. && npm run docs:clean"
+    "push": "git push --tags && git push --all && npm publish && npm run docs:publish",
+    "docs:clean": "rimraf typedoc",
+    "docs:build": "npm run docs:clean && typedoc src/*.ts",
+    "docs:publish": "npm run docs:build && cd typedoc && git init && git commit --allow-empty -m 'update typedoc' && git checkout -b gh-pages && git add --all && git commit -am 'update typedoc, [skip ci]' && git push git@github.com:tmorin/idomizer gh-pages --force && cd .. && npm run docs:clean"
   },
   "standard-version": {
-    "skip": {
-      "changelog": true
-    },
     "scripts": {
       "prerelease": "npm run build",
       "precommit": "git add -A dist"
@@ -76,11 +73,12 @@
     "@babel/preset-env": "^7.1.6",
     "@babel/preset-typescript": "^7.1.0",
     "@babel/register": "^7.0.0",
+    "@types/chai": "^4.1.7",
+    "@types/htmlparser2": "^3.7.31",
+    "@types/mocha": "^5.2.5",
     "babel-loader": "^8.0.4",
     "browserify": "^16.2.3",
     "chai": "^4.2.0",
-    "esdoc": "^1.1.0",
-    "esdoc-standard-plugin": "^1.0.0",
     "incremental-dom": "^0.6.0",
     "jshint": "^2.9.6",
     "json-loader": "^0.5.0",
@@ -93,6 +91,9 @@
     "mocha": "^5.2.0",
     "rimraf": "^2.4.0",
     "standard-version": "^4.4.0",
+    "ts-node": "^7.0.1",
+    "typedoc": "^0.13.0",
+    "typescript": "^3.1.6",
     "webpack": "^4.23.1",
     "webpack-cli": "^3.1.2",
     "webpack-merge": "^4.1.4"

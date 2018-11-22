@@ -1,5 +1,5 @@
 import {join} from 'path';
-import idomizerify from '../../src/plugins/idomizerify.js';
+import idomizerify from '../../lib/plugins/idomizerify';
 import {runTransform} from 'browserify-transform-tools';
 import {expect} from 'chai';
 

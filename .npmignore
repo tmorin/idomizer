@@ -1,9 +1,9 @@
 /.*
-/esdoc
+/typedoc
 /test
 /npm-debug.log
 karma.conf.js
 webpack.common.js
 webpack.dev.js
 webpack.prd.js
-esdoc.json
+typedoc.js

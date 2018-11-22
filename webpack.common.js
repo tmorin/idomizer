@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-    entry: path.resolve(__dirname, 'src/idomizer.js'),
+    entry: path.resolve(__dirname, 'src/idomizer.ts'),
     module: {
         rules: [
             {test: /\.(ts|js)$/, exclude: /node_modules/, loader: 'babel-loader'},

@@ -1,4 +1,4 @@
-import {toStringFunction} from './utils.js';
+import {toStringFunction} from './utils';
 
 /**
  * @ignore
