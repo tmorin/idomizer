@@ -37,7 +37,7 @@
   },
   "main": "lib/idomizer.js",
   "jsnext:main": "src/idomizer.js",
-  "types": "lib/main.d.ts",
+  "types": "lib/idomizer.d.ts",
   "scripts": {
     "lint": "jshint src test",
     "test:plugins": "mocha --require @babel/register test/plugins/*.spec.js",
