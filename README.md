@@ -417,4 +417,4 @@ Obviously, this behavior can be deactivated:
     const render = compile(`<x-element tpl-skip="deactivated"><p>will part of the light DOM</p></x-element>`)
     ```
 
-[incremental-dom](https://google.github.io/incremental-dom)
+[incremental-dom]: https://google.github.io/incremental-dom
