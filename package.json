@@ -37,6 +37,7 @@
   },
   "main": "lib/idomizer.js",
   "types": "lib/idomizer.d.ts",
+  "unpkg": "dist/idomizer.min.js",
   "scripts": {
     "lint": "jshint src test",
     "test:plugins": "mocha --require @babel/register test/plugins/*.spec.js",
