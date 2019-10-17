@@ -1,0 +1,508 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>idomizer</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">idomizer</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1> idomizer</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#idomizer" id="idomizer" style="color: inherit; text-decoration: none;">
+					<h1>idomizer</h1>
+				</a>
+				<p><a href="https://gitlab.com/tmorin/idomizer/commits/master"><img src="https://gitlab.com/tmorin/idomizer/badges/master/pipeline.svg" alt="pipeline status"></a>
+					<a href="https://david-dm.org/tmorin/idomizer"><img src="https://david-dm.org/tmorin/idomizer.svg" alt="Dependency Status"></a>
+				<a href="https://david-dm.org/tmorin/idomizer?type=dev"><img src="https://david-dm.org/tmorin/idomizer/dev-status.svg" alt="devDependency Status"></a></p>
+				<p><code>idomizer</code> is an HTML template compiler providing an <a href="https://google.github.io/incremental-dom">incremental-dom</a> render factory.
+				<code>idomizer</code> can be used at compile time (front end projects) or runtime time(back end projects).</p>
+				<p>Versions and compatibilities:</p>
+				<ul>
+					<li>idomizer &lt;= 0.5 -&gt; <em>incremental-dom</em> 0.4 and below.</li>
+					<li>idomizer &gt;= 0.6 -&gt; <em>incremental-dom</em> 0.5 and above.</li>
+					<li>idomizer &gt;= 1.0.0 -&gt; <em>incremental-dom</em> 0.6 and above.</li>
+				</ul>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h2>Installation</h2>
+				</a>
+				<pre><code class="language-bash">$ npm install idomizer</code></pre>
+				<pre><code class="language-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://ajax.googleapis.com/ajax/libs/incrementaldom/0.6.0/incremental-dom-min.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/idomizer/dist/idomizer.min.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+    <span class="hljs-keyword">var</span> factory = idomizer.compile(<span class="hljs-string">'&lt;h1&gt;Hello!&lt;/h1&gt;'</span>);
+    <span class="hljs-keyword">var</span> render = factory(IncrementalDOM);
+    IncrementalDOM.patch(<span class="hljs-built_in">document</span>.body, render);
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre>
+				<a href="#babel" id="babel" style="color: inherit; text-decoration: none;">
+					<h3>Babel</h3>
+				</a>
+				<p>A babel&#39;s plugin is available to compile an idomizer template into an <a href="https://google.github.io/incremental-dom">incremental-dom</a> render factory.</p>
+				<p>See the <a href="https://babeljs.io/docs/en/plugins#syntax-plugins">babel&#39;s plugins</a> page to get more information about plugins in babel.</p>
+				<pre><code class="language-javascript">{
+    <span class="hljs-attr">plugins</span>: [<span class="hljs-string">'idomizer/lib/plugins/babel-idomizer.js'</span>]
+}</code></pre>
+				<p>Presently the plugin only support <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals">ES6 Template literals</a> tagged with <em>idomizer</em>.</p>
+				<p>For instance,</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> template = idomizer<span class="hljs-string">`&lt;h1 class="{{data.h1Class}}"&gt;Hello&lt;/h1&gt;`</span>;</code></pre>
+				<p>will be compiled into:</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">var</span> template = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">_i, _h</span>) </span>{
+  <span class="hljs-keyword">var</span> _elementOpen = _i.elementOpen,
+      _elementClose = _i.elementClose,
+      _elementVoid = _i.elementVoid,
+      _text = _i.text,
+      _skip = _i.skip;
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">_data_</span>) </span>{
+    <span class="hljs-keyword">var</span> helpers = _h || {},
+        data = _data_ || {};
+    _elementOpen(<span class="hljs-string">'h1'</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'class'</span>, data.h1Class);
+    _text(<span class="hljs-string">'Hello'</span>);
+    _elementClose(<span class="hljs-string">'h1'</span>);
+  };
+};</code></pre>
+				<p>Be aware the template can not contain expressions like <code>${anExpression}</code>.</p>
+				<a href="#webpack" id="webpack" style="color: inherit; text-decoration: none;">
+					<h3>Webpack</h3>
+				</a>
+				<p>A webpack&#39;s loader is available to compile an idomizer file into an <a href="https://google.github.io/incremental-dom">incremental-dom</a> render factory.</p>
+				<p>See <a href="https://webpack.js.org/configuration/module/#module-rules">module.rules</a> to get more information about loaders in webpack.</p>
+				<pre><code>module.<span class="hljs-string">loaders:</span> [
+    {<span class="hljs-string">test:</span> <span class="hljs-regexp">/\.idomizer$/</span>, <span class="hljs-string">loader:</span> <span class="hljs-string">'idomizer/lib/plugins/idomizer-loader'</span>}
+];</code></pre>
+				<a href="#browserify" id="browserify" style="color: inherit; text-decoration: none;">
+					<h3>Browserify</h3>
+				</a>
+				<p>A browserify&#39;s transform module is available to compile an idomizer file into an <a href="https://google.github.io/incremental-dom">incremental-dom</a> render factory.</p>
+				<p>See <a href="https://github.com/substack/browserify-handbook#transforms">transforms</a> to get more information about the transform system in browserify.</p>
+				<pre><code class="language-shell">browserify -t idomizer/lib/plugins/idomizerify main.js &gt; bundle.js</code></pre>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> browserify = <span class="hljs-built_in">require</span>(<span class="hljs-string">'browserify'</span>);
+<span class="hljs-keyword">const</span> idomizerify = <span class="hljs-built_in">require</span>(<span class="hljs-string">'idomizer/lib/plugins/idomizerify'</span>);
+<span class="hljs-keyword">const</span> bundle = browserify();
+bundle.transform({ <span class="hljs-attr">extension</span>: <span class="hljs-string">'html'</span> }, idomizerify);</code></pre>
+				<a href="#api" id="api" style="color: inherit; text-decoration: none;">
+					<h2>API</h2>
+				</a>
+				<p><code>idomizer.compile</code> transforms an HTML template into a factory method.</p>
+				<pre><code class="language-javascript"><span class="hljs-comment">// idomizer.compile('&lt;h1 class="main"&gt;Hello&lt;/h1&gt;') will return:</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">template</span>(<span class="hljs-params">_i, _h</span>) </span>{
+  <span class="hljs-keyword">var</span> _elementOpen = _i.elementOpen,
+      _elementClose = _i.elementClose,
+      _elementVoid = _i.elementVoid,
+      _text = _i.text,
+      _skip = _i.skip;
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">_data_</span>) </span>{
+    <span class="hljs-keyword">var</span> helpers = _h || {},
+        data = _data_ || {};
+    _elementOpen(<span class="hljs-string">'h1'</span>, <span class="hljs-literal">null</span>, [<span class="hljs-string">'class'</span>, <span class="hljs-string">'main'</span>], <span class="hljs-literal">null</span>);
+    _text(<span class="hljs-string">'Hello'</span>);
+    _elementClose(<span class="hljs-string">'h1'</span>);
+  };
+}</code></pre>
+				<p>The factory method requires the <em>incremental-dom</em> library and an optional map of helpers.
+				The factory returns the <em>incremental-dom</em>&#39;s render method.</p>
+				<a href="#syntax" id="syntax" style="color: inherit; text-decoration: none;">
+					<h2>Syntax</h2>
+				</a>
+				<a href="#static-attributes" id="static-attributes" style="color: inherit; text-decoration: none;">
+					<h3>Static attributes</h3>
+				</a>
+				<p>From</p>
+				<pre><code class="language-javascript">idomizer.compile(<span class="hljs-string">`&lt;h1 class="main"&gt;Hello&lt;/h1&gt;`</span>)(IncrementalDOM);</code></pre>
+				<p>To</p>
+				<pre><code class="language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">template</span>(<span class="hljs-params">_i, _h</span>) </span>{
+  <span class="hljs-keyword">var</span> _elementOpen = _i.elementOpen,
+      _elementClose = _i.elementClose,
+      _elementVoid = _i.elementVoid,
+      _text = _i.text,
+      _skip = _i.skip;
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">_data_</span>) </span>{
+    <span class="hljs-keyword">var</span> helpers = _h || {},
+        data = _data_ || {};
+    _elementOpen(<span class="hljs-string">'h1'</span>, <span class="hljs-literal">null</span>, [<span class="hljs-string">'class'</span>, <span class="hljs-string">'main'</span>], <span class="hljs-literal">null</span>);
+    _text(<span class="hljs-string">'Hello'</span>);
+    _elementClose(<span class="hljs-string">'h1'</span>);
+  };
+}</code></pre>
+				<a href="#dynamic-attributes" id="dynamic-attributes" style="color: inherit; text-decoration: none;">
+					<h3>Dynamic attributes</h3>
+				</a>
+				<p>From</p>
+				<pre><code class="language-javascript">idomizer.compile(<span class="hljs-string">`&lt;h1 class="{{data.h1Class}}"&gt;Hello&lt;/h1&gt;`</span>)(IncrementalDOM)</code></pre>
+				<p>To</p>
+				<pre><code class="language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">template</span>(<span class="hljs-params">_i, _h</span>) </span>{
+  <span class="hljs-keyword">var</span> _elementOpen = _i.elementOpen,
+      _elementClose = _i.elementClose,
+      _elementVoid = _i.elementVoid,
+      _text = _i.text,
+      _skip = _i.skip;
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">_data_</span>) </span>{
+    <span class="hljs-keyword">var</span> helpers = _h || {},
+        data = _data_ || {};
+    _elementOpen(<span class="hljs-string">'h1'</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'class'</span>, (data.h1Class));
+    _text(<span class="hljs-string">'Hello'</span>);
+    _elementClose(<span class="hljs-string">'h1'</span>);
+  };
+}</code></pre>
+				<a href="#self-closing-elements" id="self-closing-elements" style="color: inherit; text-decoration: none;">
+					<h3>Self closing elements</h3>
+				</a>
+				<p>From</p>
+				<pre><code class="language-javascript">idomizer.compile(<span class="hljs-string">`&lt;input type="text" value="{{data.value}}"&gt;`</span>)(IncrementalDOM)</code></pre>
+				<p>To</p>
+				<pre><code class="language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">template</span>(<span class="hljs-params">_i, _h</span>) </span>{
+  <span class="hljs-keyword">var</span> _elementOpen = _i.elementOpen,
+      _elementClose = _i.elementClose,
+      _elementVoid = _i.elementVoid,
+      _text = _i.text,
+      _skip = _i.skip;
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">_data_</span>) </span>{
+    <span class="hljs-keyword">var</span> helpers = _h || {},
+        data = _data_ || {};
+    _elementVoid(<span class="hljs-string">'input'</span>, <span class="hljs-literal">null</span>, [<span class="hljs-string">'type'</span>, <span class="hljs-string">'text'</span>], <span class="hljs-string">'value'</span>, (data.value));
+  };
+}</code></pre>
+				<a href="#dynamic-text-nodes" id="dynamic-text-nodes" style="color: inherit; text-decoration: none;">
+					<h3>Dynamic text nodes</h3>
+				</a>
+				<p>From</p>
+				<pre><code class="language-javascript">idomizer.compile(<span class="hljs-string">`&lt;strong&gt;&lt;tpl-text value="data.value"/&gt;&lt;/strong&gt;`</span>)(IncrementalDOM)
+<span class="hljs-comment">// or</span>
+idomizer.compile(<span class="hljs-string">`&lt;strong&gt;{{ data.value }}&lt;/strong&gt;`</span>)(IncrementalDOM)</code></pre>
+				<p>To</p>
+				<pre><code class="language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">template</span>(<span class="hljs-params">_i, _h</span>) </span>{
+  <span class="hljs-keyword">var</span> _elementOpen = _i.elementOpen,
+      _elementClose = _i.elementClose,
+      _elementVoid = _i.elementVoid,
+      _text = _i.text,
+      _skip = _i.skip;
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">_data_</span>) </span>{
+    <span class="hljs-keyword">var</span> helpers = _h || {},
+        data = _data_ || {};
+    _elementOpen(<span class="hljs-string">'strong'</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>);
+    _text(data.value);
+    _elementClose(<span class="hljs-string">'strong'</span>);
+  };
+}</code></pre>
+				<a href="#condition-with-the-tags-emifem-emelse-ifem-and-emelseem" id="condition-with-the-tags-emifem-emelse-ifem-and-emelseem" style="color: inherit; text-decoration: none;">
+					<h3>Condition with the tags <em>if</em>, <em>else-if</em> and <em>else</em></h3>
+				</a>
+				<p>From</p>
+				<pre><code class="language-javascript">idomizer.compile(<span class="hljs-string">`
+    &lt;tpl-if expression="data.yes"&gt;
+        YES!
+    &lt;tpl-else-if expression="data.yes !== false" /&gt;
+        MAY BE!
+    &lt;tpl-else/&gt;
+        NO!
+    &lt;/tpl-if&gt;
+`</span>)(IncrementalDOM);</code></pre>
+				<p>To</p>
+				<pre><code class="language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">template</span>(<span class="hljs-params">_i, _h</span>) </span>{
+  <span class="hljs-keyword">var</span> _elementOpen = _i.elementOpen,
+      _elementClose = _i.elementClose,
+      _elementVoid = _i.elementVoid,
+      _text = _i.text,
+      _skip = _i.skip;
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">_data_</span>) </span>{
+    <span class="hljs-keyword">var</span> helpers = _h || {},
+        data = _data_ || {};
+    <span class="hljs-keyword">if</span> (data.yes) {
+        _text(<span class="hljs-string">'YES!'</span>);
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (data.yes !== <span class="hljs-literal">false</span>) {
+        _text(<span class="hljs-string">'MAY BE!'</span>);
+    } <span class="hljs-keyword">else</span> {
+        _text(<span class="hljs-string">'NO!'</span>);
+    }
+  };
+}</code></pre>
+				<a href="#iteration-with-the-tag-emeachem" id="iteration-with-the-tag-emeachem" style="color: inherit; text-decoration: none;">
+					<h3>Iteration with the tag <em>each</em></h3>
+				</a>
+				<p>From</p>
+				<pre><code class="language-javascript">idomizer.compile(<span class="hljs-string">`
+    &lt;tpl-each items="data.items"&gt;
+        &lt;strong tpl-key="{{index}}"&gt;
+            &lt;tpl-text value="index"/&gt;-&lt;tpl-text value="item"/&gt;
+        &lt;/strong&gt;
+    &lt;/tpl-each&gt;
+`</span>)(IncrementalDOM);</code></pre>
+				<p>To</p>
+				<pre><code class="language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">template</span>(<span class="hljs-params">_i, _h</span>) </span>{
+  <span class="hljs-keyword">var</span> _elementOpen = _i.elementOpen,
+      _elementClose = _i.elementClose,
+      _elementVoid = _i.elementVoid,
+      _text = _i.text,
+      _skip = _i.skip;
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">_data_</span>) </span>{
+    <span class="hljs-keyword">var</span> helpers = _h || {},
+        data = _data_ || {};
+    (data.items || []).forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">item, index</span>) </span>{
+        _elementOpen(<span class="hljs-string">'strong'</span>, (index), <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>);
+            _text(index);
+            _text(<span class="hljs-string">'-'</span>);
+            _text(item);
+        _elementClose(<span class="hljs-string">'strong'</span>);
+    });
+  };
+}</code></pre>
+				<a href="#iteration-with-inline-javascript" id="iteration-with-inline-javascript" style="color: inherit; text-decoration: none;">
+					<h3>Iteration with inline javascript</h3>
+				</a>
+				<p>From</p>
+				<pre><code class="language-javascript">idomizer.compile(<span class="hljs-string">`
+    [[ data.items.forEach(function (item, i) { ]]
+        &lt;strong tpl-key="{{i}}"&gt;
+            &lt;tpl-text value="i"/&gt;-&lt;tpl-text value="item"/&gt;
+        &lt;/strong&gt;
+    [[ }); ]]
+`</span>)(IncrementalDOM);</code></pre>
+				<p>To</p>
+				<pre><code class="language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">template</span>(<span class="hljs-params">_i, _h</span>) </span>{
+  <span class="hljs-keyword">var</span> _elementOpen = _i.elementOpen,
+      _elementClose = _i.elementClose,
+      _elementVoid = _i.elementVoid,
+      _text = _i.text,
+      _skip = _i.skip;
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">_data_</span>) </span>{
+    <span class="hljs-keyword">var</span> helpers = _h || {},
+        data = _data_ || {};
+    data.items.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">item, i</span>) </span>{
+        _elementOpen(<span class="hljs-string">'strong'</span>, (i), <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>);
+            _text(i);
+            _text(<span class="hljs-string">'-'</span>);
+            _text(item);
+        _elementClose(<span class="hljs-string">'strong'</span>);
+    });
+  };
+}</code></pre>
+				<a href="#custom-tags" id="custom-tags" style="color: inherit; text-decoration: none;">
+					<h3>Custom tags</h3>
+				</a>
+				<p>From</p>
+				<pre><code class="language-javascript">idomizer.compile(<span class="hljs-string">`&lt;strong&gt;strong text&lt;/strong&gt;&lt;x-test&gt;&lt;/x-test&gt;&lt;strong&gt;strong text&lt;/strong&gt;`</span>, {
+     <span class="hljs-attr">tags</span>: {
+        <span class="hljs-string">'x-test'</span>: {
+            onopentag(name, attrs, key, statics, varArgs, options) {
+                <span class="hljs-keyword">return</span> <span class="hljs-string">`t('<span class="hljs-subst">${name}</span> element');`</span>;
+            }
+        }
+    }
+})(IncrementalDOM);</code></pre>
+				<p>To</p>
+				<pre><code class="language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">template</span>(<span class="hljs-params">_i, _h</span>) </span>{
+  <span class="hljs-keyword">var</span> _elementOpen = _i.elementOpen,
+      _elementClose = _i.elementClose,
+      _elementVoid = _i.elementVoid,
+      _text = _i.text,
+      _skip = _i.skip;
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">_data_</span>) </span>{
+    <span class="hljs-keyword">var</span> helpers = _h || {},
+        data = _data_ || {};
+    _elementOpen(<span class="hljs-string">'strong'</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>);
+      _text(<span class="hljs-string">'strong text'</span>);
+    _elementClose(<span class="hljs-string">'strong'</span>);
+    _text(<span class="hljs-string">'x-test element'</span>);
+    _elementOpen(<span class="hljs-string">'strong'</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>);
+      _text(<span class="hljs-string">'strong text'</span>);
+    _elementClose(<span class="hljs-string">'strong'</span>);
+  };
+}</code></pre>
+				<a href="#custom-helpers" id="custom-helpers" style="color: inherit; text-decoration: none;">
+					<h3>Custom helpers</h3>
+				</a>
+				<p>From</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> subRender = compile(<span class="hljs-string">`helper content`</span>)(IncrementalDOM);
+idomizer.compile(<span class="hljs-string">`
+    &lt;strong&gt;strong text&lt;/strong&gt;
+    &lt;tpl-call name="subRender" /&gt;
+    &lt;strong&gt;strong text&lt;/strong&gt;
+`</span>)(IncrementalDOM, {subRender});</code></pre>
+				<p>To</p>
+				<pre><code class="language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">template</span>(<span class="hljs-params">_i, _h</span>) </span>{
+  <span class="hljs-keyword">var</span> _elementOpen = _i.elementOpen,
+      _elementClose = _i.elementClose,
+      _elementVoid = _i.elementVoid,
+      _text = _i.text,
+      _skip = _i.skip;
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">_data_</span>) </span>{
+    <span class="hljs-keyword">var</span> helpers = _h || {},
+        data = _data_ || {};
+    _elementOpen(<span class="hljs-string">'strong'</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>);
+        _text(<span class="hljs-string">'strong text'</span>);
+    _elementClose(<span class="hljs-string">'strong'</span>);
+    helpers.subRender(data);
+    _elementOpen(<span class="hljs-string">'strong'</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>);
+        _text(<span class="hljs-string">'strong text'</span>);
+    _elementClose(<span class="hljs-string">'strong'</span>);
+  };
+}</code></pre>
+				<a href="#custom-elements" id="custom-elements" style="color: inherit; text-decoration: none;">
+					<h3>Custom elements</h3>
+				</a>
+				<p>For <a href="https://google.github.io/incremental-dom">incremental-dom</a>, custom elements are regular HTML elements.
+					So, if a custom element generates a sub-tree (i.e. a light DOM) outside of a ShadowDOM node,
+					it will be overridden during the execution of the function <code>patch()</code>.
+					To control this default behavior, <a href="https://google.github.io/incremental-dom">incremental-dom</a> provides the function <code>skip()</code> saying:
+				<em>don&#39;t touch the inner light DOM of the just opened node!</em></p>
+				<p>By default idomizier detects the custom elements and force the call of the function <code>skip()</code> to protect their light DOM nodes.
+				Custom elements are detected according to the following rules:</p>
+				<ul>
+					<li>from the name, because of the <code>-</code> character</li>
+					<li>from the attribute <code>ìs</code></li>
+				</ul>
+				<p>Obviously, this behavior can be deactivated:</p>
+				<ul>
+					<li>globally (for a whole HTML template)<pre><code class="language-javascript">  <span class="hljs-keyword">const</span> render = compile(<span class="hljs-string">`&lt;x-element&gt;&lt;p&gt;will part of the light DOM&lt;/p&gt;&lt;/x-element&gt;`</span>, {<span class="hljs-attr">skipCustomElements</span> : <span class="hljs-literal">false</span>})</code></pre>
+					</li>
+					<li>locally (an HTML element), ``<pre><code class="language-javascript">  <span class="hljs-keyword">const</span> render = compile(<span class="hljs-string">`&lt;x-element tpl-skip="deactivated"&gt;&lt;p&gt;will part of the light DOM&lt;/p&gt;&lt;/x-element&gt;`</span>)</code></pre>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_options_.html">"<wbr>Options"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_stringdictionary_.html">"<wbr>String<wbr>Dictionary"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_idomizer_.html">"idomizer"</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>
