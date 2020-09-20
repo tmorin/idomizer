@@ -13,5 +13,12 @@
   },
   "include": [
     "src"
-  ]
+  ],
+  "typedocOptions": {
+    "out": "./typedoc",
+    "externalPattern": "node\\_modules",
+    "excludePrivate": true,
+    "excludeProtected": true,
+    "target": "ES6"
+  }
 }
