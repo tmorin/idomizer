@@ -1,14 +1,10 @@
-name: Delivery
+name: Continous Integration
 
-on:
-  push:
-    tags:
-      - 'v*.*.*'
-      - '!v*.*.*-*'
+on: [ push, pull_request ]
 
 jobs:
   build:
-    name: Build and Publish
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -17,26 +13,30 @@ jobs:
           node-version: '12.x'
           registry-url: 'https://registry.npmjs.org'
           scope: '@tmorin'
-      - name: install dependencies
+      # build
+      - name: Install dependencies
         run: npm ci
-      - name: lint sources
+      - name: Lint sources
         run: npm run lint
-      - name: build sources
+      - name: Build sources
         run: npm run build
-      - name: test library
+      - name: Test library
         run: npm run test:lib
         env:
           SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
           SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
-      - name: test plugins
+      - name: Test plugins
         run: npm run test:plugins
-      - name: build documentation
+      - name: Build documentation
         run: npm run docs:build
-      - name: publish package
+      # publication
+      - name: Publish package
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
         run: npm publish --tag latest
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: publish documentation
+      - name: Publish documentation
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

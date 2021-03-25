@@ -1,8 +1,6 @@
 # idomizer
 
-[![pipeline status](https://gitlab.com/tmorin/idomizer/badges/master/pipeline.svg)](https://gitlab.com/tmorin/idomizer/commits/master)
-[![Dependency Status](https://david-dm.org/tmorin/idomizer.svg)](https://david-dm.org/tmorin/idomizer)
-[![devDependency Status](https://david-dm.org/tmorin/idomizer/dev-status.svg)](https://david-dm.org/tmorin/idomizer?type=dev)
+[![Continous Integration](https://github.com/tmorin/idomizer/actions/workflows/continous-integration.yaml/badge.svg)](https://github.com/tmorin/idomizer/actions/workflows/continous-integration.yaml)
 
 `idomizer` is an HTML template compiler providing an [incremental-dom] render factory.
 `idomizer` can be used at compile time (front end projects) or runtime time(back end projects).
@@ -400,7 +398,7 @@ it will be overridden during the execution of the function `patch()`.
 To control this default behavior, [incremental-dom] provides the function `skip()` saying:
 _don't touch the inner light DOM of the just opened node!_
 
-By default idomizier detects the custom elements and force the call of the function `skip()` to protect their light DOM nodes.
+By default, idomizier detects the custom elements and force the call of the function `skip()` to protect their light DOM nodes.
 Custom elements are detected according to the following rules:
 
 - from the name, because of the `-` character
