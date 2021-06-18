@@ -1,16 +1,20 @@
 const webpackDev = require('./webpack.dev');
 
+if (!process.env.CHROME_BIN) {
+    process.env.CHROME_BIN = require('puppeteer').executablePath();
+}
+
 module.exports = (config) => {
     config.set({
-        frameworks: ['mocha'],
+        frameworks: ['mocha', 'webpack'],
+
+        reporters: ['progress', 'junit'],
 
         files: [
-            {pattern: 'test/*.spec.js', watched: false},
             {pattern: 'test/*.spec.ts', watched: false}
         ],
 
         preprocessors: {
-            'test/*.spec.js': ['webpack'],
             'test/*.spec.ts': ['webpack']
         },
 
@@ -31,17 +35,8 @@ module.exports = (config) => {
             }
         },
 
-        customLaunchers: {
-            sl_firefox: {
-                base: 'SauceLabs',
-                browserName: 'firefox'
-            }
-        },
-
-        sauceLabs: {
-            testName: 'idomizer - unit testing',
-            recordVideo: false,
-            recordScreenshots: false
+        junitReporter: {
+            outputDir: '.tmp/junit'
         }
     });
 };
